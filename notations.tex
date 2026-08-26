@@ -1,0 +1,312 @@
+\newcommand{\Aa}{\mathcal{A}}
+\newcommand{\Bb}{\mathcal{B}}
+\newcommand{\Bg}{\mathfrak{C}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Dd}{\mathcal{D}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\Ee}{\mathcal{E}}
+\newcommand{\epsb}{\boldsymbol{\epsilon}}
+\newcommand{\Ff}{\mathcal{F}}
+\newcommand{\GG}{\mathbb{G}}
+\newcommand{\Gg}{\mathcal{G}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\Hh}{\mathcal{H}}
+\newcommand{\Ii}{\mathcal{I}}
+\newcommand{\Kk}{\mathcal{K}}
+\newcommand{\Ll}{\mathcal{L}}
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\MM}{\mathbb{M}}
+\newcommand{\Oo}{\mathcal{O}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\Pp}{\mathcal{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Rr}{\mathcal{R}}
+\newcommand{\Ss}{\mathcal{S}}
+\newcommand{\Uu}{\mathcal{U}}
+\newcommand{\VV}{\mathbb{V}}
+\newcommand{\Vb}{\mathbf{V}}
+\newcommand{\XX}{\mathbb{X}}
+\newcommand{\Xx}{\mathcal{X}}
+\newcommand{\Xf}{\mathfrak{X}}
+\newcommand{\Xbf}{\boldsymbol{X}}
+\newcommand{\YY}{\mathbb{Y}}
+\newcommand{\Yy}{\mathcal{Y}}
+\newcommand{\Yb}{\mathbf{Y}}
+\newcommand{\ZZ}{\mathbb{Z}}
+
+% operator norm
+\newcommand{\vertiii}[1]{{\left\vert\kern-0.25ex\left\vert\kern-0.25ex\left\vert #1 
+    \right\vert\kern-0.25ex\right\vert\kern-0.25ex\right\vert}}
+
+% Number on equation in align* env
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Packages
+\RequirePackage{enumerate}
+\RequirePackage{comment}
+\RequirePackage{ifthen}
+\RequirePackage{subcaption}
+\RequirePackage{siunitx}
+\RequirePackage[ruled,vlined]{algorithm2e}
+\usepackage{dsfont}
+
+%\usepackage{url}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Uncomment next line to change            %%
+%% the type of equation numbering           %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\numberwithin{equation}{section}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% For Axiom, Claim, Corollary, Hypothezis, %%
+%% Lemma, Theorem, Proposition              %%
+%% use \theoremstyle{plain}                 %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{stp}[section]
+\newcounter{lemA}
+\newcounter{lemSM}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{lemmaA}[lemA]{Lemma A.\!\!}
+\newtheorem{lemmaSM}[lemSM]{Lemma S.\!\!}
+
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+
+\newtheorem{conjecture}{Conjecture}
+
+
+\DeclareSIUnit{\octet}{o}
+\sisetup{binary-units,per-mode=symbol}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% For Assumption, Definition, Example,     %%
+%% Notation, Property, Remark, Fact         %%
+%% use \theoremstyle{remark}                %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\theoremstyle{remark}
+%\newtheorem*{remark}{Remark}
+\newtheorem{step}[stp]{Step}
+%\newtheorem{???}{???}[???]
+%\newtheorem{???}[???]{???}
+%% Assumption
+\newcounter{assumptionHt}
+\newcounter{assumptionH}
+\newcounter{assumptionE}
+\newcounter{assumptionD}
+%
+\newenvironment{assumptionHt}%
+{%
+\begin{enumerate}[({G}1)]%
+    \setcounter{enumi}{\value{assumptionHt}}%
+    }{%
+    \setcounter{assumptionHt}{\value{enumi}}%
+\end{enumerate}
+}
+%%
+%%
+\newenvironment{assumptionH}%
+{%
+\begin{enumerate}[({H}1)]%
+    \setcounter{enumi}{\value{assumptionH}}%
+    }{%
+    \setcounter{assumptionH}{\value{enumi}}%
+\end{enumerate}
+}
+%%
+%%
+\newenvironment{assumptionE}%
+{%
+\begin{enumerate}[({E}1)]%
+    \setcounter{enumi}{\value{assumptionE}}%
+    }{%
+    \setcounter{assumptionE}{\value{enumi}}%
+\end{enumerate}
+}
+%%
+%%
+%%
+\newenvironment{assumptionD}%
+{%
+\begin{enumerate}[({D}1)]%
+    \setcounter{enumi}{\value{assumptionD}}%
+    }{%
+    \setcounter{assumptionD}{\value{enumi}}%
+\end{enumerate}
+}
+%%
+%%
+\newcommand{\assrefHt}[1]{(\hyperref[#1]{G\ref{#1}})}
+\newcommand{\assrefH}[1]{(\hyperref[#1]{H\ref{#1}})}
+\newcommand{\assrefE}[1]{(\hyperref[#1]{E\ref{#1}})}
+\newcommand{\assrefD}[1]{(\hyperref[#1]{D\ref{#1}})}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Please put your definitions here:        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Probability
+\newcommand{\asympp}{\approx}
+\newcommand{\EEE}{\mathcal{E}}
+\newcommand{\ET}{{\widetilde\EE}}
+\newcommand{\PT}{{\widetilde\PP}}
+\newcommand{\PPP}{\mathcal{P}}
+\newcommand{\EEn}{\mathbb{E}_{n}}
+\newcommand{\EEMT}{\mathbb{E}_{M,T}}
+\DeclareMathOperator{\Var}{\mathbb{V}ar}
+\DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\newcommand{\1}{\mathbf{1}}
+%
+%% Different samples
+\newcommand{\n}[1]{{n_{#1}}}
+\newcommand{\N}[1]{{N_#1}}
+% Regularity parameters
+\newcommand{\degree}{\mathbf{d}}
+\newcommand{\hdegree}{\hat {\mathbf{d}}}
+\newcommand{\T}{{t_0}}
+\newcommand{\HT}{H_\T}
+\newcommand{\KT}{\degree}
+\newcommand{\ST}{\varsigma_\T}
+\newcommand{\hHT}{\widehat{H}_\T}
+\newcommand{\hKT}{\hdegree}
+\newcommand{\hST}{\widehat{\varsigma}_\T}
+% Process
+\newcommand{\Xtemp}[1]{%
+	\ifthenelse{\equal{#1}{0}}
+		{X^{(\n0)}}
+		{
+			\ifthenelse{\equal{#1}{1}}
+				{X^{[\n1]}}
+				{X^{(#1)}}
+		}
+	}
+\newcommand{\hXtemp}[1]{%
+	\ifthenelse{\equal{#1}{0}}
+		{\widehat X^{(\n0)}}
+		{
+			\ifthenelse{\equal{#1}{1}}
+				{\widehat X^{[\n1]}}
+				{\widehat X^{(#1)}}
+		}
+	}
+%
+\newcommand{\Xp}[1]{X^{(#1)}}
+\newcommand{\Xc}[1]{X^{[#1]}}
+%
+\newcommand{\X}[1]{{\Xtemp{#1}}}
+\newcommand{\Xt}[1]{{\Xtemp{#1}_t}}
+\newcommand{\XT}[1]{{\Xtemp{#1}_\T}}
+\newcommand{\Xn}{{\Xtemp{n}}}
+\newcommand{\Xtn}{{\Xtemp{n}_t}}
+\newcommand{\XTn}{{\Xtemp{n}_\T}}       
+%
+\newcommand{\hX}[1]{{\hXtemp{#1}}}
+\newcommand{\hXt}[1]{{\hXtemp{#1}_t}}
+\newcommand{\hXT}[1]{{\hXtemp{#1}_\T}}
+\newcommand{\hXn}{{\hXtemp{n}}}
+\newcommand{\hXtn}{{\hXtemp{n}_t}}
+\newcommand{\hXTn}{{\hXtemp{n}_\T}}       
+%
+\newcommand{\Ynk}{{Y_{n,k}}}
+\newcommand{\Yni}{{Y_{n,i}}}
+\newcommand{\Tnk}{{T_{n,k}}}
+\newcommand{\Tni}{{T_{n,i}}}
+\newcommand{\Tnlm}{{T^{[n_1]}_m}}
+\newcommand{\Wnk}{{W_{n,k}}}
+\newcommand{\Wni}{{W_{n,i}}}
+\newcommand{\Wmk}{{W_{m,k}}}
+\newcommand{\e}{{\varepsilon}}
+\newcommand{\enk}{{\varepsilon_{n,k}}}
+\newcommand{\eni}{{\varepsilon_{n,i}}}
+\newcommand{\unk}{{u_{n,k}}}
+
+\newcommand{\Ostar}{\mathcal{O}}
+\newcommand{\rhostar}{{\rho_*}}
+\newcommand{\deltastar}{{\Delta_*}}
+\newcommand{\epsilonstar}{\epsilon_*}
+
+%
+\newcommand{\Mmu}{\mathfrak{m}}
+
+\def\lf{\left\lfloor}   
+\def\rf{\right\rfloor}
+
+
+%% Dependence
+\newcommand{\Nnu}{\mathcal{V}}
+
+%% Argmin and Argmax
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% To delete %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{22cm}
+\setlength{\hoffset}{-1.4cm}
+\topmargin -1cm 
+
+
+\newtheorem{assump}{Assumption}
+\newtheorem{assumpA}{Assumption}
+
+\renewcommand\theassump{H\arabic{assump}}
+
+
+%%%%%%%%% Definitions
+
+\newcommand{\EEi}{\mathbb{E}_i}
+\newcommand{\EEj}{\mathbb{E}_j}
+\newcommand{\EEB}{\mathbb{E}_{\mathcal B}}
+\newcommand{\EEAn}{\mathbb{E}_{\mathcal A_n}}
+\DeclareMathOperator{\sign}{sgn}
+%%%%%%%%%%%%%%
+\newcommand{\Tcirc}{{\mathcal T_k^\circ}}
+\newcommand{\STcirc}{\hat\alpha_k}
+%%%%%%%%%%%%%%
+
+%%
+%% Classical sets
+%%
+
+%%%%%%%%%%%%%%
+
+
+
+
+%%
+%% Number of curves
+%%
+\newcommand{\WN}{\mathcal W_N}
+
+%%
+%% Processes
+%%
+%
+\newcommand{\hXni}{{\hXtemp{i}}}
+\newcommand{\hXnj}{{\hXtemp{j}}}
+%
+\newcommand{\Ynm}{{Y^{(i)}_m}}
+\newcommand{\Tnm}{{T^{(i)}_m}}
+%\newcommand{\Tnlm}{{T^{[n_1]}_m}}
+\newcommand{\enm}{{\varepsilon^{(i)}_m}}
+\newcommand{\unm}{{e^{(i)}_m}}
+%
+\newcommand{\Ynlm}{{Y^{(n)}_m}}
+\newcommand{\enlm}{{\varepsilon^{(n)}_m}}
+\newcommand{\unlm}{{e^{(n)}_m}}
+
+\newcommand{\Xnl}{{Y^{(n)}}}
+

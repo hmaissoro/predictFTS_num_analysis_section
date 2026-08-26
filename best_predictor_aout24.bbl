@@ -1,0 +1,91 @@
+\begin{thebibliography}{}
+
+\bibitem[Bosq, 2000]{bosq2000linear}
+Bosq, D. (2000).
+\newblock {\em Linear processes in function spaces}, volume 149 of {\em Lecture
+  Notes in Statistics}.
+\newblock Springer-Verlag, New York.
+\newblock Theory and applications.
+
+\bibitem[Cl{\'{e}}men{\c{c}}on and Portier, 2018]{CP2018}
+Cl{\'{e}}men{\c{c}}on, S. and Portier, F. (2018).
+\newblock Beating {M}onte {C}arlo integration: a nonasymptotic study of kernel
+  smoothing methods.
+\newblock In Storkey, A. and Perez-Cruz, F., editors, {\em Proceedings of the
+  Twenty-First International Conference on Artificial Intelligence and
+  Statistics}, volume~84 of {\em Proceedings of Machine Learning Research},
+  pages 548--556. PMLR.
+
+\bibitem[Delyon and Portier, 2016]{DP2016}
+Delyon, B. and Portier, F. (2016).
+\newblock Integral approximation by kernel smoothing.
+\newblock {\em Bernoulli}, 22(4):2177--2208.
+
+\bibitem[Giné and Guillou, 2002]{gine_2002}
+Giné, E. and Guillou, A. (2002).
+\newblock Rates of strong uniform consistency for multivariate kernel density
+  estimators.
+\newblock {\em Annales de l'Institut Henri Poincare (B) Probability and
+  Statistics}, 38(6):907--921.
+
+\bibitem[H{\"o}rmann and Kokoszka, 2012]{hormann2012functional}
+H{\"o}rmann, S. and Kokoszka, P. (2012).
+\newblock Functional time series.
+\newblock In {\em Handbook of statistics}, volume~30, pages 157--186. Elsevier.
+
+\bibitem[Horváth et~al., 2016]{horovath_2016}
+Horváth, L., Rice, G., and Whipple, S. (2016).
+\newblock Adaptive bandwidth selection in the long run covariance estimator of
+  functional time series.
+\newblock {\em Computational Statistics \& Data Analysis}, 100:676--693.
+
+\bibitem[K{\"u}hnert et~al., 2026]{kuhnert2026}
+K{\"u}hnert, S., Rice, G., and Aue, A. (2026).
+\newblock {Estimating invertible processes in Hilbert spaces, with applications
+  to functional ARMA processes}.
+\newblock {\em Bernoulli}, 32(2):1523 -- 1546.
+
+\bibitem[Maissoro et~al., 2025]{Maissoro2025}
+Maissoro, H., Patilea, V., and Vimond, M. (2025).
+\newblock Adaptive estimation for weakly dependent functional times series.
+\newblock {\em Journal of Time Series Analysis}.
+
+\bibitem[Major, 2006]{major2006estimate}
+Major, P. (2006).
+\newblock An estimate on the supremum of a nice class of stochastic integrals
+  and u-statistics.
+\newblock {\em Probability Theory and Related Fields}, 134(3):489--537.
+
+\bibitem[Open Data Réseaux~Énergies, 2024]{odre_data}
+Open Data Réseaux~Énergies, O. (2024).
+\newblock Données éco2mix nationales temps réel.
+\newblock Accessed: 2024-11-04.
+
+\bibitem[Paparoditis and Shang, 2023]{paparoditis2023boot}
+Paparoditis, E. and Shang, H.~L. (2023).
+\newblock Bootstrap prediction bands for functional time series [{C}orrection].
+\newblock {\em J. Amer. Statist. Assoc.}, 118(543):2212.
+
+\bibitem[Robinson, 1991]{Robinson1991blup}
+Robinson, G.~K. (1991).
+\newblock That {BLUP} is a good thing: the estimation of random effects.
+\newblock {\em Statist. Sci.}, 6(1):15--51.
+\newblock With comments and a rejoinder by the author.
+
+\bibitem[Rub\'{\i}n and Panaretos, 2020]{rubin2020sparsely}
+Rub\'{\i}n, T. and Panaretos, V.~M. (2020).
+\newblock Sparsely observed functional time series: estimation and prediction.
+\newblock {\em Electron. J. Stat.}, 14(1):1137--1210.
+
+\bibitem[Stoev and Taqqu, 2006]{taqqu2006}
+Stoev, S.~A. and Taqqu, M.~S. (2006).
+\newblock How rich is the class of multifractional {Brownian} motions?
+\newblock {\em Stochastic Processes and their Applications}, 116(2):200--221.
+
+\bibitem[Zhao, 2026]{zhao2026functional}
+Zhao, Y. (2026).
+\newblock Functional autoregression without truncation: A
+  continuous-regularization approach.
+\newblock {\em arXiv preprint arXiv:2604.25205}.
+
+\end{thebibliography}

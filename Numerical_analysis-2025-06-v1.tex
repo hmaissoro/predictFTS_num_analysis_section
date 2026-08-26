@@ -1,0 +1,254 @@
+\section{Numerical study}\label{sec:blup:numerical_study} 
+In this section, we present a finite-sample Monte Carlo simulation study and a real data application using national electricity consumption and production data for France, available on the ODR\'E platform \citep{odre_data}. We consider daily consumption curves as well as photovoltaic and hydroelectric production curves. First, the consumption curves are used to estimate the parameters of a first-order autoregressive process (FAR(1)), which are then used to generate new curves for the Monte Carlo simulations. Second, for the real data application, we apply our methods directly to each type of curve. The results were obtained using the R package \texttt{adaptiveFTS} and additional code, both publicly available at \url{https://github.com/hmaissoro}. An Epanechnikov kernel ($K(u) = (3/4)(1-u^2)$ for $|u|\leq 1$, and $0$ otherwise) is used in all experiments.
+ 
+
+\subsection{Simulation setting}\label{blup:sec:simu_exp}
+The Monte Carlo simulation is based on France's daily national electricity consumption curves from June to September 2024. The dataset contains 122 curves, one for each day within this period. Each curve represents electricity consumption recorded at $96$ evenly spaced time points throughout the day, with measurements taken every 15 minutes. For readability, we normalise the curves to the interval $[0,1]$ by dividing each value by the maximum consumption observed over the entire period. Figure~\ref{fig:conso_last_curves} displays the last four consumption curves from the dataset. To simulate FTS with patterns similar to those of the observed curves, we estimate the parameters of a FAR(1) model from the data and use them to generate synthetic FTS samples. We consider the FAR(1) process with an associated innovation process $\{\xi_n\}$, defined as:
+\begin{equation}\label{blup:FTS_mod1}
+	X_n(u) = \mu(u) + \int_0^1\psi(u,s)(X_{n-1}(s)-\mu(s))ds + L_t\xi_n(u),
+\end{equation}
+where the mean function $\mu$ and the kernel of the autoregressive operator $\psi$ are estimated from the real consumption curves. The innovation process $\{\xi_n\}$ is independently generated as a multi-fractional Brownian motion, with the Hurst index function estimated from the real dataset \citep[see][]{taqqu2006}. As shown in Example 2 of \citet{Maissoro2024}, if the kernel $\psi(\cdot,s)$ is Hölder continuous with a Hölder exponent greater than the regularity of $\{\xi_n\}$, then the FTS $\{X_n\}$ inherits the regularity of the innovation process. In particular, $\{X_n\}$ has a local Hölder exponent corresponding to the Hurst index function (see Figure~\ref{fig:hurst_var_FTSConso}) and a Hölder constant $L_t^2$. The estimation procedure for $\mu$ and $\psi$ using Fourier expansion is detailed in the supplementary material of \citet{Maissoro2024}.
+Figure~\ref{fig:simu_param} shows the raw consumption curves, along with the estimated mean function $\mu$ and the autoregressive kernel $\psi$, where the kernel norm is normalized to $0.5$.
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures_tikz/real_data_conso_4last_curves.pdf}
+	\caption{\small The last four daily national electricity consumption curves in France from the dataset, with values normalised to the interval $[0,1]$.}
+	\label{fig:conso_last_curves} 
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\small (a) $\footnotesize \widehat{H}_t$ for simulation & \small (b) $\footnotesize \widehat{\mu}$ for simulation & \small (c) $\footnotesize \widehat{\psi}$ for simulation\\
+		\includegraphics[width=0.3\textwidth]{./figures_tikz/local_exponent_conso.pdf} & \includegraphics[width=0.3\textwidth]{./figures_tikz/smooth_mean_conso.pdf} &
+		\includegraphics[width=0.3\textwidth]{./figures_tikz/far_kernel_conso.pdf}
+	\end{tabular}
+	\caption{\small Raw curves and estimates of the mean function and autoregressive kernel for simulation. (a) The raw consumption curves. (b) The estimated mean function using the Fourier basis. (c) The estimated autoregressive kernel using the Fourier basis.}
+	\label{fig:simu_param}
+\end{figure}
+
+To obtain the data points according to $ \eqref{eq:model}$, the number of points on each curve, $ M_n $, is randomly generated uniformly between $ 0.8\lambda $ and $ 1.2\lambda $, while the observation times $ \{T_{n,i}\} $ are uniformly distributed on the interval $ (0,1] $. We set $L_t = 0.058$,  corresponding to the median standard deviation of the normalised curves estimated using \eqref{eq:blup:sigma_estimator} over the observation grid. For the observation error term, we set $\sigma(T_{n,i}) = L_t / 10 = 0.0058$, and the $\varepsilon_{n,i}$'s are centred Gaussian variables with unit variance. A series of $100$ burn-in steps is used to initialize \eqref{blup:FTS_mod1}.
+
+Finally, for the (auto)covariance study we generate different samples of FTS, whereas for the BLUP study we generate a single sample of FTS and regenerate its last curve. The aim of the (auto)covariance study is to show that the proposed method performs at least as well as the approach of \cite{Maissoro2024}, which uses a single bandwidth. Meanwhile, the aim of the BLUP study is to show that a curve, here the last curve, is accurately reconstructed.
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\small (a) Hurst index function of $\footnotesize \xi$. & \quad&\small (b) Variance of the constructed FTS process. \\
+		\includegraphics[width=0.4\textwidth]{./figures_tikz/local_exponent.pdf} & \quad & \includegraphics[width=0.4\textwidth]{./figures_tikz/variance_FTS_conso_lag=0.pdf} 
+	\end{tabular}
+	\caption{\small (a) Hurst index function of the MfBm process used as the innovation process in \eqref{blup:FTS_mod1} for simulation. (b) Variance of the constructed FTS from \eqref{blup:FTS_mod1} and the consumption curves.}
+	\label{fig:hurst_var_FTSConso}
+\end{figure}
+
+\subsection{Implementation details}
+The estimation of the lag-$\ell$, $\ell \geq 0$, (auto)covariance using the estimators in \eqref{eq:hat_Gamma_ell}, \eqref{eq:hat_Gamma_0:diagonal_outside}, and \eqref{eq:hat_Gamma_0:diagonal} involves selecting optimal bandwidths based on the data-driven rules given in \eqref{eq:gamma:risk-minimization}, \eqref{eq:gamma_0:diagonal_outside:risk-minimization}, and \eqref{eq:gamma_0_diag:risk-minimization}, respectively. Computing $\widehat{R}_{\Gamma_\ell}$ requires estimating the dependence coefficients $\mathbb{D}_\ell(s, t; h_s, h_t)$, $\mathbb{D}_\ell(t,h_t|s,h_s)$, and $\mathbb{D}(t; h_t)$, which is computationally intensive.
+To reduce computation time, we adopt a simplified approach. Let $\widetilde{X}_n$ denote the NW estimator of the curve $X_n$, obtained using a bandwidth selected via cross-validation. Given a set of sample points $\{(Y_{n,1}, T_{n,1}), \ldots, (Y_{n,M_n}, T_{n,M_n})\}$ for a curve $X_n$, the cross-validated optimal bandwidth for the estimator in \eqref{eq:blup:LP_est_v} is defined as
+\begin{equation}\label{eq:NW_bw_cv}
+	h^* \in \argmin_h \sum_{i = 1}^{M_n}\left\{Y_{n,i} - \widetilde{X}_n^{(-i)}(T_{n,i};h)\right\}^2,
+\end{equation}
+where $\widetilde{X}_n^{(-i)}(T_{n,i};h)$ denotes the estimator in \eqref{eq:blup:LP_est_v} computed without the $i$-th observation and using bandwidth $h$. Moreover, let $\widetilde{Z}_n(t) = \widetilde{X}_n(t) - \widetilde{\mu}_N(t)$, and define, for all $s, t \in I$,
+\begin{equation*}
+	\widetilde{\mu}_N(t) = \frac{1}{N} \sum_{n=1}^{N} \widetilde{X}_{n}(t), \qquad
+	\widetilde{\Gamma}_\ell(s, t) = \frac{1}{N - \ell} \sum_{n = 1}^{N - \ell} \widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t), \quad \ell \geq 1.
+\end{equation*}
+Then, instead of estimating $\mathbb{D}_\ell(s, t; h_s, h_t)$, $\mathbb{D}_\ell(t,h_t|s,h_s)$, and $\mathbb{D}(t; h_t)$, we simply consider the following 
+\begin{multline}
+	\widehat{\mathbb{D}}_\ell(s,t;h_s, h_t) 
+	= \frac{1}{N-\ell} \sum_{n=1}^{N - \ell} \left\{\widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t) - \widetilde{\Gamma}_\ell (s,t)\right\}^2 \\
+	+ \!\!\!\!\sum_{k = 1}^{N-\ell - 1}\frac{2 P_{N,\ell}^{-1}(s, t; h_s, h_t)}{N - \ell - k} \Biggl|\sum_{n = 1}^{N - \ell - k - 1}\!\left\{\widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t) - \widetilde{\Gamma}_\ell (s,t)\right\} \left\{\widetilde{Z}_{n + k}(s) \widetilde{Z}_{n + \ell + k}(t) - \widetilde{\Gamma}_\ell (s,t)\right\}\!\Biggr|,
+\end{multline}
+\begin{multline}
+	\widehat{\mathbb{D}}_\ell(t,h_t|s,h_s)  = 24 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2<n_3\leq \ell_{\max}}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_3)^{-1}\left|\sum_{k=1}^{N - n_3} \!\! \frac{p_{k,n_1, n_2}(t;h_t)}{P_{N,\ell}^{3}(s, t; h_s, h_t)} \left\{\widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} \widetilde{Z}_{k + n_3}\right\}(t) \right| \\
+	+ 6 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2\leq \ell_{\max}} \!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_2)^{-1}\left|\sum_{k=1}^{N - n_2} \! \frac{p_{k,n_1, n_2, n_3}(t;h_t)}{P_{N,\ell}^{3}(s, t; h_s, h_t)} \left\{\widetilde{Z}_k^2 \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1}^2 \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2}^2\right\}(t)\right|,
+\end{multline}
+\begin{multline}
+	\widehat{\mathbb{D}}(t; h_t)  = 24 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2<n_3\leq \ell_{\max}}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_3)^{-1}\left|\sum_{k=1}^{N - n_3} \!\! \frac{p_{k,n_1, n_2}(t;h_t)}{P_N^{3}(t; h_t)}\left\{\widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} \widetilde{Z}_{k + n_3}\right\}(t) \right| \\ 
+	+ 6 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2\leq \ell_{\max}} \!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_2)^{-1}\left|\sum_{k=1}^{N - n_2} \!\frac{p_{k,n_1, n_2, n_3}(t;h_t)}{P_N^{3}(t; h_t)} \left\{\widetilde{Z}_k^2 \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1}^2 \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2}^2\right\}(t)\right|,
+\end{multline}
+where $N \gg \ell_{\max} = 6$ to avoid $\Oo(N^4)$ or $\Oo(N^3)$ complexity, and 
+\begin{align}
+	p_{k,n_1, n_2}(t;h_t) &= \pi_k(t;h_t)\pi_{k+n_1}(t;h_t)\pi_{k+n_2}(t;h_t), \\
+	p_{k,n_1, n_2, n_3}(t;h_t) &= \pi_k(t;h_t)\pi_{k+n_1}(t;h_t)\pi_{k+n_2}(t;h_t)\pi_{k+n_3}(t;h_t).
+\end{align}
+
+\subsection{Autocovariance function estimation}\label{sec:emp_study:autocov}
+We consider the pairs $(N, \lambda) \in \{150, 300, 600\} \times \{25, 50, 100, 200\}$ and generate $R = 400$ independent FTS. For each sample, the aim is to estimate the autocovariance using both the single-bandwidth estimator proposed by \cite{Maissoro2024} and our new estimator, which uses two bandwidth parameters. Hereafter, we refer to the estimator of \cite{Maissoro2024} as \texttt{MPV24}. The adaptive estimation of the autocovariance function via the estimator given in \eqref{eq:hat_Gamma_ell} involves selecting optimal bandwidths by minimising the risk function defined in \eqref{eq:risk-Gamma}. First, we consider the estimation of this risk function and then present a performance comparison with \color{magenta}the \texttt{MPV24} estimator\color{black}.
+
+To this end, we consider four pairs $(s, t)$ and compute the average of the lag-$1$ autocovariance risk function $\widehat{R}_{\Gamma_1}(s, t; h_s, h_t)$, as defined in \eqref{eq:risk-Gamma}, over a bandwidth grid $\Hh_N \times \Hh_N$ based on the $R = 400$ FTS replications. Figure~\ref{fig:autocov_risk_2bw} shows the mean of the $400$ replications of the estimates of the lag-$1$ autocovariance risk function for $(N, \lambda) = (150, 100)$ at four locations $(s,t)$. The estimates of the risk function are a convex function of $(h_s, h_t)$ for all pairs $(s,t)$. Furthermore, since the regularity varies along the domain (see Figure~\ref{fig:hurst_var_FTSConso}), as expected, the minima bandwidth pairs $(h_1^*(s|t), h_1^*(t|s))$ are reached such that $h_1^*(s|t) \neq h_1^*(t|s)$, when $H_s \neq H_t$. Moreover, the difference between the selected bandwidths is greater for pairs $(s,t)$ such that $|H_s-H_t|$ is large. For instance, at $(s,t) = (0.2, 0.8)$, the optimal bandwidths are $(h_1^*(s|t), h_1^*(t|s)) = (0.022, 0.010)$, reflecting the regularity $(H_s, H_t) \approx (0.4, 0.8)$. In contrast, at $(s,t) = (0.7, 0.8)$, where the regularity is approximately $(H_s, H_t) \approx (0.8, 0.8)$, the optimal bandwidths are identical, $(h_1^*(s|t), h_1^*(t|s)) = (0.022, 0.022)$.
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		$(s, t)= (0.2, 0.4)$ & $(s, t)= (0.4, 0.7)$\\
+		$(H_s, H_t)= (0.401, 0.448)$ & $(H_s, H_t)= (0.448, 0.793)$\\
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/autocov/plt_autocov_risk_conso_N=150_lambda=100_s=0.2_t=0.4.png} & \includegraphics[width=0.35\textwidth]{./figures_tikz/autocov/plt_autocov_risk_conso_N=150_lambda=100_s=0.4_t=0.7.png}\\
+		$(h_1^*(s|t), h_1^*(t|s)) = (0.009, 0.016)$ & $ (h_1^*(s|t), h_1^*(t|s)) = (0.014, 0.022)$ \\
+		& \\
+		& \\
+		$(s, t)= (0.7, 0.8)$ & $(s, t)= (0.8, 0.2)$\\
+		$(H_s, H_t)= (0.793, 0.799)$ & $(H_s, H_t)= (0.799, 0.401)$\\
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/autocov/plt_autocov_risk_conso_N=150_lambda=100_s=0.7_t=0.8.png} &
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/autocov/plt_autocov_risk_conso_N=150_lambda=100_s=0.8_t=0.2.png}\\
+		$(h_1^*(s|t), h_1^*(t|s)) = (0.022, 0.022)$ & $(h_1^*(s|t), h_1^*(t|s)) = (0.022, 0.010)$
+	\end{tabular}
+	\caption{\small Empirical average of the risk function $\widehat{R}_{\Gamma_1}(s,t;h_s, h_t)$ at $(s,t) \in \{ (0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_1^*(s|t), h_1^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel. The symbol $\mu$ on the vertical axis denotes a micro unit, i.e., $10^{-6}$.}
+	\label{fig:autocov_risk_2bw}
+\end{figure}
+
+We conclude this section with a performance comparison of the new autocovariance estimator against the \texttt{MPV24} estimator, which uses a single bandwidth. Let $\widehat{\Gamma}_{N,\ell}^{(i)}$ denote our new estimator computed from the $i$-th replication ($i = 1, \ldots, R = 400$), and let $\widehat{\Gamma}_{\texttt{MPV24}, \ell}^{(i)}$ denote the corresponding \texttt{MPV24} estimator. For benchmarking, we use the empirical infeasible estimator, denoted by ${\widehat{\Gamma}}_{N', \ell}$, which is computed on a large sample of size $N'$. This estimator is feasible in simulation settings. That is,
+\begin{equation}
+	\widehat{\Gamma}_{N', \ell}(s, t) = \frac{1}{N' - \ell} \sum_{n=1}^{N' - \ell} \left\{X_{n}(s) - \widehat{\mu}_{N'}(s)\right\} \left\{X_{n+\ell}(t) - \widehat{\mu}_{N'}(t)\right\},
+	\qquad \text{where} \quad
+	\widehat{\mu}_{N'}(t) = \frac{1}{N'} \sum_{n=1}^{N'} X_n(t).
+\end{equation}
+Then, for each $i = 1, \ldots, R$, we compute the pointwise error ratio:
+\begin{equation}\label{eq:error_ratio_autocov}
+	\forall (s, t) \in I^2, \quad
+	E_\ell^{(i)}(s, t) = \frac{\left| \widehat{\Gamma}_{N,\ell}^{(i)}(s, t; h_\ell^*(s|t), h_\ell^*(t|s)) - \widehat{\Gamma}_{N',\ell}(s, t) \right|}{\left| \widehat{\Gamma}_{\texttt{MPV24}, \ell}^{(i)}(s, t; h^*) - \widehat{\Gamma}_{N',\ell}(s, t) \right|}.
+\end{equation}
+With $N' = 5000$, we compute the error ratios $\{E_1^{(i)}(s, t),\; i = 1, \ldots, R\}$ for the lag-1 autocovariance estimator at four locations $(s, t)$. Figure~\ref{fig:autocov_ratio_FTS_Conso} presents the corresponding boxplots across all $(N, \lambda)$ configurations. As anticipated from Theorem~\ref{thm:Gamma}, the new estimator significantly outperforms \texttt{MPV24} when the local regularities $H_s$ and $H_t$ differ, and the gain is larger for pairs $(s, t)$ such that $|H_s - H_t|$ is large. For instance, the highest gain is obtained at $(s, t) = (0.8, 0.2)$, where $(H_s, H_t) \approx (0.8, 0.4)$. In contrast, at $(s, t) = (0.7, 0.8)$, where $(H_s, H_t) \approx (0.8, 0.8)$, both estimators perform similarly. At $(s, t) = (0.2, 0.4)$ and $(0.4, 0.7)$, where the difference in local regularity is moderate, the two-bandwidth approach still provides a noticeable improvement in sparse regimes, that is, when $\lambda^{2\min\{H_s, H_t\}} \ll N$. Since $\min\{H_u : u \in I\} = 0.4$, this sparsity condition holds for the configurations $(N, \lambda) \in \{(150, 25)$, $(150, 50)$, $(300, 25)$, $(300, 50)$, $(300, 100)$, $(600, 25)$, $(600, 50)$, $(600, 100)\}$. The two estimators tend to perform similarly as the sample size increases.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{./figures_tikz/autocov/boxplot_conso_autocov_ratio_lag=1_all.pdf}
+	\caption{\small Boxplots of the error ratio \eqref{eq:error_ratio_autocov} of the lag-1 autocovariance estimator for four pairs $(s, t) \in \{(0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$. For each pair, the corresponding values of the local exponent function are $(H_{0.2}, H_{0.4}) = (0.401, 0.448)$, $(H_{0.4}, H_{0.7}) = (0.448, 0.793)$, $(H_{0.7}, H_{0.8}) = (0.793, 0.799)$, and $(H_{0.8}, H_{0.2}) = (0.799, 0.401)$.}
+	\label{fig:autocov_ratio_FTS_Conso}
+\end{figure}
+%
+%\begin{figure}[h!]
+%	\centering
+%	\begin{tabular}{cc}
+%		\includegraphics[width=0.4\textwidth]{./figures_tikz/autocov/boxplot_conso_autocov_ratio_lag=1_s=0.2_t=0.4.pdf} & \includegraphics[width=0.4\textwidth]{./figures_tikz/autocov/boxplot_conso_autocov_ratio_lag=1_s=0.4_t=0.7.pdf}\\
+%		\includegraphics[width=0.4\textwidth]{./figures_tikz/autocov/boxplot_conso_autocov_ratio_lag=1_s=0.7_t=0.8.pdf} &
+%		\includegraphics[width=0.4\textwidth]{./figures_tikz/autocov/boxplot_conso_autocov_ratio_lag=1_s=0.8_t=0.2.pdf}  
+%	\end{tabular}
+%	\caption{\small Boxplot of the error ratio \eqref{eq:error_ratio_autocov} of the lag-$1$ autocovariance estimator for four pairs $(s, t)$.}
+%	\label{fig:autocov_ratio_FTS_Conso}
+%\end{figure}
+
+\subsection{Covariance function estimation}\label{sec:emp_study:cov}
+Our new adaptive covariance estimator involves selecting optimal bandwidths by minimising both the estimates of the bivariate risk function \eqref{eq:risk-Gamma_0:diagonal_outside} outside the diagonal band and the estimates of the univariate risk function given in \eqref{eq:risk-Gamma_0} for the diagonal line estimator. We consider the same scenario and generated data as in the autocovariance estimation study to illustrate the performance of our new covariance estimator.  
+
+First, regarding the risk function estimation, Figure~\ref{fig:cov_risk_2bw} shows the average over the $400$ replications of the estimates of the covariance risk function \eqref{eq:risk-Gamma_0:diagonal_outside} for $(N, \lambda) = (150, 100)$ at four locations. These plots provide evidence that the risk function is convex and can thus be effectively minimised to obtain optimal bandwidth pairs. Similarly, Figure~\ref{fig:diagonal_risk} illustrates that the risk function for the diagonal line is also convex, allowing straightforward selection of the optimal bandwidth for its estimation.
+
+Furthermore, for the bivariate risk function \eqref{eq:risk-Gamma_0:diagonal_outside}, since the regularity varies across the domain (see Figure~\ref{fig:hurst_var_FTSConso}), the optimal bandwidth pairs $(h_0^*(s|t), h_0^*(t|s))$ are typically such that $h_0^*(s|t) \neq h_0^*(t|s)$ when $H_s \neq H_t$. The difference between the selected bandwidths becomes more pronounced for pairs $(s, t)$ with large differences in local regularity, that is, when $|H_s - H_t|$ is large. In the case $(s, t) = (0.7, 0.8)$, where the regularity is approximately $(H_s, H_t) \approx (0.8, 0.8)$, the optimal bandwidths are still unequal, with $(h_0^*(s|t), h_0^*(t|s)) = (0.014, 0.010)$. This illustrates that differences in local regularity tend to have a stronger influence on covariance estimation than on autocovariance estimation.
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		$(s, t)= (0.2, 0.4)$ & $(s, t)= (0.4, 0.7)$\\
+		$(H_s, H_t)= (0.401, 0.448)$ & $(H_s, H_t)= (0.448, 0.793)$\\
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/cov/plt_cov_risk_conso_N=150_lambda=100_s=0.2_t=0.4.png} & \includegraphics[width=0.35\textwidth]{./figures_tikz/cov/plt_cov_risk_conso_N=150_lambda=100_s=0.4_t=0.7.png}\\
+		$(h_0^*(s|t), h_0^*(t|s)) = (0.003, 0.008)$ & $(h_0^*(s|t), h_0^*(t|s)) = (0.006, 0.014)$ \\
+		& \\
+		& \\
+		$(s, t)= (0.7, 0.8)$ & $(s, t)= (0.8, 0.2)$\\
+		$(H_s, H_t)= (0.793, 0.799)$ & $(H_s, H_t)= (0.799, 0.401)$\\
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/cov/plt_cov_risk_conso_N=150_lambda=100_s=0.7_t=0.8.png} &
+		\includegraphics[width=0.35\textwidth]{./figures_tikz/cov/plt_cov_risk_conso_N=150_lambda=100_s=0.8_t=0.2.png}\\
+		$(h_0^*(s|t), h_0^*(t|s)) = (0.014, 0.010)$ & $(h_0^*(s|t), h_0^*(t|s)) = (0.010, 0.003)$
+	\end{tabular}
+	\caption{\small Empirical average of the risk function $\widehat{R}_{\Gamma_0}(s,t;h_s, h_t)$ at $(s,t) \in \{ (0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_0^*(s|t), h_0^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel. The symbol $\mu$ on the vertical axis denotes a micro unit, i.e., $10^{-6}$.}
+	\label{fig:cov_risk_2bw}
+\end{figure}
+\begin{figure}[th]
+	\vspace{.1cm}
+	\centering
+	\includegraphics[width=0.9\linewidth]{./figures_tikz/cov/plt_diag_cov_risk_conso_N=150_all_lambda_all_s.pdf}
+	\caption{Empirical average of the risk function $\widehat{R}_\mu(s, h_s)$ at $s \in \{0.2, 0.4, 0.7, 0.8\}$, computed over $400$ independent replications of the FTS for sample sizes $(N, \lambda) \in \{(150, 25), (150, 50), (150, 100), (150, 200)\}$.}
+	\label{fig:diagonal_risk}
+\end{figure}
+
+We conclude this section with a performance comparison between our proposed covariance estimator and its version that selects the same bandwidth for both arguments of the function. The error in \eqref{eq:error_ratio_autocov} is then computed with respect to that covariance estimator instead of to the \texttt{MPV24} estimator. For simplicity, we do not restate the formula. Figure~\ref{fig:cov_ratio_FTS_Conso} shows boxplots of the error ratio of the covariance estimator for four $(s, t)$ pairs across different sample size configurations $(N, \lambda)$. As anticipated from Theorem~\ref{thm:Gamma_0}, our estimator significantly outperforms the covariance estimator that uses the same local optimal bandwidth for both arguments, when the local regularities $H_s$ and $H_t$ differ, and the gain increases with larger values of $|H_s - H_t|$. Notably, even at $(s, t) = (0.7, 0.8)$, where $(H_s, H_t) \approx (0.8, 0.8)$, the optimal bandwidths remain distinct and the proposed estimator retains an advantage, though this diminishes as the sample size increases. For all other pairs $(s,t)$, in contrast to the lag-$1$ autocovariance case where both methods tend to perform similarly as the sample size increases, the proposed estimator consistently achieves higher accuracy, even in large-sample settings.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{./figures_tikz/cov/boxplot_conso_cov_ratio_lag=0_all.pdf}
+	\caption{\small Boxplot of the error ratio \eqref{eq:error_ratio_autocov} of the covariance estimator for four pairs $(s, t) \in \{(0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$. For each pair, the corresponding values of the local exponent function are $(H_{0.2}, H_{0.4}) = (0.401, 0.448)$, $(H_{0.4}, H_{0.7}) = (0.448, 0.793)$, $(H_{0.7}, H_{0.8}) = (0.793, 0.799)$, and $(H_{0.8}, H_{0.2}) = (0.799, 0.401)$.} 
+	\label{fig:cov_ratio_FTS_Conso}
+\end{figure}
+
+\subsection{Adaptive curve prediction} 
+
+In this section, we study the performance of the adaptive BLUP through Monte Carlo simulations. Given a sample of FTS, the objective is to assess the prediction performance of its final curve, that is, $n_0 = N$, under various scenarios depending on the available observation points for that curve. To this end, we adopt a simulation setup that differs slightly from the one used in the study of the (auto)covariance function. We consider the pairs $(N, \lambda) \in \{150, 300, 600\} \times \{25, 50, 100\}$, generate a single sample of FTS, and regenerate its final curve $R = 400$ times. The prediction accuracy of each regenerated final curve is then evaluated, given all or only a subset of its observed points, while maintaining the other curves of the FTS sample unchanged.
+
+Table~\ref{tab:blup_fts_conso} shows the bias and standard deviation of the estimates of $\widehat{\mathfrak{X}}_{n_0}(t)$ obtained for the prediction of the last curve, when all observation points $\{(Y_{n_0, i}, T_{n_0,i}),\; 1\leq i \leq M_{n_0}\}$ are available. As expected, both the bias and the variance of the adaptive BLUP decrease as $N \to \infty$ and $\lambda \to \infty$. Notably, the estimated standard deviation tends to increase with $t$, which may appear counterintuitive given that the sample paths become smoother towards the right end of the domain $I$, as illustrated by the shape of the local exponent function in Figure~\ref{fig:hurst_var_FTSConso}-(a). However, larger values of $t$ are also associated with increased variance $\operatorname{Var}(X_t)$, as shown in Figure~\ref{fig:hurst_var_FTSConso}-(b), which leads to less accurate estimates of both the mean and the (auto)covariance functions, and consequently to less accurate predictions by the adaptive BLUP.
+
+\begin{table}[!tbp]
+	\begin{center}
+		{\small 	
+			\begin{tabular}{cccccccccccccc}
+				\hline
+				&&&\multicolumn{2}{c}{\bfseries $t = 0.2$}&&\multicolumn{2}{c}{\bfseries $t = 0.4$}&&\multicolumn{2}{c}{\bfseries $t = 0.7$}&&\multicolumn{2}{c}{\bfseries $t = 0.8$}\\
+				\cline{4-5} \cline{7-8} \cline{10-11} \cline{13-14}
+				\multicolumn{1}{c}{$N$}&\multicolumn{1}{c}{$\lambda$}&&\multicolumn{1}{c}{Bias}&\multicolumn{1}{c}{Sd}&&\multicolumn{1}{c}{Bias}&\multicolumn{1}{c}{Sd}&&\multicolumn{1}{c}{Bias}&\multicolumn{1}{c}{Sd}&&\multicolumn{1}{c}{Bias}&\multicolumn{1}{c}{Sd}\tabularnewline
+				\hline
+				$150$&$ 25$&&-0.0233&0.3656&&-0.0073&0.4672&&0.0060&0.1538&&0.0204&0.5113\\
+				$150$&$ 50$&&-0.0060&0.0246&&-0.0247&0.0386&&-0.0016&0.0470&&0.0034&0.0533\\
+				$150$&$100$&&-0.0036&0.0185&&0.0103&0.0339&&-0.0043&0.0449&&0.0017&0.0505\\
+				$300$&$ 25$&&0.0139&0.0202&&0.0078&0.0308&&0.0081&0.0418&&-0.0012&0.0476\\
+				$300$&$ 50$&&0.0049&0.0196&&0.0066&0.0325&&-0.0040&0.0427&&-0.0028&0.0475\\
+				$300$&$100$&&0.0046&0.0218&&0.0152&0.0328&&-0.0046&0.0453&&-0.0017&0.0487\\
+				$600$&$ 25$&&-0.0020&0.0263&&0.0181&0.0339&&-0.0024&0.0454&&0.0057&0.0502\\
+				$600$&$ 50$&&-0.0026&0.0180&&0.0000&0.0324&&-0.0064&0.0451&&0.0015&0.0513\\
+				$600$&$100$&&-0.0033&0.0188&&-0.0081&0.0320&&-0.0004&0.0428&&0.0016&0.0479\\
+				\hline
+		\end{tabular} }
+		\caption{\small Bias and standard deviation (SD) of adaptive BLUP estimates for the last curve, based on $400$ independent replications.}
+		\label{tab:blup_fts_conso}
+	\end{center}
+\end{table}
+
+We now compare our prediction procedure to that of \citet{rubin2020sparsely}, referred to as \texttt{RP20}, as well as to the Nadaraya–Watson (NW) estimator using a cross-validated bandwidth as defined in \eqref{eq:NW_bw_cv}. The comparison with the NW estimator is limited to the scenario where all observation points on the last curve are available. For the comparison with \texttt{RP20}, we also consider three additional scenarios in which the available observation points for the last curve lie within the subdomains $(0, 1/4]$, $(0, 1/2]$, and $(0, 3/4]$.
+
+\begin{figure}[ht!]
+	\centering
+	\begin{tabular}{c}
+		ISE ratio w.r.t. \texttt{NW} estimator\\
+		\includegraphics[width=0.5\textwidth]{./figures_tikz/blup/plot_log_ise_ratio_blup_over_nw.pdf}
+	\end{tabular}
+	\caption{\small Boxplots of the $\log$ ISE ratios of the adaptive BLUP relative to the NW estimator, in the scenario where all observation points of the last curve to be predicted are available.}
+	\label{fig:ise_ratio_blup_nw}
+\end{figure}
+
+Let us denote by
+\begin{equation}
+	\mathcal{T}_{n_0}^\alpha = \{ (Y_{n,i}, T_{n, i}) \; : \; T_{N, i} \in (0, \alpha], \; 1 \leq i \leq M_{n}, \; 1 \leq n \leq N\}, \qquad \alpha=1/4, 1/2, 3/4,
+\end{equation}
+the set of all available observation points in the FTS, with the last curve observed only over $(0, \alpha]$. Predictions based on the data $\mathcal{T}_{n_0}^\alpha$ are compared using the ratio of integrated squared errors (ISE). Let the superscript $(k)$ denote the $k$-th replication of the last curve. Then, the ISE ratio of the adaptive BLUP relative to a given method $\texttt{Meth}$ (either NW or \texttt{RP20}) is defined as
+\begin{equation}
+	\text{Ratio}^{(k)}(\texttt{Meth}) = \dfrac{\int_0^1 \left(\widehat{\mathfrak{X}}_{n_0}^{(k)}(t) - X_{n_0}^{(k)}(t)\right)^2 dt}{ \int_0^1 \left(\widehat{\mathfrak{X}}_{\texttt{Meth}}^{(k)}(t) - X_{n_0}^{(k)}(t)\right)^2 dt}.
+\end{equation}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{./figures_tikz/blup/log_ise_ratio_blup_over_RP20_all.pdf}
+	\caption{\small Boxplots of the $\log$ ISE ratios of the adaptive BLUP relative to \texttt{RP20} for predicting the last curve, with available observations in $(0, 1]$, $(0, 1/4]$, $(0, 1/2]$, and $(0, 3/4]$, respectively.}
+	\label{fig:ise_ratio_blup_rp}
+\end{figure}
+
+Recall that the \texttt{RP20} method is a BLUP-based approach, where the mean is estimated using a local linear smoother and the lag-$\ell$ (auto)covariance function is estimated using a local linear surface smoother (off-diagonal, when $\ell = 0$) and a local quadratic smoother (on the diagonal, when $\ell = 0$). Smoothing bandwidths are selected via $K$-fold cross-validation coupled with Bayesian optimisation (implemented in MATLAB). Observations are randomly sampled on a regular grid of 241 points, and B-spline projections are used to reduce the computational time during optimisation.
+
+Figure~\ref{fig:ise_ratio_blup_nw} displays boxplots of the $\log$ ISE ratios of the adaptive BLUP relative to the NW estimator. These reveal contrasting performance trends depending on $\lambda$, the average number of points per curve. When $\lambda < 50$, the adaptive BLUP clearly outperforms the NW estimator. However, for larger values of $\lambda$, the NW estimator becomes more accurate than the adaptive BLUP, likely due to the decreasing mean squared error of the NW estimator as $\lambda$ increases, which enhances its ability to reconstruct the curves effectively.
+
+Figure~\ref{fig:ise_ratio_blup_rp} shows the boxplots of the $\log$ ISE ratios of the adaptive BLUP relative to the \texttt{RP20} method under the four scenarios $\alpha = 1, 1/4, 1/2$, and $3/4$. In the full-observation case ($\alpha = 1$), the adaptive BLUP performs on par with or better than \texttt{RP20} when $\lambda \in \{25, 50\}$, with the relative advantage increasing as the sample size $N$ grows. However, for $\lambda = 100$ and $N \in \{150, 300\}$, the \texttt{RP20} method outperforms the adaptive BLUP (see Figure~\ref{fig:ise_ratio_blup_rp}-(a)). In contrast, across the three partial-observation scenarios $\alpha \in \{1/4, 1/2, 3/4\}$, the adaptive BLUP consistently outperforms \texttt{RP20} across all considered sample sizes $(N, \lambda)$, as shown in Figures~\ref{fig:ise_ratio_blup_rp}-(b), (c), and (d), respectively.
+
+%\FloatBarrier
+
+\subsection{Real data application}
+
+Forecasting electricity consumption and production is essential for maintaining the balance of the electricity system, as it helps to significantly reduce the costs associated with storage and overproduction. Accurate forecasting is therefore a major economic challenge, especially in sectors such as hydropower and photovoltaics, where production varies significantly throughout the day due to weather dependencies. Functional time series provide an effective framework for modelling such trajectories, especially when the forecasting method adapts to the regularity of the underlying process, as in the case of adaptive BLUP. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{./figures_tikz/blup/plot_adaptive_blup_energy.pdf}
+	\caption{\small Real data curve prediction. The first row shows results for consumption curves, the second for photovoltaic curves, and the third for hydroelectric curves. Each column corresponds to reconstructing the last curve with available observations in $(0, 1/4]$, $(0, 1/2]$, and $(0, 3/4]$, respectively. }   
+	\label{fig:real_data_blup}
+\end{figure}
+
+To illustrate this approach, we analyse daily curves of national electricity consumption in France, together with daily production curves for photovoltaic and hydroelectric electricity, obtained from the ODRÉ platform \citep{odre_data}. The dataset for photovoltaic consumption and production covers the period from June to September 2024 and includes $122$ daily curves. Each consumption curve is observed at $96$ equally spaced time points, recorded every $15$ minutes. For photovoltaic production, which depends on sunlight, we restrict the observations to $61$ time points, recorded every $15$ minutes between $4$ am and $7$ pm on the same $122$ days. The hydroelectricity production dataset includes $152$ daily curves, observed at $96$ time points every $15$ minutes, collected between November 2023 and March 2024. All values for each type of curve are normalised to the interval $[0,1]$ by scaling them with the maximum observed production value.
+
+Figure~\ref{fig:real_data_blup} shows a comparison between the adaptive BLUP and the true curve $n_0$ to be reconstructed for the three types of curve sets. The comparison is made under scenarios where the observations available for $n_0$ are limited to $(0, \alpha]$, where $\alpha = 1/4, 1/2, 3/4$. Across all curve types and scenarios, the adaptive BLUP effectively captures the irregularities and shows satisfactory performance. 
+
+
+%\FloatBarrier

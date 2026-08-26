@@ -1,0 +1,24 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Functional time series prediction}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Model with measurement errors}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Notation}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Regularized linear predictor}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Choice of $\alpha $}{6}{subsection.2.4}%
+\contentsline {paragraph}{Equidistant common design}{6}{section*.2}%
+\contentsline {paragraph}{Independent design}{6}{section*.3}%
+\contentsline {subsection}{\numberline {2.5}Prediction interval}{7}{subsection.2.5}%
+\contentsline {paragraph}{Firts option: prediction interval based on the prediction error}{7}{section*.4}%
+\contentsline {paragraph}{Second option: bootstrap interval}{7}{section*.5}%
+\contentsline {paragraph}{Third option: conformal prediction}{7}{section*.6}%
+\contentsline {section}{\numberline {3}Numerical study}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Simulation setting}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Implementation details}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Autocovariance function estimation}{11}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Covariance function estimation}{11}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Adaptive curve prediction}{13}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Empirical autoregressive effect}{13}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Monte Carlo study}{14}{subsubsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.6}Real data application}{17}{subsection.3.6}%
+\contentsline {section}{\numberline {A}Proofs associated to the Regularized linear predictor}{20}{appendix.A}%
+\contentsline {section}{\numberline {B}Uniform consitent estimators}{24}{appendix.B}%
