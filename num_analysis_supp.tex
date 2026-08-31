@@ -1,0 +1,175 @@
+\section{\color{magenta}Additional details on the numerical study\color{black}}\label{sec:supp:num_study}
+
+\subsection{\color{magenta}Additional details on the simulation design\color{black}}
+
+\begin{figure}[t!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/generated_conso_4last_curves.pdf}
+	\caption{\small Last four simulated curves generated using the simulation setting with a sample size of $(N, \lambda) = (150, 25)$. The solid lines represent the sample paths, while the dots indicate the randomly observed noisy points on each curve, with an average of $\lambda = 25$ points per curve. \color{magenta}[TBC: regenerate under the current design]\color{black}}
+	\label{fig:generated_last_curves}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.4\textwidth]{./figures/variance_FTS_new_design_conso_lag=0.pdf}
+	\caption{\small Variance of the constructed FTS process from \eqref{blup:FTS_mod1} and the consumption curves.}
+	\label{fig:var_FTSConso}
+\end{figure}
+
+\subsection{Implementation details}
+
+\subsubsection{\color{magenta}Adaptive (auto)covariance estimation\color{black}}
+
+\color{magenta}
+The estimation of the lag-$\ell$, $\ell \geq 0$, (auto)covariance using the estimators in [TBC: \texttt{eq:hat\_Gamma\_ell}, \texttt{eq:hat\_Gamma\_0:diagonal\_outside}, \texttt{eq:hat\_Gamma\_0:diagonal} --- labels not defined in best\_predictor\_aout24.tex] involves selecting optimal bandwidths based on the data-driven rules given in [TBC: \texttt{eq:gamma:risk-minimization}, \texttt{eq:gamma\_0:diagonal\_outside:risk-minimization}, \texttt{eq:gamma\_0\_diag:risk-minimization} --- labels not defined in best\_predictor\_aout24.tex], respectively. Computing $\widehat{R}_{c_\ell}$ requires estimating the dependence coefficients $\mathbb{D}_\ell(s, t; h_s, h_t)$, $\mathbb{D}_\ell(t,h_t|s,h_s)$, and $\mathbb{D}(t; h_t)$, which is computationally intensive.
+To reduce computation time, we adopt a simplified approach. Let $\widetilde{X}_n$ denote the NW estimator of the curve $X_n$, obtained using a bandwidth selected via cross-validation. Given a set of sample points $\{(Y_{n,1}, T_{n,1}), \ldots, (Y_{n,M_n}, T_{n,M_n})\}$ for a curve $X_n$, the cross-validated optimal bandwidth for the estimator in [TBC: \texttt{eq:blup:LP\_est\_v} --- label not defined in best\_predictor\_aout24.tex] is defined as
+\color{black}
+\begin{equation}\label{eq:NW_bw_cv}
+	h^* \in \argmin_h \sum_{i = 1}^{M_n}\left\{Y_{n,i} - \widetilde{X}_n^{(-i)}(T_{n,i};h)\right\}^2,
+\end{equation}
+\color{magenta}
+where $\widetilde{X}_n^{(-i)}(T_{n,i};h)$ denotes the estimator in [TBC: \texttt{eq:blup:LP\_est\_v} --- label not defined in best\_predictor\_aout24.tex] computed without the $i$-th observation and using bandwidth $h$. \color{black}Moreover, let $\widetilde{Z}_n(t) = \widetilde{X}_n(t) - \widetilde{\mu}_N(t)$, and define, for all $s, t \in I$,
+\begin{equation*}
+	\widetilde{\mu}_N(t) = \frac{1}{N} \sum_{n=1}^{N} \widetilde{X}_{n}(t), \qquad
+	\color{magenta}\widetilde{c}_\ell(s, t)\color{black} = \frac{1}{N - \ell} \sum_{n = 1}^{N - \ell} \widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t), \quad \ell \geq 1.
+\end{equation*}
+Then, instead of estimating $\mathbb{D}_\ell(s, t; h_s, h_t)$, $\mathbb{D}_\ell(t,h_t|s,h_s)$, and $\mathbb{D}(t; h_t)$, we simply consider the following
+\begin{multline}
+	\widehat{\mathbb{D}}_\ell(s,t;h_s, h_t)
+	= \frac{1}{N-\ell} \sum_{n=1}^{N - \ell} \left\{\widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t) - \color{magenta}\widetilde{c}_\ell (s,t)\color{black}\right\}^2 \\
+	+ \!\!\!\!\sum_{k = 1}^{N-\ell - 1}\frac{2 P_{N,\ell}^{-1}(s, t; h_s, h_t)}{N - \ell - k} \Biggl|\sum_{n = 1}^{N - \ell - k - 1}\!\left\{\widetilde{Z}_n(s) \widetilde{Z}_{n + \ell}(t) - \color{magenta}\widetilde{c}_\ell (s,t)\color{black}\right\} \left\{\widetilde{Z}_{n + k}(s) \widetilde{Z}_{n + \ell + k}(t) - \color{magenta}\widetilde{c}_\ell (s,t)\color{black}\right\}\!\Biggr|,
+\end{multline}
+\begin{multline}
+	\widehat{\mathbb{D}}_\ell(t,h_t|s,h_s)  = 24 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2<n_3\leq \ell_{\max}}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_3)^{-1}\left|\sum_{k=1}^{N - n_3} \!\! \frac{p_{k,n_1, n_2}(t;h_t)}{P_{N,\ell}^{3}(s, t; h_s, h_t)} \left\{\widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} \widetilde{Z}_{k + n_3}\right\}(t) \right| \\
+	+ 6 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2\leq \ell_{\max}} \!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_2)^{-1}\left|\sum_{k=1}^{N - n_2} \! \frac{p_{k,n_1, n_2, n_3}(t;h_t)}{P_{N,\ell}^{3}(s, t; h_s, h_t)} \left\{\widetilde{Z}_k^2 \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1}^2 \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2}^2\right\}(t)\right|,
+\end{multline}
+\begin{multline}
+	\widehat{\mathbb{D}}(t; h_t)  = 24 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2<n_3\leq \ell_{\max}}\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_3)^{-1}\left|\sum_{k=1}^{N - n_3} \!\! \frac{p_{k,n_1, n_2}(t;h_t)}{P_N^{3}(t; h_t)}\left\{\widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} \widetilde{Z}_{k + n_3}\right\}(t) \right| \\
+	+ 6 \!\!\!\!\!\!\!\!\!\!\!\!\!\!\sum_{1\leq n_1<n_2\leq \ell_{\max}} \!\!\!\!\!\!\!\!\!\!\!\!\!(N - n_2)^{-1}\left|\sum_{k=1}^{N - n_2} \!\frac{p_{k,n_1, n_2, n_3}(t;h_t)}{P_N^{3}(t; h_t)} \left\{\widetilde{Z}_k^2 \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1}^2 \widetilde{Z}_{k + n_2} + \widetilde{Z}_k \widetilde{Z}_{k + n_1} \widetilde{Z}_{k + n_2}^2\right\}(t)\right|,
+\end{multline}
+where $N \gg \ell_{\max} = 3$ to avoid $\Oo(N^4)$ or $\Oo(N^3)$ complexity, and
+\begin{align}
+	p_{k,n_1, n_2}(t;h_t) &= \pi_k(t;h_t)\pi_{k+n_1}(t;h_t)\pi_{k+n_2}(t;h_t), \\
+	p_{k,n_1, n_2, n_3}(t;h_t) &= \pi_k(t;h_t)\pi_{k+n_1}(t;h_t)\pi_{k+n_2}(t;h_t)\pi_{k+n_3}(t;h_t).
+\end{align}
+
+\color{magenta}
+[TBC: $\widehat{R}_{c_\ell}$, $\mathbb{D}$, $\mathbb{B}$, $\mathbb{V}$, $P_N$, $P_{N,\ell}$ and $\pi_n$ are not attested in best\_predictor\_aout24.tex; the risk-bound apparatus they belong to is absent from it. Either it returns to the authority or this subsection must define what it uses]
+\color{black}
+
+\subsubsection{\color{magenta}Tikhonov parameter selection\color{black}}
+
+\color{magenta}
+[TBC: protocol, from adaptiveFTS \texttt{select\_tikhonov\_parameter} (R/11\_blup.R:329--453). One-step-ahead cross-validation over the last \texttt{n\_cv\_curves} curves; each target is predicted from its immediate predecessor and scored by \eqref{eq:weighted_ise} formed on that target, the weights being those of the held-out curve. Under the common design the operators are estimated once on the training block; under the independent design a rolling origin refreshes the plug-in estimates on all curves up to the predecessor, with bandwidths held at those selected on the initial block. Only the $M\times M$ system depends on $\alpha$, so one eigendecomposition per fold serves the whole grid. Selection is the grid minimiser of the mean score, with a warning at a grid boundary. The simulation grid is $\exp(\texttt{seq}(-16, 3, \texttt{length.out} = 40))$, 22\_simulation\_blup.R:70]
+\color{black}
+
+\subsubsection{\color{magenta}Design-density bandwidth selection\color{black}}
+
+\color{magenta}
+[TBC: protocol, from adaptiveFTS \texttt{get\_density\_optimal\_bw} (R/10\_density\_estimator.R:201--234). For each sampled curve the bandwidth minimising the least-squares cross-validation score of \texttt{estimate\_density} over the grid is computed, and the median of the per-curve optima is returned; the BLUP then reuses that single bandwidth for every curve, so the design weights are consistent across curves. The simulation grid is log-spaced from $1/\lambda$ to $1$ over 20 points, 22\_simulation\_blup.R:61--64. Not selected under the common design, where every point is weighted equally]
+\color{black}
+
+\subsection{\color{magenta}Local regularity estimation\color{black}}
+
+\color{magenta}
+[TBC: local regularity at four locations against the design's own $H_t$. Requires 25\_simulation\_locreg.R then 35\_figures\_locreg.R; data-simulation/estimates/ has no locreg/ directory and figures/locreg/ is empty]
+\color{black}
+
+\subsection{\color{magenta}Risk surfaces and bandwidth selection\color{black}}
+
+\color{magenta}
+To this end, we consider four pairs $(s, t)$ and compute the average of the lag-$1$ autocovariance risk function $\widehat{R}_{c_1}(s, t; h_s, h_t)$, as defined in [TBC: \texttt{eq:risk-Gamma} --- label not defined in best\_predictor\_aout24.tex], over a bandwidth grid $\Hh_N \times \Hh_N$ based on the $R = 400$ FTS replications. Figure~\ref{fig:autocov_risk_2bw} shows the mean of the $400$ replications of the estimates of the lag-$1$ autocovariance risk function for $(N, \lambda) = (150, 100)$ at four locations $(s,t)$. The estimates of the risk function are a convex function of $(h_s, h_t)$ for all pairs $(s,t)$. Furthermore, since the regularity varies along the domain (see Figure~\ref{fig:simu_param}-(a)), as expected, the minima bandwidth pairs $(h_1^*(s|t), h_1^*(t|s))$ are reached such that $h_1^*(s|t) \neq h_1^*(t|s)$, when $H_s \neq H_t$. Moreover, the difference between the selected bandwidths is greater for pairs $(s,t)$ such that $|H_s-H_t|$ is large.
+[TBC: notation superseded, needs review. Every quoted $(H_s, H_t)$ pair and every quoted optimal bandwidth in this subsection and its figures comes from the superseded estimated Hurst function; under \texttt{hurst\_linear(h\_left = 0.4, h\_right = 0.8)} they do not hold. The surfaces themselves require 20\_simulation\_autocov.R and 21\_simulation\_cov.R, which have not been run]
+\color{black}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
+		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
+		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} \\
+		& \\
+		& \\
+		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
+		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.1_t=0.4.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
+		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black}
+	\end{tabular}
+	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_1}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_1^*(s|t), h_1^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
+	\label{fig:autocov_risk_2bw}
+\end{figure}
+
+\color{magenta}
+Our new adaptive covariance estimator involves selecting optimal bandwidths by minimising both the estimates of the bivariate risk function [TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex] outside the diagonal band and the estimates of the univariate risk function given in [TBC: \texttt{eq:risk-Gamma\_0} --- label not defined in best\_predictor\_aout24.tex] for the diagonal line estimator. We consider the same setups and generated data as in the autocovariance estimation study to illustrate the performance of our new covariance estimator.
+\color{black}
+
+\color{magenta}
+First, regarding the risk function estimation, Figure~\ref{fig:cov_risk_2bw} shows the average over the $400$ replications of the estimates of the covariance risk function [TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex] for $(N, \lambda) = (150, 100)$ at four locations. These plots provide evidence that the risk function is convex and can thus be effectively minimised to obtain optimal bandwidth pairs. Similarly, Figure~\ref{fig:diagonal_risk} illustrates that the risk function for the diagonal line is also convex, allowing straightforward selection of the optimal bandwidth for its estimation.
+\color{black}
+
+Furthermore, for the bivariate risk function \color{magenta}[TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex]\color{black}, since the regularity varies across the domain (see Figure~\ref{fig:simu_param}-(a)), the optimal bandwidth pairs $(h_0^*(s|t), h_0^*(t|s))$ are typically such that $h_0^*(s|t) \neq h_0^*(t|s)$ when $H_s \neq H_t$. The difference between the selected bandwidths becomes more pronounced for pairs $(s, t)$ with large differences in local regularity, that is, when $|H_s - H_t|$ is large.
+
+\begin{figure}[h!]
+		\centering
+	\begin{tabular}{cc}
+		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
+		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
+		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} \\
+		& \\
+		& \\
+		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
+		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.1_t=0.4.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
+		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black}
+	\end{tabular}
+	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_0}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_0^*(s|t), h_0^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
+	\label{fig:cov_risk_2bw}
+\end{figure}
+
+\begin{figure}[th]
+	\vspace{.1cm}
+	\centering
+	\includegraphics[width=0.9\linewidth]{./figures/cov/plt_diag_cov_risk_conso_new_design_N=150_all_lambda_all_s.pdf}
+	\caption{\small Empirical average of the risk function $\widehat{R}_\mu(s, h_s)$ at $s \in \{0.2, 0.4, 0.5, 0.8\}$, computed over $400$ independent replications of the FTS for sample sizes $(N, \lambda) \in \{(150, 25), (150, 50), (150, 100), (150, 200)\}$.}
+	\label{fig:diagonal_risk}
+\end{figure}
+
+\subsection{\color{magenta}Additional details on adaptive curve prediction\color{black}}
+
+\subsubsection{Empirical autoregressive effect}
+
+\color{magenta}
+We use the same generated sample of FTS as in the study of the autocovariance function, estimate the lag-$1$ FACF for each of the $400$ FTS replications using \eqref{eq:blup:facf}, and display the resulting histograms in Figure~\ref{fig:conso_lag1_facf} for different sample sizes $(N, \lambda)$. The plots provide empirical evidence that the autocovariance-related blocks in $\VV_{n_0}$ are not nil. Moreover, for our simulated FAR(1) model, most of the lag-$1$ FACF values are concentrated between $0.2$ and $0.4$.
+[TBC: notation superseded, needs review --- $\VV_{n_0}$ as in the main text. The quoted range $0.2$ to $0.4$ is unverified: 23\_simulation\_facf.R has not been run and data-simulation/estimates/ has no facf/ directory]
+\color{black}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/blup/hist_lag-1_facf_conso.pdf}
+	\caption{\small Histograms of estimated lag-$1$ FACF values for different $(N, \lambda)$ configurations.}
+	\label{fig:conso_lag1_facf}
+\end{figure}
+
+\subsubsection{\color{magenta}Per-replication predicted curves\color{black}}
+
+\color{magenta}
+[TBC: four replications per sample size, true curve against adaptive prediction, both designs. Written by 32\_figures\_blup.R:206--267 as \texttt{plot\_blup\_mc\_conso\_N=*\_lambda=*} with a \texttt{\_common} suffix for the common design; figures/blup/ is empty]
+\color{black}
+
+\subsection{\color{magenta}Additional details on the real data applications\color{black}}
+
+\subsubsection{\color{magenta}NOTPERP\color{black}}
+
+\color{magenta}
+[TBC: raw sample size and $M_n$ summary, functional-boxplot outlier removal over three rounds, cleaned $M_n$ summary, $M_n$ and volatility diagnostics, functional principal component analysis, and the functional autocorrelation table over lags $1$ to $10$. All reusable from paper\_for\_reference/NOTPERP\_descriptive\_analysis/report/NOTPERP\_data.tex, whose figures are present in its figures\_tikz/NOTPERP/ directory, subject to re-verification against 41\_notperp\_download\_clean.R and to replacing its \texttt{Maissoro2024} key and its $\Gamma$ notation]
+\color{black}
+
+\subsubsection{\color{magenta}French electricity\color{black}}
+
+\color{magenta}
+[TBC: per-series detail for consumption, photovoltaic and hydroelectric, including the target-curve offsets of 40\_app\_energy.R:26--28 and the lag-1 FACF reference values recorded at 40\_app\_energy.R:24]
+\color{black}
