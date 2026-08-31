@@ -343,6 +343,39 @@ selection made in each — the paper's `h*` is one number, the study's is a dist
 | 0.8 | 0.2 | 0.72 | 0.48 | 0.00561 | 0.00427 | 0.00325 |
 | 0.8 | 0.5 | 0.72 | 0.60 | 0.00738 | 0.00971 | 0.00561 |
 
+**The minimum of the risk surface the supplement actually draws.** A third quantity, and the one the
+figure captions promise. The panels of `fig:autocov_risk_2bw` and `fig:cov_risk_2bw` show the *mean*
+over the 400 replications of the risk on the `(h_s, h_t)` grid, windowed to `h <= 0.09`
+(`30_figures_autocov.R:90, 94-95`; `31_figures_cov.R:23, 27-28`). Its argmin is not the median of the
+per-replication selections tabulated above: the first is one optimum of one averaged surface, the
+second the middle of a distribution of optima. Read from
+`estimates/autocov/dt_mc_autocov_risk_conso_lag=1_N=150_lambda=100.RDS` and
+`estimates/cov/dt_mc_cov_risk_conso_lag=0_N=150_lambda=100.RDS` on 2026-08-31.
+
+| s | t | H_s | H_t | \|H_s − H_t\| | lag 1 h_1*(s\|t) | lag 1 h_1*(t\|s) | lag 0 h_0*(s\|t) | lag 0 h_0*(t\|s) |
+|---|---|---|---|---|---|---|---|---|
+| 0.1 | 0.4 | 0.44 | 0.56 | 0.12 | 0.00143 | 0.01276 | 0.00143 | 0.01276 |
+| 0.2 | 0.3 | 0.48 | 0.52 | 0.04 | 0.00427 | 0.00971 | 0.00561 | 0.01276 |
+| 0.2 | 0.4 | 0.48 | 0.56 | 0.08 | 0.00427 | 0.00738 | 0.00561 | 0.00738 |
+| 0.4 | 0.7 | 0.56 | 0.68 | 0.12 | 0.00561 | 0.00971 | 0.00561 | 0.01276 |
+| 0.5 | 0.2 | 0.60 | 0.48 | 0.12 | 0.01276 | 0.00427 | 0.01276 | 0.00427 |
+| 0.7 | 0.8 | 0.68 | 0.72 | 0.04 | 0.00971 | 0.00971 | 0.01276 | 0.01276 |
+| 0.8 | 0.2 | 0.72 | 0.48 | 0.24 | 0.01276 | 0.00427 | 0.01276 | 0.00427 |
+| 0.8 | 0.5 | 0.72 | 0.60 | 0.12 | 0.00971 | 0.00971 | 0.01276 | 0.00971 |
+
+**Ruling (2026-08-31): these are the values that go under the risk panels.** They are the minimum of
+the surface the reader is looking at, so the reader can check them against the picture, which is what
+the caption claims. The medians of §2.2 above stay the record of what the selection rule does across
+replications, and are not quoted under the panels.
+
+Two consequences worth recording. The scripts' own commented tables — `30_figures_autocov.R:182-191`
+and `31_figures_cov.R:114-123` — take the argmin of the **median** surface rather than the mean one,
+at `30:169` and `31:100`. The two agree at six of the eight locations per lag, and at all four of the
+locations the paper reports; they differ at (0.1, 0.4) and (0.2, 0.3) at lag 1, and at (0.1, 0.4) and
+(0.5, 0.2) at lag 0. And on this table the separation orders with `|H_s − H_t|` over
+(0.7, 0.8), (0.2, 0.4), (0.4, 0.7), (0.8, 0.2): ratios 1.00, 1.31, 2.27, 2.99 at lag 0, strictly
+increasing, and 1.00, 1.73, 1.73, 2.99 at lag 1.
+
 **How the supplement's bandwidth-separation claim should read** (`:81` for lag 1, `:112` for
 lag 0). **Ruling (2026-08-31): the claim holds**, and the lag-0 prose should say that the difference
 is *lower there, and in one case does not exist*, rather than assert the same strength at both lags.
