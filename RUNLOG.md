@@ -13,8 +13,6 @@ Companion file: [ASSETS.md](ASSETS.md), the figure and value reconciliation.
 
 ## 0. Provenance of the stored results
 
-Two facts, and they point in different directions. Both matter.
-
 **The design on disk is the linear exponent.** Not assumed — measured. Three independent readings
 agree:
 
@@ -34,24 +32,46 @@ agree:
    literature instead of fitting it to the curves". Every file under `data-simulation/generated/`
    is stamped 2026-08-27 03:45, twelve hours later.
 
-**The stored results are not bit-reproducible from this machine.** Regenerating replication
-(N, λ, id_mc) = (150, 25, 1) with the current script and the locally installed adaptiveFTS
-reproduces `tobs` exactly (`identical` TRUE) and `process_mean` to 1.1e-16, but `X` differs by up
-to 0.384, with correlation 0.806 and sd 0.1089 against the stored 0.1130. The generator is
-deterministic — two runs in one session give a bit-identical `X` — so this is a code difference,
-not randomness.
+**The stored results were produced on the AWS Linux image, and the curve column does not reproduce
+bit-for-bit on Windows. This is expected, measured and documented.** Regenerating replication
+(N, λ, id_mc) = (150, 25, 1) here, with the current script and the locally installed adaptiveFTS,
+using the repo's own probe columns (`aws/reproducibility_probe.R:31`):
 
-The likely cause, from disk: `aws/Dockerfile:91` pins `ADAPTIVEFTS_REF=6acbac5`, which
-`D:\Projects\adaptiveFTS` dates to 2026-08-03. The local working copy is at `d56b7c7`
-(2026-08-26), four commits ahead, two of which are `feat(cpp): thread the local regularity settings
-through the estimator chain` and `feat: expose the local regularity settings on the estimation and
-BLUP entry points`. The locally installed binary reports version 0.3.0, built 2026-08-26 00:32 UTC,
-which is before `d56b7c7` was committed.
+| Column | Identical | Max abs diff | sd stored / sd repro |
+|---|---|---|---|
+| `tobs` | **TRUE** | 0 | 0.289725 / 0.289725 |
+| `Eobs` | **TRUE** | 0 | 0.006999 / 0.006999 |
+| `process_mean` | FALSE | 1.11e-16 | 0.076987 / 0.076987 |
+| `X` | FALSE | 3.84e-01 | 0.113009 / 0.108888 |
+| `Yobs` | FALSE | 3.84e-01 | 0.113230 / 0.109108 |
 
-> **Question 1.** The results were produced against adaptiveFTS `6acbac5`; the local install is a
-> later build. The design is confirmed identical, so no number below is in doubt — but the run is
-> not reproducible from this working copy. Should the AWS image be re-pinned to the current ref and
-> the study re-run, or should `6acbac5` be recorded as the version of record for the paper?
+`aws/Dockerfile:19-28` states this outcome in advance, from the same probe: the design (`tobs`) and
+the noise (`Eobs`) match bit-for-bit because the seeds are pinned with an explicit `kind`,
+`normal.kind` and `sample.kind`; `process_mean` agrees to the last digit or two; and **`X` does not
+agree across platforms at all** — "Windows, OpenBLAS and reference each give a different `X`, so
+cross-platform bit-identity is not achievable by choosing a BLAS: the residual difference is in
+floating-point association inside compiled code, not in the library."
+
+The mechanism is `MASS::mvrnorm` at `adaptiveFTS/R/01_generateFTS.R:257`, which draws the mfBm path
+by an eigen-decomposition of the covariance matrix. The `rnorm` draws feeding it are identical; the
+orthogonal square root applied to them is not, so the same law is realised along a different path.
+That is why `X` moves while every column drawn straight from the RNG stream does not.
+
+Two further checks, both passed. The generator is **internally deterministic**: two runs in one
+session give a bit-identical `X`, which is the property `aws/Dockerfile:26-28` relies on when it
+says a study generated entirely on one platform is self-consistent. And the generator code is
+**unchanged** between the pinned `ADAPTIVEFTS_REF=6acbac5` (`aws/Dockerfile:91`) and the current
+working copy `d56b7c7`: `git diff 6acbac5 d56b7c7` touches 33 files, none of them
+`R/01_generateFTS.R`, and every changed `src/` file is an estimator.
+
+**So this is not a finding against the results.** The stored tree is self-consistent, carries the
+linear exponent, and is the study of record. It simply cannot be re-derived on Windows, by design
+of the floating-point world rather than by any defect here. No number below is in doubt.
+
+> **Note, not a question.** The one thing worth deciding is what the paper says about
+> reproducibility. The seeds make the study reproducible on the platform that produced it, not
+> across platforms. If a reproducibility statement is going into the paper, it should say so and
+> point at `aws/Dockerfile` for the image, rather than claim seed-level reproducibility in general.
 
 ---
 
@@ -166,7 +186,7 @@ The only run log on disk is `logs/sync.log`: S3 syncs from 2026-08-27T00:07Z to 
 `/data/predictFTS/data-simulation` is reported "absent" on every sync up to and including
 2026-08-27, and present from the 2026-08-28 syncs onward. It records transfers, not computation.
 
-> **Question 2.** There is no per-replication failure ledger. The census is complete and the tables
+> **Question 1.** There is no per-replication failure ledger. The census is complete and the tables
 > say 400 of 400, so nothing is missing — but if a replication had failed silently and been retried,
 > nothing on disk would say so. Should `22_simulation_blup.R` persist its caught errors to a file
 > before the study is re-run?
@@ -210,7 +230,7 @@ reconciled.
 `num_analysis_main.tex` itself, and its own TBC at `:124` already flags points 1 and the
 `n0` versus `n0+1` question.
 
-> **Question 3.** Which is authoritative for the paper — the renormalised weights the code actually
+> **Question 2.** Which is authoritative for the paper — the renormalised weights the code actually
 > used, or the unnormalised `{M ghat}^{-1}` of Proposition `prop:tikhonov`? If the former,
 > `eq:weighted_ise` needs the normalisation written into it and the `1e-6` floor stated.
 
@@ -455,13 +475,13 @@ lambdahat near 200 over **some 690 curves**". The cleaned volume file has **424*
 log-return cleaned count, so the comment appears to have been carried over from
 `41_notperp_download_clean.R` and not updated.
 
-> **Question 4.** The paper's section heading at `num_analysis_main.tex:171` is "NOTPERP intraday
+> **Question 3.** The paper's section heading at `num_analysis_main.tex:171` is "NOTPERP intraday
 > log-return curves", and its TBC at `:174` describes the log-return application. The current
 > application is volume. Is the log-return study dropped entirely, or retained as the negative
 > result that motivates the choice of quantity? Both sets of figures and estimates are on disk, so
 > either is available — but the two need different prose and a different heading.
 
-> **Question 5.** The volume application is a random design over 424 curves at M_n ≈ 198, and the
+> **Question 4.** The volume application is a random design over 424 curves at M_n ≈ 198, and the
 > energy application is a common design. `num_analysis_main.tex:168` wants an opening paragraph
 > saying the two applications exercise the two designs. Confirm that framing, since it determines
 > whether the superseded log-return study has a place at all.
@@ -472,13 +492,16 @@ log-return cleaned count, so the comment appears to have been carried over from
 
 Collected from above, in the order they should be settled.
 
-1. **Reproducibility of the stored results from this working copy** (§0, Question 1). The design is
-   confirmed; bit-level reproduction is not. adaptiveFTS `6acbac5` versus `d56b7c7`.
-2. **Energy lag-1 FACF values** (§3.1). Stored in `data-energy/estimates/dt_blup_*.RDS` under
+1. **Energy lag-1 FACF values** (§3.1). Stored in `data-energy/estimates/dt_blup_*.RDS` under
    `lag1_facf`, not read out here. The tex reference to `40_app_energy.R:24` is stale.
-3. **Which target the reported ISE uses** (§1.7, Question 3). Both variants are stored; the figures
+2. **The NOTPERP quantity the paper reports** (§3.2, Questions 3 and 4).
+3. **Which target the reported ISE uses** (§1.7, Question 2). Both variants are stored; the figures
    use the noiseless one, the paper's equation names the noisy one.
-4. **The NOTPERP quantity the paper reports** (§3.2, Questions 4 and 5).
-5. **Whether the lag-0 bandwidth-separation claim survives** (§2.2). The lag-1 numbers support it;
+4. **Whether the lag-0 bandwidth-separation claim survives** (§2.2). The lag-1 numbers support it;
    the lag-0 numbers do not, at two of the eight pairs.
-6. **`RP20` and `Z26` results** (§1.8). RP20 is exported but unfitted; Z26 does not exist.
+5. **`RP20` and `Z26` results** (§1.8). RP20 is exported but unfitted; Z26 does not exist.
+6. **What the paper claims about reproducibility** (§0). Not a gap in the results — a decision about
+   how to word the statement, since seed-level reproducibility holds within a platform only.
+
+Cross-platform reproduction of the curve column is **not** on this list. §0 settles it: the
+behaviour is documented in `aws/Dockerfile:19-28`, expected, and not a defect.
