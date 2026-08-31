@@ -35,7 +35,7 @@ where the mean function $\mu$ and the kernel of the autoregressive operator $\ps
 		\includegraphics[width=0.3\textwidth]{./figures/local_exponent_simulation_conso.pdf} & \includegraphics[width=0.3\textwidth]{./figures/smooth_mean_conso.pdf} &
 		\includegraphics[width=0.3\textwidth]{./figures/far_kernel_conso.pdf}
 	\end{tabular}
-	\caption{\small Simulation parameters estimated from consumption curves: (a) estimated local exponent function, (b) estimated mean function, (c) estimated autoregressive kernel. \color{magenta}[TBC: panel (a) shows an estimated exponent; the design now uses an analytic linear ramp]\color{black}}
+	\caption{\small Simulation parameters estimated from consumption curves: (a) estimated local exponent function, (b) estimated mean function, (c) estimated autoregressive kernel. \color{magenta}[TBC: panel (a) is not an estimate. 10\_simulation\_design.R:200 and 219--231 plot \texttt{get\_local\_exponent}, the analytic ramp \texttt{hurst\_linear(h\_left = 0.4, h\_right = 0.8)} itself, so the column header $\widehat{H}_t$, the word ``estimated'' in this caption and the blanket ``estimated from consumption curves'' are all wrong for (a). Panels (b) and (c) are estimates and the caption holds for them: 02\_energy\_conso.R:138 plots \texttt{get\_conso\_mean} and :382 plots \texttt{get\_far\_kenel\_conso} at \texttt{operator\_norm = 0.5}, both of which the simulator then uses. Decide whether (a) keeps the hat, and whether the estimated local regularity of the data --- \texttt{plot\_locreg\_conso\_data}, 10\_simulation\_design.R:193 --- belongs here instead or alongside]\color{black}}
 	\label{fig:simu_param}
 \end{figure}
 
