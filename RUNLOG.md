@@ -237,12 +237,17 @@ normalises the weights exactly and floors the estimated density, and why.
    "Against `X_N`", so the paper can carry both columns and needs no choice made for it.
 
 `best_predictor_aout24.tex` defines no ISE, weighted or otherwise; `eq:weighted_ise` is written in
-`num_analysis_main.tex` itself. Its own TBC at `:124` reads the normalisation as a disagreement
-between paper and implementation; under the ruling above it is not one, and that TBC should be
-replaced by the explanatory sentence rather than by a change to the equation.
+`num_analysis_main.tex` itself. Its own TBC read the normalisation as a disagreement between paper
+and implementation; under the ruling above it is not one, and that TBC was to be replaced by the
+explanatory sentence rather than by a change to the equation.
+
+**Done, 2026-08-31.** `num_analysis_main.tex:152` now states both guards in prose — the weights are
+normalised to sum to one exactly, and the estimated design density is floored at `1e-6` — beside an
+unchanged `eq:weighted_ise`. The equation itself was not touched.
 
 The remaining open point in that TBC is untouched by this ruling: the authority defines `rho` and
-`D` on the conditioning curve `n0`, whereas the score needs them on the target curve `n0+1`.
+`D` on the conditioning curve `n0`, whereas the score needs them on the target curve `n0+1`. That,
+and nothing else, is now the whole of the TBC at `num_analysis_main.tex:158`.
 
 ### 1.8 Comparisons: run and not run
 
@@ -264,14 +269,22 @@ Both tables do carry a third panel that **was** run: the estimated mean curve as
 which is the predictor's limit as the Tikhonov parameter grows.
 
 **Ruling (2026-08-31): both comparisons stay TBC in the text.** The author will run `RP20` and
-implement `Z26`, and will fill the two result slots then. So `num_analysis_main.tex:143` and `:162`
-are deliberate placeholders, not oversights, and nothing about them is to be written around,
-softened or filled from the surrounding material. The two `--- TBC` panels in the benchmark tables
-match, and should stay as they are.
+implement `Z26`, and will fill the two result slots then. They are deliberate placeholders, not
+oversights, and nothing about them is to be written around, softened or filled from the surrounding
+material. The two `--- TBC` panels in the benchmark tables match, and should stay as they are.
 
-The one correction the current TBCs still need is factual, not editorial: `:143` says
+**Done, 2026-08-31.** The two comparison subsections were merged into one, and the two result slots
+became the single mandated placeholder at `num_analysis_main.tex:240`, standing alone with no result
+prose around it. The protocol prose describing both competitors was kept, not dropped.
+
+The one correction the old TBCs still needed was factual, not editorial: they said
 `data-simulation/estimates/RP20/` does not exist. It does — the export is complete, 4800 files. It
-is the fit and the scoring that are outstanding, and the TBC should say that instead.
+is the fit and the scoring that are outstanding. **Corrected** at `num_analysis_main.tex:235`, which
+now says so and records that `Z26` has no implementation at all.
+
+One inconsistency surfaced in the doing, and is flagged rather than settled: the text writes `Z26`
+and `32_figures_blup.R:50` writes `ZH26` into Panel B of the common-design benchmark table, which
+the paper now `\input`s. See the TBC at `num_analysis_main.tex:237`.
 
 ### 1.9 Tikhonov and density-bandwidth grids
 
@@ -589,13 +602,24 @@ log-return cleaned count, so the comment appears to have been carried over from
 
 ## 4. Still open
 
-**Nothing here needs a decision.** One item is waiting on the author's own compute, and it is
-deliberately left as a placeholder in the text.
+**Three items, and two of them are predictFTS work rather than paper work.** The first is waiting on
+the author's own compute and is deliberately left as a placeholder in the text; the second and third
+are decisions about what the scripts emit.
 
 1. **`RP20` and `Z26` results** (§1.8). RP20 is exported — 4800 files — but never fitted or scored;
    Z26 has no implementation at all. The author will run and implement both. Until then
-   `num_analysis_main.tex:143` and `:162` stay TBC by decision, and the two `--- TBC` panels in
-   `latex_blup_wise_benchmark_conso{,_common}.tex` stay with them.
+   `num_analysis_main.tex:240` stays TBC by decision, and the two `--- TBC` panels in
+   `latex_blup_wise_benchmark_conso{,_common}.tex` stay with it.
+
+2. **Six generated tables cannot be floated** (§1.7, and [ASSETS.md](ASSETS.md)). `Hmisc::latex()`
+   wraps each in its own `table` environment carrying no `\caption` and no `\label`, so the float
+   cannot be captioned and the table cannot be `\ref`-ed. `get_wise_benchmark_table()` at
+   `32_figures_blup.R:187-202` writes a bare `tabular` and is the pattern to follow. Until it is
+   followed, the numbers of `latex_blup_ise_estimates_conso{,_common}.tex`,
+   `latex_blup_tikhonov_conso.tex` and `latex_blup_bias_sd_conso_common.tex` reach the paper as
+   prose. A predictFTS decision, not a paper one.
+
+3. **The `Z26` / `ZH26` tag** (§1.8). The text and the generated table disagree. One has to change.
 
 **Settled since this file was first written**, and no longer open:
 
@@ -610,6 +634,10 @@ deliberately left as a placeholder in the text.
   renormalisation and the density floor are the implementation's guard against degeneration.
 - *The lag-0 bandwidth-separation claim.* §2.2. It holds; the lag-0 prose says the difference is
   lower there, and at (0.7, 0.8) does not exist. No monotonicity claim at lag 0.
+- *The prediction section's result slots.* §1.7, §1.8. Written up 2026-08-31 from the completed BLUP
+  study: the protocol as run, the weighted ISE with both implementation guards stated, the accuracy
+  under both designs against the estimated mean curve, and the selected Tikhonov parameters. The two
+  competitor slots became the one mandated placeholder.
 
 The one open question elsewhere in this file, at §1.6, is a repository matter and not a paper one:
 `22_simulation_blup.R` catches per-replication failures but does not persist them, so a silent
