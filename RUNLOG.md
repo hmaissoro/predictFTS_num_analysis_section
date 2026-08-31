@@ -186,7 +186,7 @@ The only run log on disk is `logs/sync.log`: S3 syncs from 2026-08-27T00:07Z to 
 `/data/predictFTS/data-simulation` is reported "absent" on every sync up to and including
 2026-08-27, and present from the 2026-08-28 syncs onward. It records transfers, not computation.
 
-> **Question 1.** There is no per-replication failure ledger. The census is complete and the tables
+> **Open question.** There is no per-replication failure ledger. The census is complete and the tables
 > say 400 of 400, so nothing is missing — but if a replication had failed silently and been retried,
 > nothing on disk would say so. Should `22_simulation_blup.R` persist its caught errors to a file
 > before the study is re-run?
@@ -212,27 +212,35 @@ ise_blup            <- sum(rho * (Ytrue - prediction)^2)     # against the noisy
 ise_blup_noiseless  <- sum(rho * (Xtrue - prediction)^2)     # against the noiseless target
 ```
 
-**Against `eq:weighted_ise` at `num_analysis_main.tex:115-117`, three differences.** Reported, not
-reconciled.
+**Against `eq:weighted_ise` at `num_analysis_main.tex:115-117`, three differences.**
+
+**Ruling (2026-08-31): both stand.** `eq:weighted_ise` is the theoretical formula and stays as
+written; the renormalisation and the density floor are implementation choices that guard against
+numerical degeneration, and they belong in the implementation-details prose, not in the equation.
+Neither is an error to fix. What the paper owes the reader is a sentence saying the implementation
+normalises the weights exactly and floors the estimated density, and why.
 
 1. **Renormalisation.** The paper writes the independent-design weight as
    `{M_{n0+1} ghat(T_{n0+1,i})}^{-1}`. The implementation divides that by its own sum, so the
    weights sum to 1 exactly. `def_Qn` requires `sum_i rho_{n,i} = 1`, which the unnormalised form
-   satisfies only in the limit. Paper and implementation therefore disagree by a multiplicative
-   constant that varies from replication to replication.
-2. **Density floor.** `pmax(ghat, 1e-6)` caps the weight a point in a sparse region can receive.
-   Nothing in the paper corresponds to this.
+   satisfies only in the limit; normalising enforces at finite `M` what the theory has
+   asymptotically. **Documented, not reconciled away.**
+2. **Density floor.** `pmax(ghat, 1e-6)` caps the weight a point in a sparse region can receive,
+   which is what stops a near-zero density estimate from taking the score to infinity.
+   **Documented, not reconciled away.**
 3. **Which target.** The paper's `eq:weighted_ise` scores against `Y_{n0+1,i}`, the noisy value.
    The implementation stores both variants, and `scripts/32_figures_blup.R:9-11` states that
-   everything downstream except two legacy tables uses the noiseless `Xtrue`.
+   everything downstream except two legacy tables uses the noiseless `Xtrue`. Both are reported in
+   `latex_blup_ise_estimates_conso{,_common}.tex`, under the headings "Against `Y_N`" and
+   "Against `X_N`", so the paper can carry both columns and needs no choice made for it.
 
 `best_predictor_aout24.tex` defines no ISE, weighted or otherwise; `eq:weighted_ise` is written in
-`num_analysis_main.tex` itself, and its own TBC at `:124` already flags points 1 and the
-`n0` versus `n0+1` question.
+`num_analysis_main.tex` itself. Its own TBC at `:124` reads the normalisation as a disagreement
+between paper and implementation; under the ruling above it is not one, and that TBC should be
+replaced by the explanatory sentence rather than by a change to the equation.
 
-> **Question 2.** Which is authoritative for the paper — the renormalised weights the code actually
-> used, or the unnormalised `{M ghat}^{-1}` of Proposition `prop:tikhonov`? If the former,
-> `eq:weighted_ise` needs the normalisation written into it and the `1e-6` floor stated.
+The remaining open point in that TBC is untouched by this ruling: the authority defines `rho` and
+`D` on the conditioning curve `n0`, whereas the score needs them on the target curve `n0+1`.
 
 ### 1.8 Comparisons: run and not run
 
@@ -405,17 +413,24 @@ Per-series Tikhonov grids, `scripts/40_app_energy.R:26-31`:
 
 | Series | Grid | Selected α | Predicted points | Lag-1 FACF |
 |---|---|---|---|---|
-| conso | `exp(seq(-15, -6, length.out = 40))` | 2.454e-05 | 96 | see below |
-| solaire | `exp(seq(-13, -6, length.out = 40))` | 5.718e-05 | 61 | see below |
-| hydrau | `exp(seq(-13, -5, length.out = 40))` | 9.072e-05 | 96 | see below |
+| conso | `exp(seq(-15, -6, length.out = 40))` | 2.454e-05 | 96 | **0.4328799** |
+| solaire | `exp(seq(-13, -6, length.out = 40))` | 5.718e-05 | 61 | **0.4306196** |
+| hydrau | `exp(seq(-13, -5, length.out = 40))` | 9.072e-05 | 96 | **0.3649574** |
 
 Read from `data-energy/estimates/dt_blup_{conso,solaire,hydrau}_tikhonov_cv_curve.RDS` and
-`dt_blup_{conso,solaire,hydrau}.RDS`, all stamped 2026-08-28 00:55.
+`dt_blup_{conso,solaire,hydrau}.RDS`, all stamped 2026-08-28 00:55. The lag-1 FACF is constant down
+the `lag1_facf` column of each file — one value per series, not a curve — and each file carries one
+row per predicted point, so `t` runs `1/96, …, 1` for consumption and hydroelectricity and
+`1/61, …, 1` for photovoltaic.
 
-**The lag-1 FACF values are stored in a `lag1_facf` column of those three files but were not read
-out for this document — not established.** `num_analysis_supp.tex:174` refers to "the lag-1 FACF
-reference values recorded at 40_app_energy.R:24"; line 24 is now a comment about the Tikhonov
-grids, so that reference is stale too.
+All three sit well above the noise level, so the autoregressive term contributes to the prediction
+in every series; hydroelectricity is the weakest of the three. For comparison, the NOTPERP volume
+application gives 0.3368356 and the simulation's twelve setups give medians from 0.251 to 0.328
+(§1.5, and `estimates/facf/`).
+
+`num_analysis_supp.tex:174` refers to "the lag-1 FACF reference values recorded at
+`40_app_energy.R:24`". Line 24 is now a comment about the Tikhonov grids, so the pointer is stale —
+but the values themselves are the three above.
 
 **`data-energy/estimates/` mixes two eras.** Seven files are from the current run, 2026-08-28
 00:55: the three `dt_blup_*.RDS`, the three `dt_blup_*_tikhonov_cv_curve.RDS`, and one empty
@@ -426,33 +441,39 @@ every `dt_estimates_*blup_*.RDS`. **No number should be quoted from those** with
 
 ### 3.2 NOTPERP — independent random design
 
-**The analysed quantity is VOLUME, not log-return. Confirmed.**
+**The analysed quantity is VOLUME. Confirmed on disk, and settled by decision (2026-08-31): the
+paper reports the volume application only. The log-return material is the author's own reference
+and is not paper content — it is not to be written up, not cited as a negative result, and not
+carried into any figure or table.** It is recorded below and in [ASSETS.md](ASSETS.md) Table B so
+that its files are identifiable as reference-only, and for no other purpose.
 
 `scripts/45_notperp_volume_clean.R:6-9` and `scripts/46_app_notperp_volume.R:8-11` both state it:
 the response at time `T_{n,i}` on day n is **the log of the USDT notional traded since midnight UTC
 up to and including that trade** — cumulative traded notional in logs. The level is the day's
 liquidity; the shape is when in the day it arrives.
 
-`scripts/42_app_notperp.R` is the **superseded** log-return application. Its comment at
-`46_app_notperp_volume.R:13-16` records why it was abandoned: a price is close to a martingale, so
-its lag-1 functional autocorrelation sits at a noise level and the selected Tikhonov parameter
-collapses the BLUP onto the mean function. `scripts/44_notperp_quantity_selection.R` is the screen
-that led to volume. **Both applications' estimates and figures are on disk.**
+The application, read from `data-NOTPERP/`:
 
-The two, side by side, read from `data-NOTPERP/`:
+| Quantity | Value |
+|---|---|
+| Cleaned file | `raw/dt_NOTPERP_volume_fts_cleaned.csv` |
+| Curves, raw | 712 |
+| Curves, cleaned | **424** |
+| Rows, cleaned | 84 131 |
+| M_n, cleaned | min 105, mean **198.42**, median 200, max 200 |
+| Lag-1 FACF | **0.3368356** |
+| Target curve M_n | 198 |
+| Selected α | 0.01599, on a 60-point grid from 2.06e-09 to 54.6 |
+| Design-density bandwidth | 0.005 |
+| Local regularity H_t | min 0.254, median 0.806, max 1 |
+| Local regularity L_t² | min 0.195, max 28.8 |
 
-| | Volume (current) | Log-return (superseded) |
-|---|---|---|
-| Cleaned file | `raw/dt_NOTPERP_volume_fts_cleaned.csv` | `raw/dt_NOTPERP_fts_cleaned.csv` |
-| Curves, raw | 712 | 712 archive days |
-| Curves, cleaned | **424** | 696 |
-| Rows, cleaned | 84 131 | 137 979 |
-| M_n, cleaned | min 105, mean **198.42**, median 200, max 200 | min 105, mean 198.25, median 200, max 200 |
-| Lag-1 FACF | **0.3368** | 0.1130 |
-| Target curve M_n | 198 | 200 |
-| Selected α | 0.01599, on a 60-point grid from 2.06e-09 to 54.6 | — |
-| Design-density bw | 0.005 | — |
-| Local regularity H_t | min 0.254, median 0.806, max 1 | min 0.138, median 0.460, max 0.830 |
+`scripts/42_app_notperp.R` and `scripts/41_notperp_download_clean.R` are the **reference-only**
+log-return pair, and `scripts/44_notperp_quantity_selection.R` is the screen that led to volume.
+Their outputs are on disk — `data-NOTPERP/estimates/dt_blup_notperp*.RDS` without the `_volume_`
+infix, and `figures/notperp/NOTPERP_*` without it — and none of it is paper content. For
+identification only: the log-return cleaned file holds 696 curves and 137 979 rows, its lag-1 FACF
+is 0.1130, and its local regularity runs 0.138 to 0.830 with median 0.460.
 
 **Period.** The ByBit archive on disk is `data-NOTPERP/raw/NOTPERP*.csv.gz`, 712 daily files from
 **2024-09-18 to 2026-08-30**. One raw curve per archive day.
@@ -468,40 +489,52 @@ density, and costs nothing for a cumulative response
 (auto)covariance estimators sum over within-curve pairs, so cost grows about as M_n^4.
 
 The lag-1 to lag-3 functional autocorrelations quoted in `45_notperp_volume_clean.R:16` are 0.47,
-0.38, 0.32 — decaying, against a flat noise-level series for log-returns.
+0.38, 0.32 — decaying, which is the property the application rests on. (Those three are the
+script's own figures for the cleaned series; the 0.3368356 in the table above is the lag-1 FACF
+computed inside the fit, on the curves before the target, and is the value to quote.)
 
 **Discrepancy.** `scripts/45_notperp_volume_clean.R:37-38` states the cap "puts the application at
 lambdahat near 200 over **some 690 curves**". The cleaned volume file has **424** curves. 696 is the
 log-return cleaned count, so the comment appears to have been carried over from
 `41_notperp_download_clean.R` and not updated.
 
-> **Question 3.** The paper's section heading at `num_analysis_main.tex:171` is "NOTPERP intraday
-> log-return curves", and its TBC at `:174` describes the log-return application. The current
-> application is volume. Is the log-return study dropped entirely, or retained as the negative
-> result that motivates the choice of quantity? Both sets of figures and estimates are on disk, so
-> either is available — but the two need different prose and a different heading.
+**Consequences for the two `.tex` files**, following from the volume-only decision:
 
-> **Question 4.** The volume application is a random design over 424 curves at M_n ≈ 198, and the
-> energy application is a common design. `num_analysis_main.tex:168` wants an opening paragraph
-> saying the two applications exercise the two designs. Confirm that framing, since it determines
-> whether the superseded log-return study has a place at all.
+- `num_analysis_main.tex:171` — the heading "NOTPERP intraday log-return curves" is wrong and must
+  become a volume heading.
+- `num_analysis_main.tex:174` — the TBC describes the log-return application and its provenance
+  from `01_NOTPERP_analysis.R` and `41_notperp_download_clean.R`. It must be rewritten against
+  `45_notperp_volume_clean.R` and `46_app_notperp_volume.R`. Its closing claim that
+  "`data-NOTPERP/estimates/` is empty and `42_app_notperp.R` does not run to completion" is doubly
+  stale: the directory holds ten files, and `42` is no longer the script that matters.
+- `num_analysis_supp.tex:168` — the descriptive material it proposes to reuse from
+  `paper_for_reference/NOTPERP_descriptive_analysis/` is log-return material. Only the parts that
+  are quantity-independent survive: the ByBit provenance, the observation-time map, and the
+  functional-boxplot procedure. Every sample size, every M_n summary and the autocorrelation table
+  must be recomputed on the volume series.
+- The observation-time map `T_{n,i} = (tau_{n,i} - a_n)/86400` is quantity-independent and carries
+  over unchanged.
 
 ---
 
-## 4. Not established
+## 4. Still open
 
-Collected from above, in the order they should be settled.
+Collected from above, in the order they should be settled. Three items, none of them a decision
+about what was run — two need compute and one needs a sentence.
 
-1. **Energy lag-1 FACF values** (§3.1). Stored in `data-energy/estimates/dt_blup_*.RDS` under
-   `lag1_facf`, not read out here. The tex reference to `40_app_energy.R:24` is stale.
-2. **The NOTPERP quantity the paper reports** (§3.2, Questions 3 and 4).
-3. **Which target the reported ISE uses** (§1.7, Question 2). Both variants are stored; the figures
-   use the noiseless one, the paper's equation names the noisy one.
-4. **Whether the lag-0 bandwidth-separation claim survives** (§2.2). The lag-1 numbers support it;
-   the lag-0 numbers do not, at two of the eight pairs.
-5. **`RP20` and `Z26` results** (§1.8). RP20 is exported but unfitted; Z26 does not exist.
-6. **What the paper claims about reproducibility** (§0). Not a gap in the results — a decision about
-   how to word the statement, since seed-level reproducibility holds within a platform only.
+1. **Whether the lag-0 bandwidth-separation claim survives** (§2.2). The lag-1 numbers support it;
+   the lag-0 numbers do not, at two of the eight pairs. This is a claim about the results, so only
+   the results can settle it — see the table in §2.2 before rewriting `supp:112`.
+2. **`RP20` and `Z26` results** (§1.8). RP20 is exported, 4800 files, but never fitted or scored;
+   Z26 has no implementation at all. Both are compute, not decisions.
+3. **What the paper claims about reproducibility** (§0). Not a gap in the results — a wording
+   decision, since seed-level reproducibility holds within a platform only.
 
-Cross-platform reproduction of the curve column is **not** on this list. §0 settles it: the
-behaviour is documented in `aws/Dockerfile:19-28`, expected, and not a defect.
+**Settled since this file was first written**, and no longer open:
+
+- *Cross-platform reproduction of the curve column.* §0. Documented in `aws/Dockerfile:19-28`,
+  expected, not a defect.
+- *Energy lag-1 FACF values.* §3.1. Read from disk: 0.4328799, 0.4306196, 0.3649574.
+- *The NOTPERP quantity.* §3.2. Volume only; the log-return material is reference, not content.
+- *Which ISE is authoritative.* §1.7. Both stand — `eq:weighted_ise` is the theory, the
+  renormalisation and the density floor are the implementation's guard against degeneration.

@@ -110,7 +110,7 @@ identified from the script's own `filename =` argument, not from name similarity
 | Per-replication curves | `blup/plot_blup_mc_conso_N=*_lambda=*{,_common}.pdf` (24) | `32_figures_blup.R:585` | Four replications per setup, true curve against adaptive prediction, both designs | **`supp:160`** — which says `figures/blup/` is empty. It is not |
 | Energy application | `blup/plot_adaptive_blup_{conso,solaire,hydrau,energy}.pdf`, `blup/plot_tikhonov_cv_{…}.pdf` (8) | `40_app_energy.R:186-253` | Prediction of each series' last curve, and the Tikhonov cross-validation criterion | **`main:180`**, **`supp:174`** |
 | NOTPERP, volume | `notperp/NOTPERP_volume_*.pdf` (7) + `Fboxplot_volume_round_{1,2,3}.png` | `46_app_notperp_volume.R:383-438`, `45_notperp_volume_clean.R:221-241` | Local regularity, mean function, density CV, Tikhonov CV, adaptive prediction; and the three outlier-removal rounds | **`main:174`**, **`supp:168`** — the current application |
-| NOTPERP, log-return | `notperp/NOTPERP_{locreg_Ht,locreg_Lt2,local_regularity,mean_function,density_cv,adaptive_pred,tikhonov_cv}.pdf` (7) + `Fboxplot_round_{1,2,3}.png` | `42_app_notperp.R:370-425`, `41_notperp_download_clean.R:180-210` | The same set for the **superseded** log-return quantity | depends on RUNLOG Question 4 |
+| NOTPERP, log-return | `notperp/NOTPERP_{locreg_Ht,locreg_Lt2,local_regularity,mean_function,density_cv,adaptive_pred,tikhonov_cv}.pdf` (7) + `Fboxplot_round_{1,2,3}.png` | `42_app_notperp.R:370-425`, `41_notperp_download_clean.R:180-210` | The same set for the log-return quantity | **none — reference only.** Decided 2026-08-31: the paper reports volume only. These are the author's reference and are not paper content. Do not propose them for any section |
 | NOTPERP, quantity screen | `notperp/NOTPERP_quantity_facf.pdf` | `44_notperp_quantity_selection.R:227` | Functional autocorrelation of each candidate quantity — the evidence for choosing volume | **`supp:168`**, if the screen is reported |
 | Consumption data | `real_data_conso.pdf`, `empirical_mean_conso.pdf`, `empirical_cov_conso.png`, `empirical_lag1_autocov_conso.png` | `02_energy_conso.R:27, 120, 189, 240` | Raw curves, empirical mean, empirical covariance and lag-1 autocovariance surfaces | **`main:21`** — the Fourier-estimation paragraph |
 | Design diagnostics | `plot_locreg_conso_data.pdf`, `plot_sig_conso_data.pdf`, `plot_Ht_L2t_and_sig_conso_data.pdf` | `10_simulation_design.R:193, 285, 297` | Estimated local regularity, σ, and the three together, on the consumption data | **`main:38`** — the caption TBC asks explicitly whether `plot_locreg_conso_data` belongs there |
@@ -188,12 +188,13 @@ equivalents). Neither script has been run against the current tree.
 | 91 | burn-in `100` | `n_burnin = 100L` | **OK** |
 | 93 | `0.8λ`–`1.2λ`, shared grid of λ points, noise sd `0.007` | `11_simulation_generate.R:48-54, 136, 22` | **OK** |
 | 123 | `R = 400`; "replications on which the score is not finite are dropped, and their number is reported" | `latex_blup_wise_benchmark_conso{,_common}.tex`: "400 of 400 replications retained in every configuration" | **OK** — and the dropped count is zero |
-| 124 | `22_simulation_blup.R:143-144` renormalises the weights (in TBC) | `22_simulation_blup.R:144`, `rho <- rho / sum(rho)` | **OK** — see [RUNLOG.md](RUNLOG.md) §1.7, which adds the undocumented `1e-6` density floor |
+| 124 | `22_simulation_blup.R:143-144` renormalises the weights (in TBC) | `22_simulation_blup.R:144`, `rho <- rho / sum(rho)` | **OK as a fact, wrong as a verdict.** The renormalisation is real, and so is the `1e-6` density floor the TBC omits. But the TBC reads them as "the paper and the implementation disagree", and the ruling of 2026-08-31 is that they do not: `eq:weighted_ise` is the theory, these are the implementation's guard against numerical degeneration. Both stand. See [RUNLOG.md](RUNLOG.md) §1.7 |
 | 128 | "`estimates/` has no `blup/` directory and `figures/blup/` is empty" (in TBC) | both populated; 24 `plot_blup_mc_*` files and three tables | **MISMATCH — stale** |
 | 141 | `RP20` returns on a regular grid of `241` points, with a B-spline projection (in TBC, flagged unattested) | nothing on disk | **UNVERIFIABLE** — correctly left out of the prose |
 | 143 | "`estimates/RP20/` does not exist" (in TBC) | `estimates/RP20/export/` — 12 cells × 400 | **MISMATCH — stale.** The export exists; the *comparison* does not |
 | 162 | "No implementation exists" for `Z26` | grep for `zhao|z26|zh26` over `scripts/`: two hits, both labels in `32_figures_blup.R:49-50` | **OK** |
-| 174 | "`data-NOTPERP/estimates/` is empty" (in TBC) | ten `.RDS` files, five of them `*_volume_*` | **MISMATCH — stale** |
+| 171 | section heading "NOTPERP intraday **log-return** curves" | volume is the analysed quantity, `46_app_notperp_volume.R:1`; decided 2026-08-31 that the paper reports volume only | **MISMATCH** — the heading names the wrong quantity |
+| 174 | "`data-NOTPERP/estimates/` is empty" and "`42_app_notperp.R` does not run to completion" (in TBC) | ten `.RDS` files, five of them `*_volume_*`; and `42` is the reference-only log-return script, not the one the paper uses | **MISMATCH — doubly stale.** The directory is populated and the named script is no longer the relevant one |
 | 180 | 122 consumption at 96 pts, 122 photovoltaic restricted to 61 over 04:00–19:00, 152 hydroelectric at 96 (in TBC) | `data-energy/raw/`; `40_app_energy.R:38-46` | **OK** |
 | 180 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
 | 180 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
@@ -219,18 +220,22 @@ equivalents). Neither script has been run against the current tree.
 | 147 | "`23_simulation_facf.R` has not been run, no `facf/` directory" (in TBC) | `estimates/facf/` — 9 cells × 400 | **MISMATCH — stale** |
 | 153 | 3×3 grid, `lambdavec <- c(25, 50, 100)`, λ = 200 absent, pooled Sturges breaks (in TBC) | `36_figures_facf.R:25, 44-46`; only 9 result cells exist | **OK** |
 | 160 | "`figures/blup/` is empty" (in TBC) | 24 `plot_blup_mc_*` files present | **MISMATCH — stale** |
-| 174 | lag-1 FACF reference values "recorded at `40_app_energy.R:24`" (in TBC) | line 24 is a comment on the Tikhonov grids; the values are in the `lag1_facf` column of `data-energy/estimates/dt_blup_{conso,solaire,hydrau}.RDS` | **MISMATCH — stale pointer**, values available |
+| 174 | lag-1 FACF reference values "recorded at `40_app_energy.R:24`" (in TBC) | line 24 is a comment on the Tikhonov grids; the values are the `lag1_facf` column of `data-energy/estimates/dt_blup_{conso,solaire,hydrau}.RDS`, read as **0.4328799**, **0.4306196**, **0.3649574** | **MISMATCH — stale pointer.** The values themselves are now established, [RUNLOG.md](RUNLOG.md) §3.1 |
 
 ### Summary
 
 - **11 values are stale P5 verdicts** asserting that results do not exist. They all do. These are
   the most misleading entries in the two files, because they read as settled.
-- **4 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
-  (`main:43`), the photovoltaic/hydroelectric offsets (`main:180`), and the lag-0
-  bandwidth-separation claim (`supp:112`).
+- **5 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
+  (`main:43`), the photovoltaic/hydroelectric offsets (`main:180`), the lag-0
+  bandwidth-separation claim (`supp:112`), and the log-return section heading (`main:171`).
 - **1 set is invalidated by the linear exponent**: the four `(H_s, H_t)` pairs at `main:72`, and
   every bandwidth quoted alongside them.
-- **1 claim was checked and survives**: the FACF range at `supp:146`, 98.4% pooled.
+- **1 verdict is itself wrong**, not the value under it: the TBC at `main:124` frames the weight
+  renormalisation as a paper-versus-code disagreement. It is not one — see the ruling in
+  [RUNLOG.md](RUNLOG.md) §1.7.
+- **2 claims were checked and survive**: the FACF range at `supp:146`, 98.4% pooled; and the three
+  energy lag-1 FACF values behind the stale pointer at `supp:174`.
 - **2 are UNVERIFIABLE and correctly flagged as such** in the text already: the RP20 241-point grid
   and `ℓ_max = 3`.
 
