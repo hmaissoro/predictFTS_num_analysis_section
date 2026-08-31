@@ -68,10 +68,12 @@ working copy `d56b7c7`: `git diff 6acbac5 d56b7c7` touches 33 files, none of the
 linear exponent, and is the study of record. It simply cannot be re-derived on Windows, by design
 of the floating-point world rather than by any defect here. No number below is in doubt.
 
-> **Note, not a question.** The one thing worth deciding is what the paper says about
-> reproducibility. The seeds make the study reproducible on the platform that produced it, not
-> across platforms. If a reproducibility statement is going into the paper, it should say so and
-> point at `aws/Dockerfile` for the image, rather than claim seed-level reproducibility in general.
+**Ruling (2026-08-31): the study is taken as reproducible, and reproducibility is not mentioned in
+the text.** It is implicit in a paper of this kind — the seeds are pinned, the image is in
+`aws/`, and the code is public. The author will verify separately. Nothing in this section is to be
+written up, and no reproducibility statement, caveat or platform note goes into either `.tex` file.
+This section exists so that a future reader of the repository knows why a local re-run gives a
+different `X`, not to raise a question for the paper.
 
 ---
 
@@ -261,6 +263,16 @@ benchmark table carries `\texttt{ZH26} --- TBC`.
 Both tables do carry a third panel that **was** run: the estimated mean curve as a naive baseline,
 which is the predictor's limit as the Tikhonov parameter grows.
 
+**Ruling (2026-08-31): both comparisons stay TBC in the text.** The author will run `RP20` and
+implement `Z26`, and will fill the two result slots then. So `num_analysis_main.tex:143` and `:162`
+are deliberate placeholders, not oversights, and nothing about them is to be written around,
+softened or filled from the surrounding material. The two `--- TBC` panels in the benchmark tables
+match, and should stay as they are.
+
+The one correction the current TBCs still need is factual, not editorial: `:143` says
+`data-simulation/estimates/RP20/` does not exist. It does — the export is complete, 4800 files. It
+is the fit and the scoring that are outstanding, and the TBC should say that instead.
+
 ### 1.9 Tikhonov and density-bandwidth grids
 
 | Parameter | Grid | Line |
@@ -331,11 +343,23 @@ selection made in each — the paper's `h*` is one number, the study's is a dist
 | 0.8 | 0.2 | 0.72 | 0.48 | 0.00561 | 0.00427 | 0.00325 |
 | 0.8 | 0.5 | 0.72 | 0.60 | 0.00738 | 0.00971 | 0.00561 |
 
-The qualitative claim the supplement makes at `:81` and `:112` — that the two selected bandwidths
-separate when `H_s ≠ H_t` — holds in the lag-1 table, where the only pair with `h_s = h_t` is none,
-and the largest separation is at (0.1, 0.4) and (0.8, 0.2). It does **not** hold cleanly at lag 0:
-(0.7, 0.8) selects `0.00971` for both, and (0.8, 0.2), with the largest `|H_s − H_t|` of all, shows
-a smaller gap than (0.1, 0.4) does. The claim needs restating against these numbers.
+**How the supplement's bandwidth-separation claim should read** (`:81` for lag 1, `:112` for
+lag 0). **Ruling (2026-08-31): the claim holds**, and the lag-0 prose should say that the difference
+is *lower there, and in one case does not exist*, rather than assert the same strength at both lags.
+
+At lag 1 the two selected bandwidths differ at all eight pairs — no pair has `h_s = h_t` — and the
+separation is widest at (0.1, 0.4) and (0.8, 0.2).
+
+At lag 0 it is weaker. At (0.7, 0.8), the smallest `|H_s − H_t|` of the eight at 0.04, the two
+bandwidths are **equal**: both `0.00971`. That is the claim working, not failing — where the
+regularities are close, there is nothing for the two bandwidths to separate over. The lag-0 prose
+should say so.
+
+One pair does not follow the monotone reading. (0.8, 0.2) has the largest `|H_s − H_t|` of all,
+0.24, and yet its ratio `h_s / h_t` is 1.31, against 5.2 at (0.1, 0.4) where `|H_s − H_t|` is only
+0.12. So "the difference grows with `|H_s − H_t|`" is not a statement the lag-0 numbers carry
+across all eight pairs, even though the extremes behave as expected. Say the difference is smaller
+at lag 0 and vanishes when the regularities are close; do not claim monotonicity there.
 
 Aggregates exist for all twelve `(N, λ)` cells in both families; only (150, 100) is tabulated here
 because that is the configuration the supplement's risk figures show.
@@ -441,7 +465,7 @@ every `dt_estimates_*blup_*.RDS`. **No number should be quoted from those** with
 
 ### 3.2 NOTPERP — independent random design
 
-**The analysed quantity is VOLUME. Confirmed on disk, and settled by decision (2026-08-31): the
+**The analysed quantity is VOLUME.** Confirmed on disk. **Ruling (2026-08-31): the
 paper reports the volume application only. The log-return material is the author's own reference
 and is not paper content — it is not to be written up, not cited as a negative result, and not
 carried into any figure or table.** It is recorded below and in [ASSETS.md](ASSETS.md) Table B so
@@ -519,22 +543,28 @@ log-return cleaned count, so the comment appears to have been carried over from
 
 ## 4. Still open
 
-Collected from above, in the order they should be settled. Three items, none of them a decision
-about what was run — two need compute and one needs a sentence.
+**Nothing here needs a decision.** One item is waiting on the author's own compute, and it is
+deliberately left as a placeholder in the text.
 
-1. **Whether the lag-0 bandwidth-separation claim survives** (§2.2). The lag-1 numbers support it;
-   the lag-0 numbers do not, at two of the eight pairs. This is a claim about the results, so only
-   the results can settle it — see the table in §2.2 before rewriting `supp:112`.
-2. **`RP20` and `Z26` results** (§1.8). RP20 is exported, 4800 files, but never fitted or scored;
-   Z26 has no implementation at all. Both are compute, not decisions.
-3. **What the paper claims about reproducibility** (§0). Not a gap in the results — a wording
-   decision, since seed-level reproducibility holds within a platform only.
+1. **`RP20` and `Z26` results** (§1.8). RP20 is exported — 4800 files — but never fitted or scored;
+   Z26 has no implementation at all. The author will run and implement both. Until then
+   `num_analysis_main.tex:143` and `:162` stay TBC by decision, and the two `--- TBC` panels in
+   `latex_blup_wise_benchmark_conso{,_common}.tex` stay with them.
 
 **Settled since this file was first written**, and no longer open:
 
 - *Cross-platform reproduction of the curve column.* §0. Documented in `aws/Dockerfile:19-28`,
   expected, not a defect.
+- *What the paper says about reproducibility.* §0. Nothing. It is implicit, and no statement,
+  caveat or platform note goes into the text. The study is taken as reproducible pending the
+  author's own check.
 - *Energy lag-1 FACF values.* §3.1. Read from disk: 0.4328799, 0.4306196, 0.3649574.
 - *The NOTPERP quantity.* §3.2. Volume only; the log-return material is reference, not content.
 - *Which ISE is authoritative.* §1.7. Both stand — `eq:weighted_ise` is the theory, the
   renormalisation and the density floor are the implementation's guard against degeneration.
+- *The lag-0 bandwidth-separation claim.* §2.2. It holds; the lag-0 prose says the difference is
+  lower there, and at (0.7, 0.8) does not exist. No monotonicity claim at lag 0.
+
+The one open question elsewhere in this file, at §1.6, is a repository matter and not a paper one:
+`22_simulation_blup.R` catches per-replication failures but does not persist them, so a silent
+retry would leave no trace. The census is complete, so nothing is missing today.
