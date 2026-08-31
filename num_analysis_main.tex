@@ -242,7 +242,9 @@ Both procedures are fitted on the curves preceding the target and predict the sa
 \subsection{Real data applications}\label{sec:num:realdata}
 
 \color{magenta}
-[TBC: shared opening paragraph stating that the two applications are chosen to exercise the two designs the method covers]
+Forecasting electricity consumption and production is essential to keeping the electricity system in balance, since it reduces the costs of storage and of overproduction, and it is a harder problem for hydropower and photovoltaics, whose output varies through the day with the weather. Forecasting intraday traded volume answers a different need: an order worked against the volume-weighted average price has to be sliced against the volume it expects to meet, and a liquidity provider sizes inventory against the same quantity. Functional time series provide an effective framework for both, the more so when the prediction adapts to the regularity of the underlying process, as our procedure does.
+
+The two applications are chosen to exercise the two designs of \assrefH{H:model:Tni}. The volume curves are observed at the instants at which trades occur, which differ from one day to the next, so their design is random and irregular and the design density has to be estimated; the consumption curves are recorded on the same equidistant quarter-hourly grid every day, so their design is common and the weights of \eqref{def_Qn} reduce to $M_{n_0+1}^{-1}$. This is the split under which each competing procedure was confined to one design in Section~\ref{sec:num:prediction}, and the reader meets it here a second time, on real curves rather than simulated ones. In both applications the last curve of the series is held out entirely and predicted from the one preceding it, every estimate entering the predictor being computed on the curves before the target, exactly as in the simulation study. Photovoltaic and hydroelectric production curves are analysed under the same protocol and are presented in the Supporting Information.
 \color{black}
 
 \subsubsection{\color{magenta}NOTPERP intraday volume curves\color{black}}
@@ -277,8 +279,19 @@ The gain lies in the shape of the curve and not in its level. The day being pred
 	\label{fig:notperp_volume_pred}
 \end{figure}
 
-\subsubsection{\color{magenta}French electricity curves\color{black}}
+\subsubsection{\color{magenta}French electricity consumption curves\color{black}}
 
 \color{magenta}
-[TBC: common-design application. Provenance reusable from Numerical\_analysis-2025-06-v1.tex:244 --- ODR\'E, 122 consumption curves at 96 quarter-hourly points, 122 photovoltaic curves restricted to 61 points over 04:00--19:00, 152 hydroelectric curves at 96 points, all normalised by the maximum. 40\_app\_energy.R:26--28 additionally steps the target curve back by 10 for photovoltaic and 12 for hydroelectric because their last curves are incomplete. data-energy/estimates/ predates the current script and must be re-run before any number is quoted]
+We analyse daily curves of national electricity consumption in France, obtained from the ODR\'E platform \citep{odre_data} over the period from 1 June to 30 September 2024. These are the curves on which the simulation design of Section~\ref{blup:sec:simu_exp} was calibrated, and the last three of them are displayed in Figure~\ref{fig:conso_last_curves}. The dataset holds $122$ curves, one for each day of the period, each recorded at $96$ equally spaced quarter-hourly points, and every value is divided by the maximum consumption observed over the period, so that the curves take values in $[0.546, 1]$.
+
+Every day is recorded on the same grid, so $M_n = \lambda = 96$ for all $n$ and the first branch of \assrefH{H:model:Tni} holds as stated; the design weights of \eqref{def_Qn} reduce to $96^{-1}$ and no design density is estimated. The lag-$1$ FACF \eqref{eq:blup:facf}, computed on the $121$ curves preceding the target, is $0.433$, the largest of any series considered in this paper, so the conditioning curve carries more here than in either the volume application or the simulation study. This is likely due to the day-to-day persistence of temperature and to the weekly cycle, both of which set the level of a consumption curve.
+
+Figure~\ref{fig:conso_pred} shows the last consumption curve of the period against its adaptive prediction. The regularisation parameter is selected within a grid of $40$ points, log-spaced between $3.1\cdot 10^{-7}$ and $2.5\cdot 10^{-3}$, and the selection is interior, at $\alpha = 2.5\cdot 10^{-5}$. The squared error of the prediction, averaged over the $96$ observation points, is $2.134$ times smaller than that of the estimated mean curve, and the prediction is the closer of the two at $89.6$ per cent of them; on the normalised scale its root mean squared error is $0.0439$ against $0.0641$. As anticipated from the lag-$1$ FACF, the gain over the mean curve is larger here than in the volume application, and larger than the median gain in any setup of the simulation study, although it is read on one curve and not on a distribution of replications.
 \color{black}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./figures/blup/plot_adaptive_blup_conso.pdf}
+	\caption{\small \color{magenta}Prediction of the last daily national electricity consumption curve of the period from the curve preceding it, at the $96$ quarter-hourly points of the common design. The solid line is the observed curve and the dashed line the adaptive prediction. Values are normalised to $[0,1]$ by the maximum consumption observed over the period.\color{black}}
+	\label{fig:conso_pred}
+\end{figure}
