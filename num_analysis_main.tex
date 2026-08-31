@@ -50,7 +50,7 @@ To obtain the data points according to \eqref{eq:model}, the number of points on
 \subsection{\color{magenta}(Auto)covariance function estimation\color{black}}\label{sec:emp_study:autocov}
 
 \color{magenta}
-We conclude this section with a performance comparison of the new autocovariance estimator against the \texttt{MPV24} estimator, which uses a single bandwidth. Let $\widehat{c}_{N,\ell}^{(i)}$ denote our new estimator computed from the $i$-th replication ($i = 1, \ldots, R = 400$), and let $\widehat{c}_{\texttt{MPV24}, \ell}^{(i)}$ denote the corresponding \texttt{MPV24} estimator. For benchmarking, we use the empirical infeasible estimator, denoted by ${\widehat{c}}_{N', \ell}$, which is computed on a large sample of size $N'$. This estimator is feasible in simulation settings. That is,
+We conclude this section with a performance comparison of the new autocovariance estimator against the \texttt{MPV25} estimator, which uses a single bandwidth. Let $\widehat{c}_{N,\ell}^{(i)}$ denote our new estimator computed from the $i$-th replication ($i = 1, \ldots, R = 400$), and let $\widehat{c}_{\texttt{MPV25}, \ell}^{(i)}$ denote the corresponding \texttt{MPV25} estimator. For benchmarking, we use the empirical infeasible estimator, denoted by ${\widehat{c}}_{N', \ell}$, which is computed on a large sample of size $N'$. This estimator is feasible in simulation settings. That is,
 \color{black}
 \begin{equation}
 	\color{magenta}\widehat{c}_{N', \ell}(s, t) = \frac{1}{N' - \ell} \sum_{n=1}^{N' - \ell} \left\{X_{n}(s) - \widehat{\mu}_{N'}(s)\right\} \left\{X_{n+\ell}(t) - \widehat{\mu}_{N'}(t)\right\},
@@ -62,7 +62,7 @@ Then, for each $i = 1, \ldots, R$, we compute the pointwise error ratio:
 \color{black}
 \begin{equation}\label{eq:error_ratio_autocov}
 	\color{magenta}\forall (s, t) \in I^2, \quad
-	E_\ell^{(i)}(s, t) = \frac{\left| \widehat{c}_{N,\ell}^{(i)}(s, t; h_\ell^*(s|t), h_\ell^*(t|s)) - \widehat{c}_{N',\ell}(s, t) \right|}{\left| \widehat{c}_{\texttt{MPV24}, \ell}^{(i)}(s, t; h^*) - \widehat{c}_{N',\ell}(s, t) \right|}.\color{black}
+	E_\ell^{(i)}(s, t) = \frac{\left| \widehat{c}_{N,\ell}^{(i)}(s, t; h_\ell^*(s|t), h_\ell^*(t|s)) - \widehat{c}_{N',\ell}(s, t) \right|}{\left| \widehat{c}_{\texttt{MPV25}, \ell}^{(i)}(s, t; h^*) - \widehat{c}_{N',\ell}(s, t) \right|}.\color{black}
 \end{equation}
 \color{magenta}
 [TBC: the infeasible benchmark protocol must be restated from 11\_simulation\_generate.R:214--227 --- $N' = 5000$, common design, noiseless, on the grid \texttt{seq(0.01, 0.99, len = 99)}]
@@ -73,7 +73,7 @@ Then, for each $i = 1, \ldots, R$, we compute the pointwise error ratio:
 \color{black}
 
 \color{magenta}
-[TBC: lag-0 error-ratio results and the accompanying boxplot figure. The source compares the covariance estimator against its own single-bandwidth version rather than against \texttt{MPV24}. Requires 21\_simulation\_cov.R then 31\_figures\_cov.R; data-simulation/estimates/ has no cov/ directory]
+[TBC: lag-0 error-ratio results and the accompanying boxplot figure. The source compares the covariance estimator against its own single-bandwidth version rather than against \texttt{MPV25}. Requires 21\_simulation\_cov.R then 31\_figures\_cov.R; data-simulation/estimates/ has no cov/ directory]
 \color{black}
 
 \subsection{Adaptive curve prediction}\label{sec:num:prediction}
