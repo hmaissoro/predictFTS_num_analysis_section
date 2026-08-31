@@ -5,7 +5,7 @@ In this section, we present a finite-sample Monte Carlo simulation study and a r
 \color{black}
 
 \subsection{\color{magenta}Simulation design\color{black}}\label{blup:sec:simu_exp}
-The Monte Carlo simulation is based on France's daily national electricity consumption curves from June to September 2024. The dataset contains 122 curves, one for each day within this period. Each curve represents electricity consumption recorded at 96 evenly spaced time points throughout the day, with measurements taken every 15 minutes. For readability, we normalise the curves to the interval $[0,1]$ by dividing each value by the maximum consumption observed over the entire period. Figure~\ref{fig:conso_last_curves} displays the last four consumption curves from the dataset.
+The Monte Carlo simulation is based on France's daily national electricity consumption curves from June to September 2024. The dataset contains 122 curves, one for each day within this period. Each curve represents electricity consumption recorded at 96 evenly spaced time points throughout the day, with measurements taken every 15 minutes. For readability, we normalise the curves to the interval $[0,1]$ by dividing each value by the maximum consumption observed over the entire period. Figure~\ref{fig:conso_last_curves} displays the last \color{magenta}three\color{black} consumption curves from the dataset.
 
 \color{magenta}
 To simulate FTS with patterns similar to those of the observed curves, we estimate the parameters of a FAR(1) model from the data and use them to generate synthetic FTS samples. We consider the FAR(1) process with an associated innovation process $\{\xi_n\}$, defined as:
@@ -23,8 +23,8 @@ where the mean function $\mu$ and the kernel of the autoregressive operator $\ps
 
 \begin{figure}[t!]
 	\centering
-	\includegraphics[width=\textwidth]{./figures/real_data_conso_4last_curves.pdf}
-	\caption{\small The last four daily national electricity consumption curves in France from the dataset, with values normalised to the interval $[0,1]$.}
+	\includegraphics[width=\textwidth]{./figures/real_data_conso_3last_curves.pdf}
+	\caption{\small The last \color{magenta}three\color{black} daily national electricity consumption curves in France from the dataset, with values normalised to the interval $[0,1]$.}
 	\label{fig:conso_last_curves}
 \end{figure}
 
@@ -32,7 +32,7 @@ where the mean function $\mu$ and the kernel of the autoregressive operator $\ps
 	\centering
 	\begin{tabular}{ccc}
 		\small (a) $\footnotesize \widehat{H}_t$ for simulation & \small (b) $\footnotesize \widehat{\mu}$ for simulation & \small (c) $\footnotesize \widehat{\psi}$ for simulation\\
-		\includegraphics[width=0.3\textwidth]{./figures/local_exponent_conso.pdf} & \includegraphics[width=0.3\textwidth]{./figures/smooth_mean_conso.pdf} &
+		\includegraphics[width=0.3\textwidth]{./figures/local_exponent_simulation_conso.pdf} & \includegraphics[width=0.3\textwidth]{./figures/smooth_mean_conso.pdf} &
 		\includegraphics[width=0.3\textwidth]{./figures/far_kernel_conso.pdf}
 	\end{tabular}
 	\caption{\small Simulation parameters estimated from consumption curves: (a) estimated local exponent function, (b) estimated mean function, (c) estimated autoregressive kernel. \color{magenta}[TBC: panel (a) shows an estimated exponent; the design now uses an analytic linear ramp]\color{black}}
