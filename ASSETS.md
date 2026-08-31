@@ -8,7 +8,7 @@ tree against tree, no file on either side only. So "which copy" never arises bel
 in both or in neither.
 
 The tree holds **132 plot assets** — 96 `.pdf` and 36 `.png` — plus 96 `.tex` tikz sidecars, one per
-pdf. Of the 132, **19 are referenced** (Table A) and **113 are not** (Table B).
+pdf. Of the 132, **31 are referenced** (Table A) and **101 are not** (Table B).
 
 Updated 2026-08-31 after the (auto)covariance rewrite: the supplement's risk panels moved from the
 second set of four locations to the first, and the two `_first_4locations` accuracy boxplots became
@@ -18,6 +18,12 @@ Updated again 2026-08-31 after the adaptive curve prediction rewrite: `plot_log_
 became Table A #19, and the two BLUP benchmark tables became the first `\input`-ed non-figure assets,
 through a new `paper/tables/` directory that mirrors the `paper/figures/` copy. Every line number in
 `num_analysis_main.tex` from `:107` onward has moved; those below are the new ones.
+
+Updated again 2026-09-01 after the two real data applications were written. Twelve figures moved from
+Table B to Table A, the two applications' numbers entered Table C, and the five rows of Table C that
+recorded MISMATCHes inside the real-data placeholders are superseded by the prose that replaced them.
+Every line number in `num_analysis_main.tex` from `:242` onward and in `num_analysis_supp.tex` from
+`:174` onward has moved; those below are the new ones.
 
 This is a generated map. It goes stale the moment predictFTS is re-run. Where it disagrees with
 disk, disk wins.
@@ -53,7 +59,7 @@ so the `_second_4locations` pair is now unreferenced on both sides.
 
 ## Table A — every `\includegraphics` in the two live `.tex` files
 
-All 18 paths resolve. `Exists` is therefore `yes` throughout and the column is dropped; the work is
+All 31 paths resolve. `Exists` is therefore `yes` throughout and the column is dropped; the work is
 in the last two columns.
 
 | # | tex | line | referenced path | producing script | what the script actually plots | verdict |
@@ -77,6 +83,18 @@ in the last two columns.
 | 17 | main | 85 | `figures/autocov/boxplot_conso_autocov_ratio_lag=1_first_4locations.pdf` | `30_figures_autocov.R:271-304` | 2×2 of the lag-1 error-ratio boxplots at (0.2,0.4), (0.4,0.7), (0.7,0.8), (0.8,0.2), grouped by λ and shaded by N, dashed line at 1, ratios ≥ 1.5 dropped | **NEW** |
 | 18 | main | 102 | `figures/cov/boxplot_conso_cov_ratio_lag=0_first_4locations.pdf` | `31_figures_cov.R:206-238` | Same at lag 0 | **NEW** |
 | 19 | main | 198 | `figures/blup/plot_log_wise_ratio_mean_over_blup.pdf` | `32_figures_blup.R:360-388` | Boxplots of `log(wISE(mean) / wISE(BLUP))`, two panels — independent design left, common design right — grouped by λ and shaded by N, dashed line at 0 | **NEW**, 2026-08-31 |
+| 20 | main | 277 | `figures/notperp/NOTPERP_volume_adaptive_pred.pdf` | `46_app_notperp_volume.R:428-434` | The last NOTPERP volume curve against its adaptive prediction, at the target's own design points; solid black the observed curve, dashed red the prediction | **NEW**, 2026-09-01 |
+| 21 | main | 294 | `figures/blup/plot_adaptive_blup_conso.pdf` | `40_app_energy.R:185-191` | The same for the last consumption curve, at the $96$ points of the common design | **NEW**, 2026-09-01 |
+| 22 | supp | 196 | `figures/notperp/Fboxplot_volume_round_1.png` | `45_notperp_volume_clean.R:209-224` | `roahd::fbplot` on all 430 curves of the stationary window, aggregated onto the 828-point grid; six outliers | **NEW**, 2026-09-01 |
+| 23 | supp | 197 | `figures/notperp/Fboxplot_volume_round_2.png` | `45_notperp_volume_clean.R:231-235` | Same after their removal; none detected | **NEW**, 2026-09-01 |
+| 24 | supp | 198 | `figures/notperp/Fboxplot_volume_round_3.png` | `45_notperp_volume_clean.R:240-244` | Same again; none detected, the procedure terminates | **NEW**, 2026-09-01 |
+| 25 | supp | 207 | `figures/notperp/NOTPERP_volume_density_cv.pdf` | `46_app_notperp_volume.R:418-424` | Pointwise median over the 50 cross-validated curves of the density LSCV criterion against `h`, log axis, dashed line at the selected `0.005`, which is the grid floor | **NEW**, 2026-09-01 |
+| 26 | supp | 208 | `figures/notperp/NOTPERP_volume_tikhonov_cv.pdf` | `46_app_notperp_volume.R:436-442` | Tikhonov criterion against `alpha` over the 60-point grid, log axis, dashed line at the selected `0.016`, which is interior | **NEW**, 2026-09-01 |
+| 27 | supp | 216 | `figures/notperp/NOTPERP_volume_local_regularity.pdf` | `46_app_notperp_volume.R:398-404` | 1×2 of `Ht` and `Lt2` at the 99 grid points; dots the pointwise estimates, red line a `smooth.spline(df = 10)`; the `Ht` panel is drawn on the whole of [0, 1] so a clamp hit is visible | **NEW**, 2026-09-01 |
+| 28 | supp | 223 | `figures/notperp/NOTPERP_volume_mean_function.pdf` | `46_app_notperp_volume.R:408-414` | `muhat` against t at the 99 grid points | **NEW**, 2026-09-01 |
+| 29 | supp | 243 | `figures/blup/plot_adaptive_blup_solaire.pdf` | `40_app_energy.R:193-199` | The last photovoltaic curve against its prediction, at the 61 daylight points | **NEW**, 2026-09-01 |
+| 30 | supp | 244 | `figures/blup/plot_adaptive_blup_hydrau.pdf` | `40_app_energy.R:201-207` | The same for hydroelectric, at 96 points | **NEW**, 2026-09-01 |
+| 31 | supp | 252 | `figures/blup/plot_tikhonov_cv_energy.pdf` | `40_app_energy.R:251-257` | 1×3 of the three energy series' Tikhonov criteria, log axis, dashed line at each selection | **NEW**, 2026-09-01 |
 
 ### What each SUPERSEDED figure now shows that it did not before
 
@@ -113,7 +131,7 @@ identified from the script's own `filename =` argument, not from name similarity
 
 ## Table B — assets present but referenced by no `.tex` file
 
-114 plot assets. Grouped by producing script. "Candidate section" names the place in the current
+101 plot assets. Grouped by producing script. "Candidate section" names the place in the current
 `.tex` where a TBC is standing in for exactly this material.
 
 | Group | Assets | Producing script | What it shows | Candidate section |
@@ -125,10 +143,11 @@ identified from the script's own `filename =` argument, not from name similarity
 | ISE distributions | `blup/plot_log_ise_blup.pdf`, `plot_log_ise_blup_common.pdf` | `32_figures_blup.R:441` | log ISE boxplots grouped by λ, shaded by N, one per design | none — held in reserve. The prediction section reports the median and IQR from the benchmark tables and shows the ratio figure instead; these would add the level distribution the tables already summarise |
 | Pointwise sd | `blup/plot_sd_blup_and_mean_common.pdf` | `32_figures_blup.R:346` | Standard deviation of predictor and of the mean curve, common design only | **`main:175`** — the TBC there names it. Blocked on its shape: a 3×4 facet grid, which STYLE.md Part C excludes. Its numbers are quoted in the prose at `main:174` |
 | Per-replication curves | `blup/plot_blup_mc_conso_N=*_lambda=*{,_common}.pdf` (24) | `32_figures_blup.R:585` | Four replications per setup, true curve against adaptive prediction, both designs | **`supp:169`** — which says `figures/blup/` is empty. It is not |
-| Energy application | `blup/plot_adaptive_blup_{conso,solaire,hydrau,energy}.pdf`, `blup/plot_tikhonov_cv_{…}.pdf` (8) | `40_app_energy.R:186-253` | Prediction of each series' last curve, and the Tikhonov cross-validation criterion | **`main:180`**, **`supp:174`** |
-| NOTPERP, volume | `notperp/NOTPERP_volume_*.pdf` (7) + `Fboxplot_volume_round_{1,2,3}.png` | `46_app_notperp_volume.R:383-438`, `45_notperp_volume_clean.R:221-241` | Local regularity, mean function, density CV, Tikhonov CV, adaptive prediction; and the three outlier-removal rounds | **`main:174`**, **`supp:168`** — the current application |
+| Energy application | `blup/plot_adaptive_blup_{conso,solaire,hydrau,energy}.pdf`, `blup/plot_tikhonov_cv_{…}.pdf` (8) | `40_app_energy.R:186-253` | Prediction of each series' last curve, and the Tikhonov cross-validation criterion | none — `plot_adaptive_blup_conso` is Table A #21, `_solaire` and `_hydrau` are #29 and #30, and `plot_tikhonov_cv_energy` is #31. `plot_adaptive_blup_energy` and the three single-series CV plots stay in reserve, the combined panels being the referenced ones |
+| NOTPERP, volume | `notperp/NOTPERP_volume_*.pdf` (7) + `Fboxplot_volume_round_{1,2,3}.png` | `46_app_notperp_volume.R:383-438`, `45_notperp_volume_clean.R:221-241` | Local regularity, mean function, density CV, Tikhonov CV, adaptive prediction; and the three outlier-removal rounds | none — ten of the ten are now Table A #20 and #22–#28, except `NOTPERP_volume_locreg_{Ht,Lt2}`, which stay in reserve because the combined `_local_regularity` panel is the referenced one |
 | NOTPERP, log-return | `notperp/NOTPERP_{locreg_Ht,locreg_Lt2,local_regularity,mean_function,density_cv,adaptive_pred,tikhonov_cv}.pdf` (7) + `Fboxplot_round_{1,2,3}.png` | `42_app_notperp.R:370-425`, `41_notperp_download_clean.R:180-210` | The same set for the log-return quantity | **none — reference only.** Decided 2026-08-31: the paper reports volume only. These are the author's reference and are not paper content. Do not propose them for any section |
 | NOTPERP, quantity screen | `notperp/NOTPERP_quantity_facf.pdf` | `44_notperp_quantity_selection.R:227` | Functional autocorrelation of each candidate quantity — the evidence for choosing volume | **`supp:168`**, if the screen is reported |
+| NOTPERP, quantity screen | `notperp/NOTPERP_quantity_facf.pdf` | `44_notperp_quantity_selection.R:227` | Functional autocorrelation of each candidate quantity — the evidence for choosing volume | none — the screen is not reported. The volume decision is recorded in `45_notperp_volume_clean.R:12-18` and in [RUNLOG.md](RUNLOG.md) §3.2, and the supplement states the properties of the volume series without ranking it against the alternatives |
 | Consumption data | `real_data_conso.pdf`, `empirical_mean_conso.pdf`, `empirical_cov_conso.png`, `empirical_lag1_autocov_conso.png` | `02_energy_conso.R:27, 120, 189, 240` | Raw curves, empirical mean, empirical covariance and lag-1 autocovariance surfaces | **`main:21`** — the Fourier-estimation paragraph |
 | Design diagnostics | `plot_locreg_conso_data.pdf`, `plot_sig_conso_data.pdf`, `plot_Ht_L2t_and_sig_conso_data.pdf` | `10_simulation_design.R:193, 285, 297` | Estimated local regularity, σ, and the three together, on the consumption data | **`main:38`** — the caption TBC asks explicitly whether `plot_locreg_conso_data` belongs there |
 | FTS autocovariance | `autocov_FTS_conso_lag=0.png`, `autocov_FTS_conso_lag=1.png` | `30_figures_autocov.R:70` | Surfaces of the true lag-0 and lag-1 autocovariance of the constructed FTS | **`supp:14`** neighbourhood |
@@ -244,6 +263,32 @@ equivalents). Neither script has been run against the current tree.
 | 257 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
 | 257 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
 
+The five rows above — `main:241` to `main:257` in the numbering before the rewrite — describe the
+real-data placeholders. They were replaced on 2026-09-01 and are kept here as the record of what the
+placeholders claimed. The rows below are the prose that replaced them, in the new numbering.
+
+| Line | Value | Traceable to | Valid? |
+|---|---|---|---|
+| 4 | two real data applications, ByBit and ODRÉ named | `46_app_notperp_volume.R:1-11`, `40_app_energy.R:1-9` | **OK** — replaces the Facebook TBC |
+| 245 | forecasting motivation for both applications | `Numerical_analysis-2025-06-v1.tex:240` for energy, `46_app_notperp_volume.R:8-11` for volume | **OK** — no number stated |
+| 247 | the design split, volume independent and consumption common | `best_predictor_aout24.tex:184` (H3), `46:3-6`, `40:1-6` | **OK** |
+| 253 | $712$ files, 18 September 2024 to 30 August 2026, contiguous | `data-NOTPERP/raw/NOTPERP*.csv.gz`, read 2026-09-01 | **OK** |
+| 253 | $T_{n,i} = (\tau_{n,i}-a_n)/86400$, `eq:notperp:tni` | `45_notperp_volume_clean.R:117-129`; quantity-independent, carried over from the descriptive report | **OK** |
+| 261 | $430$-day window from 27 June 2025; trend R² $0.027$ against $0.093$ | replay of `45:152-172` on `raw/dt_NOTPERP_volume_fts.csv`, 2026-09-01 | **OK** — the script comment's 2025-06-25 is the same selection two archive days earlier |
+| 261 | six outlying curves; cap at $200$; $N = 424$, $84\,131$ observations, $M_n$ $105$ to $200$, mean $198.4$ | `roahd::fbplot` replay 2026-09-01 (6, 0, 0 over three rounds); `raw/dt_NOTPERP_volume_fts_cleaned.csv` | **OK** — but see the run/sample split at [RUNLOG.md](RUNLOG.md) §3.2 |
+| 263 | raw $M_n$ from $132$ to $49\,768$ | `raw/dt_NOTPERP_volume_fts.csv`, 712 curves | **OK** |
+| 265 | lag-1 FACF $0.337$; simulation medians $0.251$ to $0.328$ | `estimates/dt_blup_notperp_volume.RDS` `lag1_facf`; `estimates/facf/` | **OK** |
+| 265 | $\widehat H_t$ $0.254$ to $1$, median $0.806$, $29$ of $99$ on the clamp | `estimates/dt_notperp_volume_locreg.RDS` | **OK**; the level-not-variation caveat is `adaptiveFTS-issues.md` §6 |
+| 267 | $60$-point grid $2.1\cdot10^{-9}$ to $54.6$; interior $\alpha = 0.016$; criterion $0.4626$ against $0.5616$; $17.6$ per cent | `estimates/dt_blup_notperp_volume_tikhonov_cv_curve.RDS`; `exp(-20)`, `exp(4)`; argmin at index 40 of 60 | **OK** — `46:66` states 21 per cent, which the criterion on disk does not give |
+| 269 | squared-error ratio $1.211$ over $198$ points; closer at $98.0$ per cent | recomputed from `dt_blup_notperp_volume.RDS`, 2026-09-01 | **OK** — a single curve, and the text says so |
+| 269 | the weights of `eq:weighted_ise` would carry the score on $21$ of $198$ points | `estimate_density(h = 0.005)` on the target's own times, 2026-09-01: 21 zeros, floored weight share 1.000 | **OK** |
+| 271 | target $1.38$ to $2.17$ below the mean function; prediction departs by at most $0.27$ | `dt_blup_notperp_volume.RDS`, `Xtrue - muhat` and `prediction - muhat` | **OK** |
+| 272 | the run/sample split (in TBC) | file timestamps: estimates 2026-08-31 00:56–01:24, cleaned sample 13:44; 198 stored points against 200 in the current last curve | **OK** — TBC by decision, [RUNLOG.md](RUNLOG.md) §3.2 and §4 item 4 |
+| 285 | $122$ consumption curves, $96$ points, 1 June to 30 September 2024, values in $[0.546, 1]$ | `data-energy/raw/dt_conso.RDS` | **OK** |
+| 287 | $M_n = \lambda = 96$; lag-1 FACF $0.433$ on the $121$ preceding curves | same file; `estimates/dt_blup_conso.RDS` `lag1_facf` = 0.4328799 | **OK** |
+| 289 | $40$-point grid $3.1\cdot10^{-7}$ to $2.5\cdot10^{-3}$; interior $\alpha = 2.5\cdot10^{-5}$ | `40_app_energy.R:29`, `exp(seq(-15,-6))`; `dt_blup_conso_tikhonov_cv_curve.RDS`, argmin at index 20 of 40 | **OK** |
+| 289 | ratio $2.134$; closer at $89.6$ per cent; RMSE $0.0439$ against $0.0641$ | recomputed from `dt_blup_conso.RDS`, 2026-09-01 | **OK** — a single curve |
+
 ### `num_analysis_supp.tex`
 
 | Line | Value | Traceable to | Valid? |
@@ -268,10 +313,30 @@ equivalents). Neither script has been run against the current tree.
 | 169 | "`figures/blup/` is empty" (in TBC) | 24 `plot_blup_mc_*` files present | **MISMATCH — stale** |
 | 183 | lag-1 FACF reference values "recorded at `40_app_energy.R:24`" (in TBC) | line 24 is a comment on the Tikhonov grids; the values are the `lag1_facf` column of `data-energy/estimates/dt_blup_{conso,solaire,hydrau}.RDS`, read as **0.4328799**, **0.4306196**, **0.3649574** | **MISMATCH — stale pointer.** The values themselves are now established, [RUNLOG.md](RUNLOG.md) §3.1 |
 
+The row above, `supp:183` in the numbering before the rewrite, records the stale pointer inside the
+French-electricity placeholder, and the NOTPERP placeholder at `supp:174` carried no value at all.
+Both are kept as the record of what the placeholders claimed. The rows below are the prose that
+replaced them, in the new numbering.
+
+| Line | Value | Traceable to | Valid? |
+|---|---|---|---|
+| 177 | $712$ files, $1\,107\,894$ trades, $132$ to $49\,768$ per day | `raw/dt_NOTPERP_volume_fts.csv`, read 2026-09-01 | **OK** |
+| 179 | trend R² $0.093$ over the archive and $0.027$ over the window; KPSS at 5 per cent; $430$ days from 27 June 2025; ADF rejects on every window | replay of `45:152-172`, 2026-09-01; `tseries::adf.test` p = 0.01 at L = 200, 365, 430, 712 | **OK** |
+| 181 | aggregation grid $\operatorname{median}_n M_n = 828$; round 1 six curves, rounds 2 and 3 none; $430 \to 424$ | `roahd::fbplot` replay on the same grid, 2026-09-01 | **OK** |
+| 183 | $14.4$ per cent of rows share a timestamp; $408$ of $424$ on the cap; cost about $M_n^4$ | window rows of `dt_NOTPERP_volume_fts.csv`; `dt_NOTPERP_volume_fts_cleaned.csv`; `46:29-32` | **OK** — `45:269` states about 18 per cent, measured on a different window |
+| 185 | $50$ curves; grid floored at $1/\operatorname{median}_n M_n$; selection $0.005$; nine tenths at the floor | `estimates/dt_notperp_volume_density_cv.RDS`: `density_bw_star` 0.005, grid 0.005 to 0.2, `share_argmin[1]` = 0.9 | **OK**; the unbounded-criterion reading is `adaptiveFTS-issues.md` §3 |
+| 187 | $\widehat H_t$ $0.254$ to $1$, median $0.806$, $29$ of $99$ clamped; $\widehat L^2_t$ $0.195$ to $28.8$ | `estimates/dt_notperp_volume_locreg.RDS` | **OK** |
+| 188 | the figures other than the boxplots predate the cleaned sample (in TBC) | file timestamps: 00:56–01:24 against 13:43–13:44 | **OK** — TBC by decision |
+| 190 | `roahd2019` absent from the bibliography (in TBC) | `grep roahd references_clean.bib` returns nothing; the entry is at `paper_for_reference/NOTPERP_descriptive_analysis/report/references.bib:53` | **OK** |
+| 233 | $122$ photovoltaic curves, $61$ points 04:00–19:00, last curve in $[0, 0.551]$; lag-1 FACF $0.431$; ratio $2.411$; closer at every point | `data-energy/raw/dt_solaire.RDS`; `40_app_energy.R:38-46`; `estimates/dt_blup_solaire.RDS`, recomputed 2026-09-01 | **OK** |
+| 235 | $152$ hydroelectric curves, $96$ points, 1 November 2023 to 31 March 2024, values in $[0.267, 1]$; lag-1 FACF $0.365$; ratio $1.125$; closer at $57.3$ per cent | `data-energy/raw/dt_hydrau.RDS`; `estimates/dt_blup_hydrau.RDS`, recomputed 2026-09-01 | **OK** |
+| 237 | three $40$-point grids, windows of seven to nine log units; selections $2.5\cdot10^{-5}$, $5.7\cdot10^{-5}$, $9.1\cdot10^{-5}$, all interior | `40_app_energy.R:28-31`; the three `dt_blup_*_tikhonov_cv_curve.RDS`, argmins at indices 20, 19, 19 of 40 | **OK** |
+
 ### Summary
 
-Rewritten on 2026-08-31 after the (auto)covariance sections were redone, and again the same day
-after the adaptive curve prediction section; what stands is below.
+Rewritten on 2026-08-31 after the (auto)covariance sections were redone, again the same day after the
+adaptive curve prediction section, and again on 2026-09-01 after the two real data applications; what
+stands is below.
 
 - **3 values remain stale verdicts** asserting that results do not exist. They all do: `main:251`,
   `supp:75`, `supp:156`. The three that concerned `blup/`, `figures/blup/` and `estimates/RP20/` are
@@ -315,6 +380,36 @@ after the adaptive curve prediction section; what stands is below.
   `31_figures_cov.R:162`, and `ylim(0, 1.5)`), which is 5456 of 18668 finite ratios at lag 1 and
   6027 of 18729 at lag 0, all of them unfavourable. Replotting `log(ratio)` unclipped would remove
   the need for the declaration; that is a predictFTS decision, not a paper one.
+- **The two real data applications are written**, 2026-09-01. NOTPERP volume and consumption are the
+  main text in that order, so the reader meets the independent and common designs in the order the
+  comparison subsection takes them; solar and hydroelectric are the supplement's deferral. Every
+  number came from `data-NOTPERP/` or `data-energy/`, read or recomputed on 2026-08-31 and
+  2026-09-01. Facebook appears in no live file.
+- **The four MISMATCHes are down to two.** The photovoltaic and hydroelectric target-curve offsets
+  (formerly `main:257`) and the log-return section heading (formerly `main:248`) are gone with the
+  placeholders that carried them. The σ provenance and the `L_t` provenance at `main:43` are
+  untouched by this rewrite and remain.
+- **The three stale verdicts are down to one.** `main:251` and `supp:169` are gone with their
+  placeholders; `supp:156` — "23\_simulation\_facf.R has not been run" — still stands and still
+  contradicts `estimates/facf/`.
+- **1 new TBC is raised by decision, not by oversight**: the NOTPERP run/sample split, at
+  `main:272` and `supp:188`. The estimates are from 2026-08-31 ~01:00 and the cleaned sample from
+  13:44 the same day, with two further archive days between them and a stationary window that
+  re-selects itself on every run, so the stored prediction carries 198 points where the current last
+  curve carries 200. The fix is to run `45_notperp_volume_clean.R` then `46_app_notperp_volume.R` and
+  restate both files from that one run. See [RUNLOG.md](RUNLOG.md) §3.2 and §4 item 4.
+- **1 new TBC names a missing bibliography entry**: `roahd2019`, at `supp:190`. The functional
+  boxplot is described without a citation until it is added to `references_clean.bib`.
+- **1 criterion was checked and could not be used.** `eq:weighted_ise` degenerates on the NOTPERP
+  application: at the selected design-density bandwidth the leave-one-out estimate vanishes at 21 of
+  the target's 198 points, so the floored weights carry the whole score there. The text reports an
+  unweighted mean over the target's own points and says why. Nothing about `eq:weighted_ise` changes;
+  the degeneration does not arise in the simulation study.
+- **6 error summaries are recomputed rather than read.** No script scores either application. The
+  ratios of the mean curve's squared error to the predictor's — 2.134, 2.411, 1.125 for the three
+  energy series and 1.211 for the volume curves, with the shares of points at which the predictor is
+  the closer — were computed from the stored `dt_blup_*.RDS` files on 2026-09-01 and are reported as
+  single curves, not distributions.
 
 ---
 

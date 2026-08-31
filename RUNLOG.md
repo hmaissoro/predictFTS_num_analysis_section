@@ -1,8 +1,9 @@
 # RUNLOG
 
 What was actually run in `D:\Projects\predictFTS`, established by reading files on disk on
-2026-08-31. Every entry names the file it comes from. Anything that could not be established from a
-file is recorded as **not established**, with the question it raises.
+2026-08-31, and extended on 2026-09-01 when the two real data applications were written. Every entry
+names the file it comes from. Anything that could not be established from a file is recorded as
+**not established**, with the question it raises.
 
 This is a generated map. It goes stale the moment predictFTS is re-run. Where it disagrees with
 disk, disk wins.
@@ -522,6 +523,25 @@ directory entry. Everything else predates it — 2024-11-19, 2024-11-20, 2024-11
 `dt_*_estimates_blup_rp_*.csv`, every `dt_blup_*_thr0.*.RDS`, every `dt_blup_conf_band_*.RDS` and
 every `dt_estimates_*blup_*.RDS`. **No number should be quoted from those** without re-running.
 
+**Prediction accuracy, recomputed 2026-09-01.** No script scores the energy predictions; the three
+`dt_blup_*.RDS` store the target curve, the prediction and the mean curve, and nothing else. The
+design being common, the weights of `eq:weighted_ise` are $M^{-1}$ and the weighted ISE is the plain
+mean over the target's own points. Computed from those three files:
+
+| Series | RMSE, predictor | RMSE, mean curve | Squared-error ratio | Predictor closer at |
+|---|---|---|---|---|
+| conso | 0.04386 | 0.06408 | 2.134 | 89.6% of 96 points |
+| solaire | 0.1212 | 0.1883 | 2.411 | 100% of 61 points |
+| hydrau | 0.1394 | 0.1478 | 1.125 | 57.3% of 96 points |
+
+The ordering follows the lag-1 FACF exactly. These are single curves, not distributions, and are
+reported as such.
+
+**Done, 2026-09-01.** Consumption is written up in the main text at `num_analysis_main.tex:284-297`;
+photovoltaic and hydroelectric are the supplement's deferral at `num_analysis_supp.tex:228-255`. The
+stale offset claim is gone from both files. The stale pointer to `40_app_energy.R:24` is gone with
+the TBC that carried it.
+
 ### 3.2 NOTPERP — independent random design
 
 **The analysed quantity is VOLUME.** Confirmed on disk. **Ruling (2026-08-31): the
@@ -576,35 +596,88 @@ The lag-1 to lag-3 functional autocorrelations quoted in `45_notperp_volume_clea
 script's own figures for the cleaned series; the 0.3368356 in the table above is the lag-1 FACF
 computed inside the fit, on the curves before the target, and is the value to quote.)
 
-**Discrepancy.** `scripts/45_notperp_volume_clean.R:37-38` states the cap "puts the application at
-lambdahat near 200 over **some 690 curves**". The cleaned volume file has **424** curves. 696 is the
-log-return cleaned count, so the comment appears to have been carried over from
+**The stored estimates and the stored sample are from different runs.** Established 2026-09-01 from
+file timestamps, and it is the one thing about this application that has to be fixed before
+submission.
+
+| Artefact | Written | Which run |
+|---|---|---|
+| `estimates/dt_notperp_volume_locreg.RDS` | 2026-08-31 00:56 | old |
+| `estimates/dt_notperp_volume_mean.RDS` | 2026-08-31 00:58 | old |
+| `estimates/dt_notperp_volume_density_cv.RDS` | 2026-08-31 01:02 | old |
+| `estimates/dt_blup_notperp_volume{,_tikhonov_cv_curve}.RDS` | 2026-08-31 01:24 | old |
+| `figures/notperp/NOTPERP_volume_*.pdf` | 2026-08-31 00:56–01:24 | old |
+| `raw/NOTPERP2026-08-30.csv.gz` | 2026-08-31 12:33 | — |
+| `raw/dt_NOTPERP_volume_fts.csv` | 2026-08-31 13:43 | new |
+| `figures/notperp/Fboxplot_volume_round_{1,2,3}.png` | 2026-08-31 13:43–13:44 | new |
+| `raw/dt_NOTPERP_volume_fts_cleaned.csv` | 2026-08-31 13:44 | new |
+
+Two further archive days arrived between the two, and `45_notperp_volume_clean.R:62` re-selects the
+stationary window on every run, so the target day moved: the stored prediction carries **198** points
+and the current cleaned file's last curve carries **200**. The sizes above — 424 curves, 84 131 rows
+— are the *new* file; the α, the FACF, the local regularity and the prediction are the *old* run.
+Re-run `45` then `46` and restate both halves from that one run.
+
+**The stationary window, re-derived 2026-09-01** by replaying the rule of `45:152-172` on
+`raw/dt_NOTPERP_volume_fts.csv`. The archive is 712 contiguous days carrying 1 107 894 trades.
+
+| Quantity | Value |
+|---|---|
+| `L_star` | 430 days, starting **2025-06-27** |
+| Trend R², window / whole archive | 0.0273 / 0.0929 |
+| ADF against a unit root | rejected at 0.01 on every window tried |
+| Aggregation grid for the boxplot, `median(M_n)` | 828 points |
+| Functional boxplot | round 1 six curves, rounds 2 and 3 none; 430 → **424** |
+| Rows sharing a timestamp, inside the window | 14.4% |
+| Curves on the cap of 200 | 408 of 424, 96.2% |
+
+The script's own comments at `45:37-38, 56-58` read 2025-06-25 and "some 690 curves". The date is the
+same selection two archive days earlier; the 690 is the log-return count carried over and not
+updated, as noted below.
+
+**`eq:weighted_ise` degenerates on this application.** Measured 2026-09-01. At the selected
+`density_bw = 0.005` the leave-one-out Parzen–Rosenblatt estimate is exactly zero at **21 of the
+target's 198 points**, so after the `1e-6` floor and the renormalisation of §1.7 those 21 points
+carry **100%** of the weight and the largest single weight is 0.0476 against 0.0051 for a uniform
+one. The weighted score is therefore not reported for this application; the text uses the unweighted
+mean over the target's own points and says why. This is a property of a sparse random design at a
+bandwidth pinned to the grid floor, and it does not arise under the common design, where the weights
+are $M^{-1}$ by construction.
+
+**Prediction accuracy, recomputed 2026-09-01** from `estimates/dt_blup_notperp_volume.RDS`:
+
+| Quantity | Value |
+|---|---|
+| RMSE, predictor / mean curve | 1.564 / 1.721 |
+| Squared-error ratio, unweighted | **1.211** |
+| Predictor closer at | 98.0% of the 198 points |
+| Tikhonov criterion at α\* / at the upper edge | 0.4626 / 0.5616, a reduction of **17.6%** |
+| Target curve against the mean function | 1.38 to 2.17 lower in logarithm at every point |
+| Prediction against the mean function | departs by at most 0.27 |
+
+The upper edge of the Tikhonov grid is the mean predictor, `exp(4) = 54.6` being large enough for the
+correction to vanish; the energy grids stop at `exp(-5)` or below and their upper edges are not.
+`46_app_notperp_volume.R:66` states the reduction as 21%; the criterion on disk gives 17.6%.
+
+**Done, 2026-09-01.** The volume application is written up at `num_analysis_main.tex:248-279` and
+`num_analysis_supp.tex:174-227`. The four consequences listed when this section was first written are
+discharged: the heading names volume, the main-text TBC is replaced by the application itself, the
+supplement's descriptive material is recomputed on the volume series, and the observation-time map
+carries over unchanged as `eq:notperp:tni`. Two TBCs remain by decision — the run/sample split above,
+and the `roahd2019` entry that `references_clean.bib` does not carry.
+
+The discrepancy first recorded here stands: `45_notperp_volume_clean.R:37-38` says the cap "puts the
+application at lambdahat near 200 over **some 690 curves**", where the cleaned volume file has **424**.
+696 is the log-return cleaned count, so the comment was carried over from
 `41_notperp_download_clean.R` and not updated.
-
-**Consequences for the two `.tex` files**, following from the volume-only decision:
-
-- `num_analysis_main.tex:171` — the heading "NOTPERP intraday log-return curves" is wrong and must
-  become a volume heading.
-- `num_analysis_main.tex:174` — the TBC describes the log-return application and its provenance
-  from `01_NOTPERP_analysis.R` and `41_notperp_download_clean.R`. It must be rewritten against
-  `45_notperp_volume_clean.R` and `46_app_notperp_volume.R`. Its closing claim that
-  "`data-NOTPERP/estimates/` is empty and `42_app_notperp.R` does not run to completion" is doubly
-  stale: the directory holds ten files, and `42` is no longer the script that matters.
-- `num_analysis_supp.tex:168` — the descriptive material it proposes to reuse from
-  `paper_for_reference/NOTPERP_descriptive_analysis/` is log-return material. Only the parts that
-  are quantity-independent survive: the ByBit provenance, the observation-time map, and the
-  functional-boxplot procedure. Every sample size, every M_n summary and the autocorrelation table
-  must be recomputed on the volume series.
-- The observation-time map `T_{n,i} = (tau_{n,i} - a_n)/86400` is quantity-independent and carries
-  over unchanged.
 
 ---
 
 ## 4. Still open
 
-**Three items, and two of them are predictFTS work rather than paper work.** The first is waiting on
+**Four items, and three of them are predictFTS work rather than paper work.** The first is waiting on
 the author's own compute and is deliberately left as a placeholder in the text; the second and third
-are decisions about what the scripts emit.
+are decisions about what the scripts emit; the fourth is a re-run.
 
 1. **`RP20` and `Z26` results** (§1.8). RP20 is exported — 4800 files — but never fitted or scored;
    Z26 has no implementation at all. The author will run and implement both. Until then
@@ -621,6 +694,14 @@ are decisions about what the scripts emit.
 
 3. **The `Z26` / `ZH26` tag** (§1.8). The text and the generated table disagree. One has to change.
 
+4. **The NOTPERP volume application must be re-run end to end** (§3.2). The stored estimates are from
+   2026-08-31 ~01:00 and the stored cleaned sample from 13:44 the same day, with two further archive
+   days in between and a window that re-selects itself on every run. Run `45_notperp_volume_clean.R`
+   then `46_app_notperp_volume.R` in sequence, then restate the sample description and every number
+   of `num_analysis_main.tex:248-279` and `num_analysis_supp.tex:174-227` from that one run. The TBCs
+   in both files name this. Until it is done, no NOTPERP number and its sample size can be quoted in
+   the same sentence.
+
 **Settled since this file was first written**, and no longer open:
 
 - *Cross-platform reproduction of the curve column.* §0. Documented in `aws/Dockerfile:19-28`,
@@ -632,12 +713,23 @@ are decisions about what the scripts emit.
 - *The NOTPERP quantity.* §3.2. Volume only; the log-return material is reference, not content.
 - *Which ISE is authoritative.* §1.7. Both stand — `eq:weighted_ise` is the theory, the
   renormalisation and the density floor are the implementation's guard against degeneration.
+- *Whether the weighted ISE can be used on the NOTPERP application.* §3.2. It cannot: 21 of the
+  target's 198 points carry the whole of the weight at the selected bandwidth. The text reports the
+  unweighted mean and says why. No change to `eq:weighted_ise`, which is a statement about the
+  simulation study, where the degeneration does not occur.
 - *The lag-0 bandwidth-separation claim.* §2.2. It holds; the lag-0 prose says the difference is
   lower there, and at (0.7, 0.8) does not exist. No monotonicity claim at lag 0.
 - *The prediction section's result slots.* §1.7, §1.8. Written up 2026-08-31 from the completed BLUP
   study: the protocol as run, the weighted ISE with both implementation guards stated, the accuracy
   under both designs against the estimated mean curve, and the selected Tikhonov parameters. The two
   competitor slots became the one mandated placeholder.
+- *The two real data applications.* §3.1, §3.2. Written up 2026-09-01. NOTPERP volume and
+  consumption are the main text, in that order, so that the reader meets the independent and common
+  designs in the order the comparison subsection takes them; solar and hydroelectric are the
+  supplement's deferral. Facebook is gone from every live file.
+- *Whether error summaries not written by any script may be quoted.* §3.1, §3.2. They may, recomputed
+  from the stored prediction files and reported as single curves rather than distributions. The six
+  ratios are tabulated in those two sections.
 
 The one open question elsewhere in this file, at §1.6, is a repository matter and not a paper one:
 `22_simulation_blup.R` catches per-replication failures but does not persist them, so a silent
