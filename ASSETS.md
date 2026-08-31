@@ -8,11 +8,16 @@ tree against tree, no file on either side only. So "which copy" never arises bel
 in both or in neither.
 
 The tree holds **132 plot assets** — 96 `.pdf` and 36 `.png` — plus 96 `.tex` tikz sidecars, one per
-pdf. Of the 132, **18 are referenced** (Table A) and **114 are not** (Table B).
+pdf. Of the 132, **19 are referenced** (Table A) and **113 are not** (Table B).
 
 Updated 2026-08-31 after the (auto)covariance rewrite: the supplement's risk panels moved from the
 second set of four locations to the first, and the two `_first_4locations` accuracy boxplots became
 main-text figures. Line numbers below are those of the rewritten files.
+
+Updated again 2026-08-31 after the adaptive curve prediction rewrite: `plot_log_wise_ratio_mean_over_blup.pdf`
+became Table A #19, and the two BLUP benchmark tables became the first `\input`-ed non-figure assets,
+through a new `paper/tables/` directory that mirrors the `paper/figures/` copy. Every line number in
+`num_analysis_main.tex` from `:107` onward has moved; those below are the new ones.
 
 This is a generated map. It goes stale the moment predictFTS is re-run. Where it disagrees with
 disk, disk wins.
@@ -71,6 +76,7 @@ in the last two columns.
 | 16 | supp | 161 | `figures/blup/hist_lag-1_facf_conso.pdf` | `36_figures_facf.R:22-71` | **3×3** grid of lag-1 FACF histograms, N ∈ {150,300,600} × λ ∈ {25,50,100}; one shared set of Sturges breaks from the pooled values | **SUPERSEDED** |
 | 17 | main | 85 | `figures/autocov/boxplot_conso_autocov_ratio_lag=1_first_4locations.pdf` | `30_figures_autocov.R:271-304` | 2×2 of the lag-1 error-ratio boxplots at (0.2,0.4), (0.4,0.7), (0.7,0.8), (0.8,0.2), grouped by λ and shaded by N, dashed line at 1, ratios ≥ 1.5 dropped | **NEW** |
 | 18 | main | 102 | `figures/cov/boxplot_conso_cov_ratio_lag=0_first_4locations.pdf` | `31_figures_cov.R:206-238` | Same at lag 0 | **NEW** |
+| 19 | main | 198 | `figures/blup/plot_log_wise_ratio_mean_over_blup.pdf` | `32_figures_blup.R:360-388` | Boxplots of `log(wISE(mean) / wISE(BLUP))`, two panels — independent design left, common design right — grouped by λ and shaded by N, dashed line at 0 | **NEW**, 2026-08-31 |
 
 ### What each SUPERSEDED figure now shows that it did not before
 
@@ -116,10 +122,9 @@ identified from the script's own `filename =` argument, not from name similarity
 | Accuracy boxplots, lag-0 | `cov/boxplot_conso_cov_ratio_lag=0_s=*_t=*.pdf` (8) + `_second_4locations` | `31_figures_cov.R:184, 241` | Same at lag 0, against the `MPV25` estimator at ℓ = 0 — the same object as the single-bandwidth version, per `adaptiveFTS/R/05_estimate_autocovariance.R:10-13` | none — `_first_4locations` is now Table A #18 |
 | Risk surfaces, unused four | `autocov/plt_autocov_risk_…_s=∈{(0.2,0.3),(0.5,0.2),(0.1,0.4),(0.8,0.5)}.png` (4), same in `cov/` (4) | `30_figures_autocov.R:143`, `31_figures_cov.R:76` | The other four of the eight locations | none — since 2026-08-31 the supplement shows the first set |
 | Local regularity | `locreg/boxplot_conso_locreg_{Ht,Lt2}_t=*.pdf` (8) + two `_4locations` | `35_figures_locreg.R:90, 110` | Estimated H_t and L_t² at t ∈ {0.2, 0.4, 0.6, 0.8} against the design's own values, by (N, λ) | **`supp:75`** — the local-regularity TBC, which says the figures do not exist. They do |
-| ISE distributions | `blup/plot_log_ise_blup.pdf`, `plot_log_ise_blup_common.pdf` | `32_figures_blup.R:441` | log ISE boxplots grouped by λ, shaded by N, one per design | **`main:128`** — the weighted-ISE results TBC |
-| ISE against the mean baseline | `blup/plot_log_wise_ratio_mean_over_blup.pdf` | `32_figures_blup.R:380` | log ratio of the mean curve's wISE to the BLUP's; below zero favours the BLUP | **`main:128`** |
-| Pointwise sd | `blup/plot_sd_blup_and_mean_common.pdf` | `32_figures_blup.R:346` | Standard deviation of predictor and of the mean curve, common design only | **`main:128`** |
-| Per-replication curves | `blup/plot_blup_mc_conso_N=*_lambda=*{,_common}.pdf` (24) | `32_figures_blup.R:585` | Four replications per setup, true curve against adaptive prediction, both designs | **`supp:160`** — which says `figures/blup/` is empty. It is not |
+| ISE distributions | `blup/plot_log_ise_blup.pdf`, `plot_log_ise_blup_common.pdf` | `32_figures_blup.R:441` | log ISE boxplots grouped by λ, shaded by N, one per design | none — held in reserve. The prediction section reports the median and IQR from the benchmark tables and shows the ratio figure instead; these would add the level distribution the tables already summarise |
+| Pointwise sd | `blup/plot_sd_blup_and_mean_common.pdf` | `32_figures_blup.R:346` | Standard deviation of predictor and of the mean curve, common design only | **`main:175`** — the TBC there names it. Blocked on its shape: a 3×4 facet grid, which STYLE.md Part C excludes. Its numbers are quoted in the prose at `main:174` |
+| Per-replication curves | `blup/plot_blup_mc_conso_N=*_lambda=*{,_common}.pdf` (24) | `32_figures_blup.R:585` | Four replications per setup, true curve against adaptive prediction, both designs | **`supp:169`** — which says `figures/blup/` is empty. It is not |
 | Energy application | `blup/plot_adaptive_blup_{conso,solaire,hydrau,energy}.pdf`, `blup/plot_tikhonov_cv_{…}.pdf` (8) | `40_app_energy.R:186-253` | Prediction of each series' last curve, and the Tikhonov cross-validation criterion | **`main:180`**, **`supp:174`** |
 | NOTPERP, volume | `notperp/NOTPERP_volume_*.pdf` (7) + `Fboxplot_volume_round_{1,2,3}.png` | `46_app_notperp_volume.R:383-438`, `45_notperp_volume_clean.R:221-241` | Local regularity, mean function, density CV, Tikhonov CV, adaptive prediction; and the three outlier-removal rounds | **`main:174`**, **`supp:168`** — the current application |
 | NOTPERP, log-return | `notperp/NOTPERP_{locreg_Ht,locreg_Lt2,local_regularity,mean_function,density_cv,adaptive_pred,tikhonov_cv}.pdf` (7) + `Fboxplot_round_{1,2,3}.png` | `42_app_notperp.R:370-425`, `41_notperp_download_clean.R:180-210` | The same set for the log-return quantity | **none — reference only.** Decided 2026-08-31: the paper reports volume only. These are the author's reference and are not paper content. Do not propose them for any section |
@@ -131,19 +136,31 @@ identified from the script's own `filename =` argument, not from name similarity
 | Calibration | `calibration/*.png` (10) | `15_calibration_grids.R:43-844` | Where each selection falls inside its grid — the evidence the grids are wide enough | none; internal, and `data-simulation/estimates/calibration/` predates the current run |
 | **No producing script** | `plot_diagonal_band_subdomains.pdf` | **none found** | Diagram of the diagonal-band subdomains, dated 2025-05-22 | **ORPHAN** — a grep across `scripts/` and `archive/` returns nothing |
 
-### Non-figure assets: eight LaTeX tables, written and unreferenced
+### Non-figure assets: eight LaTeX tables, two of them now referenced
 
 Under `D:\Projects\predictFTS\data-simulation\estimates\table\`, all written 2026-08-31 by
-`32_figures_blup.R` and `35_figures_locreg.R`. No `\input` in either `.tex` file points at them.
+`32_figures_blup.R` and `35_figures_locreg.R`.
 
-| File | Content | Candidate section |
+**Two are now `\input` by `num_analysis_main.tex`, through a copy in `paper/tables/`.** That copy
+mirrors the figures contract — `paper/figures` is a copy of `D:\Projects\predictFTS\figures` — and
+keeps the filenames unchanged, so renaming one means renaming it in `32_figures_blup.R` in the same
+commit. The copies were taken 2026-08-31 and are byte-identical to their sources; they go stale the
+moment `32_figures_blup.R` re-runs, and must be re-copied then.
+
+**The other six cannot be `\input` as floats.** `Hmisc::latex()` wraps each in its own `table`
+environment carrying no `\caption` and no `\label`, so the float cannot be captioned and the table
+cannot be `\ref`-ed. `get_wise_benchmark_table()` at `32_figures_blup.R:187-202` writes a bare
+`tabular` and is the pattern the other writers should follow. Until they do, their numbers reach the
+paper as prose.
+
+| File | Content | Status |
 |---|---|---|
-| `latex_blup_ise_estimates_conso.tex` | Mean, Median, Sd of both ISE variants, twelve setups, independent design | **`main:128`** — exactly the five-decimal table the TBC describes |
-| `latex_blup_ise_estimates_conso_common.tex` | Same, common design | **`main:128`** |
-| `latex_blup_wise_benchmark_conso.tex` | Median wISE, IQR, relative, "BLUP better (%)"; Panel B `RP20 --- TBC` | **`main:143`** |
-| `latex_blup_wise_benchmark_conso_common.tex` | Same; Panel B `ZH26 --- TBC` | **`main:162`** |
-| `latex_blup_tikhonov_conso.tex` | Median α and floor/top grid percentages, both designs | **`supp:63`** |
-| `latex_blup_bias_sd_conso_common.tex` | Pointwise bias and sd at t ∈ {0.2,0.4,0.6,0.8}, common design only | **`main:128`**, whose TBC says a bias/variance split is unavailable — true of the *independent* design only |
+| `latex_blup_wise_benchmark_conso.tex` | Median wISE, IQR, relative, "BLUP better (%)"; Panel B `RP20 --- TBC` | **REFERENCED** — `main:181`, Table `tab:blup_benchmark_random` |
+| `latex_blup_wise_benchmark_conso_common.tex` | Same; Panel B `ZH26 --- TBC` | **REFERENCED** — `main:190`, Table `tab:blup_benchmark_common` |
+| `latex_blup_ise_estimates_conso.tex` | Mean, Median, Sd of both ISE variants, twelve setups, independent design | Blocked by the `table` wrapper; named in the TBC at `main:160`. Its `Against X_N` median column reproduces Panel A of the benchmark table exactly |
+| `latex_blup_ise_estimates_conso_common.tex` | Same, common design | Blocked, same TBC |
+| `latex_blup_tikhonov_conso.tex` | Median α and floor/top grid percentages, both designs | Blocked; numbers quoted in prose at `main:205-206`, TBC at `main:209` |
+| `latex_blup_bias_sd_conso_common.tex` | Pointwise bias and sd at t ∈ {0.2,0.4,0.6,0.8}, common design only | Blocked; numbers quoted in prose at `main:174`, TBC at `main:175`. The old verdict that a bias/variance split is unavailable is true of the *independent* design only, and the text now says so |
 | `latex_locreg_Ht_estimates_conso.tex` | True, median, sd, bias, RMSE of H_t, and clamp hits, 48 rows | **`supp:75`** |
 | `latex_locreg_Lt2_estimates_conso.tex` | Same for L_t², 48 rows | **`supp:75`** |
 
@@ -200,17 +217,32 @@ equivalents). Neither script has been run against the current tree.
 | 119 | operator norm `0.5` | `get_far_kenel_conso(operator_norm = 0.5)` default, `11_simulation_generate.R:87` | **OK** |
 | 119 | burn-in `100` | `n_burnin = 100L` | **OK** |
 | 121 | `0.8λ`–`1.2λ`, shared grid of λ points, noise sd `0.007` | `11_simulation_generate.R:48-54, 136, 22` | **OK** |
-| 151 | `R = 400`; "replications on which the score is not finite are dropped, and their number is reported" | `latex_blup_wise_benchmark_conso{,_common}.tex`: "400 of 400 replications retained in every configuration" | **OK** — and the dropped count is zero |
-| 152 | `22_simulation_blup.R:143-144` renormalises the weights (in TBC) | `22_simulation_blup.R:144`, `rho <- rho / sum(rho)` | **OK as a fact, wrong as a verdict.** The renormalisation is real, and so is the `1e-6` density floor the TBC omits. But the TBC reads them as "the paper and the implementation disagree", and the ruling of 2026-08-31 is that they do not: `eq:weighted_ise` is the theory, these are the implementation's guard against numerical degeneration. Both stand. See [RUNLOG.md](RUNLOG.md) §1.7 |
-| 156 | "`estimates/` has no `blup/` directory and `figures/blup/` is empty" (in TBC) | both populated; 24 `plot_blup_mc_*` files and three tables | **MISMATCH — stale** |
-| 169 | `RP20` returns on a regular grid of `241` points, with a B-spline projection (in TBC, flagged unattested) | nothing on disk | **UNVERIFIABLE** — correctly left out of the prose |
-| 171 | "`estimates/RP20/` does not exist" (in TBC) | `estimates/RP20/export/` — 12 cells × 400 | **MISMATCH — stale.** The export exists; the *comparison* does not |
-| 190 | "No implementation exists" for `Z26` | grep for `zhao|z26|zh26` over `scripts/`: two hits, both labels in `32_figures_blup.R:49-50` | **OK** |
-| 199 | section heading "NOTPERP intraday **log-return** curves" | volume is the analysed quantity, `46_app_notperp_volume.R:1`; decided 2026-08-31 that the paper reports volume only | **MISMATCH** — the heading names the wrong quantity |
-| 202 | "`data-NOTPERP/estimates/` is empty" and "`42_app_notperp.R` does not run to completion" (in TBC) | ten `.RDS` files, five of them `*_volume_*`; and `42` is the reference-only log-return script, not the one the paper uses | **MISMATCH — doubly stale.** The directory is populated and the named script is no longer the relevant one |
-| 208 | 122 consumption at 96 pts, 122 photovoltaic restricted to 61 over 04:00–19:00, 152 hydroelectric at 96 (in TBC) | `data-energy/raw/`; `40_app_energy.R:38-46` | **OK** |
-| 208 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
-| 208 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
+| 137 | lag-1 FACF median "runs from 0.251 to 0.328" | `estimates/facf/`, 9 cells × 400, read 2026-08-31: per-cell medians 0.2510, 0.2812, 0.3151, 0.2509, 0.2851, 0.3235, 0.2554, 0.2872, 0.3277 | **OK** — and the text says "the setups on which it was computed", the TBC at `:139` naming the three that were not |
+| 139 | λ = 200 absent from the FACF study (in TBC) | `36_figures_facf.R:25`, `lambdavec <- c(25, 50, 100)`; 9 result cells, not 12 | **OK** |
+| 152 | weights normalised to sum to one exactly; estimated design density floored at `10^{-6}` | `22_simulation_blup.R:143-144`, `rho <- 1 / (length(t0) * pmax(ghat, 1e-6))` then `rho <- rho / sum(rho)` | **OK** — stated as implementation prose beside an unchanged `eq:weighted_ise`, per the ruling in [RUNLOG.md](RUNLOG.md) §1.7. Replaces the former TBC at `:152`, whose verdict — "the paper and the implementation disagree" — was itself the error |
+| 155 | "the score is finite on 400 of 400 replications in every setup and under both designs" | `latex_blup_wise_benchmark_conso{,_common}.tex`, final row of each | **OK** |
+| 155 | bias/variance split available under the common design, not under the independent one | `32_figures_blup.R:212-217`: the four locations are exact grid points at every λ under the common design | **OK** — corrects the former blanket claim that the split was unavailable |
+| 158 | ρ and 𝒟 defined on `n_0` in the authority, needed on `n_0+1` (in TBC) | `best_predictor_aout24.tex:314-321` | **OK** — the one point of the old `:152` TBC that the ruling leaves open |
+| 160, 175, 209 | the six `Hmisc::latex()` tables carry their own uncaptioned `table` environment (in TBCs) | `32_figures_blup.R:241-247, 287-294, 406-412`; each written file opens `\begin{table}[!tbp]` and contains no `\caption` and no `\label` | **OK** |
+| 165 | independent-design median wISE `0.00306` to `0.00385`; falls with N at λ = 25 and λ = 50; at λ = 200 rises with N and exceeds its λ = 100 value at every N | `latex_blup_wise_benchmark_conso.tex` Panel A | **OK** |
+| 167 | common-design median wISE `0.00276` to `0.00396`; at λ = 200 exceeds its λ = 100 value at N = 300 and N = 600 and **equals** it at N = 150 | `latex_blup_wise_benchmark_conso_common.tex` Panel A: 0.00324 at both (150, 100) and (150, 200) | **OK** — the equality is stated rather than absorbed into "exceeds" |
+| 169 | relative gain `1.06`–`1.21` (independent) and `1.14`–`1.26` (common), the larger in **every one** of the twelve setups | Panel C of both tables, compared setup by setup | **OK** — legitimate across designs, ratios being normalised within a design (`32_figures_blup.R:357-359`) |
+| 171 | "BLUP better" `56.0`–`62.7` and `58.0`–`64.8` per cent | Panel C of both tables | **OK** |
+| 171 | zero lies inside the interquartile box of all 24 setup-design pairs, and the median of the ratio above it in each | recomputed from `estimates/blup/{random,common}/` on 2026-08-31, weights rebuilt as `32_figures_blup.R:62-68` forms them: q25 from −0.298 to −0.143, medians 0.059 to 0.227 | **OK** |
+| 174 | bias `−0.0060` to `0.0094`; sd `0.0502`–`0.0558` at t = 0.20 and `0.0858`–`0.0980` at t = 0.80, rising across the domain in all twelve setups | `latex_blup_bias_sd_conso_common.tex`; monotonicity recomputed 2026-08-31, 12 of 12 | **OK** |
+| 174 | predictor's error sd below the mean curve's at all 48 location-setup pairs, ratio `0.703`–`0.800` at t = 0.40 against `0.851`–`0.957` elsewhere, the minimum at t = 0.40 in every setup | recomputed from `estimates/blup/common/` on 2026-08-31 | **OK** |
+| 181, 190, 198 | the two benchmark tables and the log-ratio figure | `paper/tables/` copies and `figures/blup/plot_log_wise_ratio_mean_over_blup.pdf` | **OK** — Table A #19 and the two `\input` rows above |
+| 205 | Tikhonov grid `40` points, `1.1·10⁻⁷` to `20.1` | `22_simulation_blup.R:70`, `exp(seq(-16, 3, length.out = 40))`; `exp(-16) = 1.125e-07`, `exp(3) = 20.09` | **OK** |
+| 205-206 | median α `2.7·10⁻⁴`→`3.9·10⁻⁵` and `3.9·10⁻⁵`→`1.5·10⁻⁵`, never increasing with N or λ; smaller under the common design in every setup; floor reached in `22.8`, `16.8`, `8.5` per cent at (600,25), (300,25), (600,50) and in no independent-design setup | `latex_blup_tikhonov_conso.tex` | **OK** |
+| 220 | `RP20` returns on a regular grid of `241` points, with a B-spline projection (in TBC, flagged unattested) | nothing on disk | **UNVERIFIABLE** — correctly left out of the prose |
+| 235 | `RP20` export complete at 400 files per cell, fit and scoring outstanding; `Z26` unimplemented (in TBC) | `estimates/RP20/export/` — 12 cells × 400; grep for `zhao|z26|zh26` over `scripts/`: two hits, both labels in `32_figures_blup.R:49-50` | **OK** — replaces the stale claim that `estimates/RP20/` does not exist |
+| 237 | the text writes `Z26`, the table writes `ZH26` (in TBC) | `main:212-232` against `32_figures_blup.R:50` and Panel B of `latex_blup_wise_benchmark_conso_common.tex` | **OK** — a real inconsistency, flagged rather than settled unilaterally |
+| 240 | the mandated comparison placeholder | the author's instruction of 2026-08-31 | **OK** — byte-identical, present once, with no result prose around it |
+| 248 | section heading "NOTPERP intraday **log-return** curves" | volume is the analysed quantity, `46_app_notperp_volume.R:1`; decided 2026-08-31 that the paper reports volume only | **MISMATCH** — the heading names the wrong quantity |
+| 251 | "`data-NOTPERP/estimates/` is empty" and "`42_app_notperp.R` does not run to completion" (in TBC) | ten `.RDS` files, five of them `*_volume_*`; and `42` is the reference-only log-return script, not the one the paper uses | **MISMATCH — doubly stale.** The directory is populated and the named script is no longer the relevant one |
+| 257 | 122 consumption at 96 pts, 122 photovoltaic restricted to 61 over 04:00–19:00, 152 hydroelectric at 96 (in TBC) | `data-energy/raw/`; `40_app_energy.R:38-46` | **OK** |
+| 257 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
+| 257 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
 
 ### `num_analysis_supp.tex`
 
@@ -238,32 +270,46 @@ equivalents). Neither script has been run against the current tree.
 
 ### Summary
 
-Rewritten on 2026-08-31 after the (auto)covariance sections were redone; what stands is below.
+Rewritten on 2026-08-31 after the (auto)covariance sections were redone, and again the same day
+after the adaptive curve prediction section; what stands is below.
 
-- **6 values remain stale P5 verdicts** asserting that results do not exist. They all do. These are
-  the most misleading entries in the two files, because they read as settled: `main:156`,
-  `main:171`, `main:202`, `supp:75`, `supp:156`, `supp:169`. The three that concerned `autocov/`,
-  `cov/` and the two simulation scripts behind the risk surfaces are gone.
+- **3 values remain stale verdicts** asserting that results do not exist. They all do: `main:251`,
+  `supp:75`, `supp:156`. The three that concerned `blup/`, `figures/blup/` and `estimates/RP20/` are
+  gone with the prediction rewrite, and `supp:169` is now answered by Table A #19 and the
+  per-replication curves it names.
 - **4 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
-  (`main:43`), the photovoltaic/hydroelectric offsets (`main:208`), and the log-return section
-  heading (`main:199`).
+  (`main:43`), the photovoltaic/hydroelectric offsets (`main:257`), and the log-return section
+  heading (`main:248`). All four sit outside the prediction section and are untouched by its
+  rewrite.
 - **Settled**: the lag-0 bandwidth-separation claim, formerly `supp:112` and now `supp:118-122`. It
   is stated with the separation growing at every step over the four reported pairs and vanishing at
   (0.7, 0.8), and with no monotonicity claimed for the lag-0 accuracy.
 - **Settled**: the four `(H_s, H_t)` pairs invalidated by the linear exponent, formerly `main:72`.
   Replaced, together with every bandwidth quoted alongside them, from the third table of
   [RUNLOG.md](RUNLOG.md) §2.2.
-- **1 verdict is itself wrong**, not the value under it: the TBC at `main:152` frames the weight
-  renormalisation as a paper-versus-code disagreement. It is not one — see the ruling in
-  [RUNLOG.md](RUNLOG.md) §1.7.
+- **Settled**: the verdict that was itself wrong, the former TBC at `main:152` framing the weight
+  renormalisation as a paper-versus-code disagreement. `main:152` now states the renormalisation and
+  the `1e-6` density floor as implementation prose beside an unchanged `eq:weighted_ise`, per the
+  ruling in [RUNLOG.md](RUNLOG.md) §1.7, and the one point that ruling leaves open — ρ and 𝒟 on
+  `n_0` against `n_0+1` — is the whole of the TBC at `main:158`.
 - **2 claims were checked and survive**: the FACF range at `supp:155`, 98.4% pooled; and the three
   energy lag-1 FACF values behind the stale pointer at `supp:183`.
 - **2 are UNVERIFIABLE and correctly flagged as such** in the text already: the RP20 241-point grid
   and `ℓ_max = 3`.
-- **2 result slots are TBC by decision, not by oversight**: `main:171` (RP20) and `:190` (Z26). The
-  author will run and implement both. Do not fill, soften or write around them. The one factual
-  correction they still need is that `:171` calls `estimates/RP20/` absent when the export is in
-  fact complete — it is the fit and the scoring that are outstanding.
+- **1 result slot is TBC by decision, not by oversight**: `main:240`, the single mandated placeholder
+  covering `RP20` under the random design and sparse regime and Zhao (2026) under the common design.
+  The author will run and implement both. Do not fill, soften or write around it. The factual
+  correction the old pair of TBCs needed has been made: `main:235` now records that the `RP20`
+  export is complete at 4800 files and that it is the fit and the scoring that are outstanding.
+- **1 new inconsistency is flagged and not resolved**: `main:237`. The prediction text writes
+  `\texttt{Z26}` while `32_figures_blup.R:50` writes `ZH26` into Panel B of
+  `latex_blup_wise_benchmark_conso_common.tex`, which `main:190` now `\input`s. One of the two has
+  to change, and which is the author's call.
+- **6 generated tables cannot be floated as they stand.** `Hmisc::latex()` wraps each in its own
+  `table` environment with no `\caption` and no `\label`. Their numbers reach the paper as prose,
+  and `main:160`, `:175` and `:209` name the fix: emit a bare `tabular`, as
+  `get_wise_benchmark_table()` at `32_figures_blup.R:187-202` already does. This is a predictFTS
+  decision, not a paper one.
 - **1 display truncation is now declared in the text and not elsewhere**: the accuracy boxplots of
   Table A #17 and #18 drop every ratio at or above 1.5 (`30_figures_autocov.R:228`,
   `31_figures_cov.R:162`, and `ylim(0, 1.5)`), which is 5456 of 18668 finite ratios at lag 1 and
