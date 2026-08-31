@@ -214,7 +214,7 @@ equivalents). Neither script has been run against the current tree.
 | 82 | "20 and 21 have not been run" (in TBC) | both families complete | **MISMATCH — stale** |
 | 89, 95, 118, 124 | eight `[TBC: (H_s, H_t)]` slots | fillable from [RUNLOG.md](RUNLOG.md) §2.2 | **now available** |
 | 91, 98, 120, 127 | eight `[TBC: (h*(s\|t), h*(t\|s))]` slots | fillable from [RUNLOG.md](RUNLOG.md) §2.2 | **now available** |
-| 112 | "the optimal pairs are typically such that `h₀*(s\|t) ≠ h₀*(t\|s)` when `H_s ≠ H_t`, the difference more pronounced for large `\|H_s − H_t\|`" | [RUNLOG.md](RUNLOG.md) §2.2, lag-0 table | **MISMATCH** — at (0.7, 0.8) both are 0.00971, and (0.8, 0.2), the largest `\|H_s − H_t\|` at 0.24, shows a *smaller* gap than (0.1, 0.4) at 0.12. The lag-1 table supports the claim; the lag-0 table does not |
+| 112 | "the optimal pairs are typically such that `h₀*(s\|t) ≠ h₀*(t\|s)` when `H_s ≠ H_t`, the difference more pronounced for large `\|H_s − H_t\|`" | [RUNLOG.md](RUNLOG.md) §2.2, lag-0 table | **NEEDS REWORDING, not correction.** The claim holds; its strength does not carry from lag 1. Say the difference is **lower at lag 0, and at (0.7, 0.8) does not exist** — both bandwidths are 0.00971, which is the claim working, the regularities being closest there. Drop the monotonicity: (0.8, 0.2) has the largest `\|H_s − H_t\|` and a ratio of 1.31, against 5.2 at (0.1, 0.4) |
 | 137 | `s ∈ {0.2, 0.4, 0.5, 0.8}`, `(N, λ) ∈ {(150,25),(150,50),(150,100),(150,200)}`, 400 replications | `31_figures_cov.R:363-368` and the `scale_linetype_manual` levels | **OK** |
 | 146 | `R = 400`; "most of the lag-1 FACF values are concentrated between 0.2 and 0.4" | `estimates/facf/`, 9 cells × 400. Pooled, **98.4%** fall in [0.2, 0.4]; worst cell (300, 25) 95.0%; medians 0.251 to 0.328 | **OK** — the claim survives the change of design |
 | 147 | "`23_simulation_facf.R` has not been run, no `facf/` directory" (in TBC) | `estimates/facf/` — 9 cells × 400 | **MISMATCH — stale** |
@@ -226,9 +226,11 @@ equivalents). Neither script has been run against the current tree.
 
 - **11 values are stale P5 verdicts** asserting that results do not exist. They all do. These are
   the most misleading entries in the two files, because they read as settled.
-- **5 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
-  (`main:43`), the photovoltaic/hydroelectric offsets (`main:180`), the lag-0
-  bandwidth-separation claim (`supp:112`), and the log-return section heading (`main:171`).
+- **4 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
+  (`main:43`), the photovoltaic/hydroelectric offsets (`main:180`), and the log-return section
+  heading (`main:171`).
+- **1 needs rewording rather than correction**: the lag-0 bandwidth-separation claim (`supp:112`).
+  The claim holds; only its strength does not carry over from lag 1.
 - **1 set is invalidated by the linear exponent**: the four `(H_s, H_t)` pairs at `main:72`, and
   every bandwidth quoted alongside them.
 - **1 verdict is itself wrong**, not the value under it: the TBC at `main:124` frames the weight
@@ -238,6 +240,10 @@ equivalents). Neither script has been run against the current tree.
   energy lag-1 FACF values behind the stale pointer at `supp:174`.
 - **2 are UNVERIFIABLE and correctly flagged as such** in the text already: the RP20 241-point grid
   and `ℓ_max = 3`.
+- **2 result slots are TBC by decision, not by oversight**: `main:143` (RP20) and `:162` (Z26). The
+  author will run and implement both. Do not fill, soften or write around them. The one factual
+  correction they still need is that `:143` calls `estimates/RP20/` absent when the export is in
+  fact complete — it is the fit and the scoring that are outstanding.
 
 ---
 
