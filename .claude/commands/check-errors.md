@@ -6,7 +6,13 @@ Verify every assertive sentence in `$ARGUMENTS` against what is actually on disk
 command **never edits the `.tex` file** — not to fix a typo, not to close a bracket, not to correct a
 number you are certain about. Silent correction is the failure mode this command exists to prevent.
 
-Read `FORMAT.md` before starting; you cannot judge markup or notation without it.
+Read `FORMAT.md` before starting; you cannot judge markup or notation without it. Read `RUNLOG.md`
+and `ASSETS.md` too: they record what was actually run and which figure is which, and the numerical
+and figure checks below resolve against them.
+
+`RUNLOG.md` and `ASSETS.md` are generated maps and go stale the moment predictFTS is re-run. Where
+one of them disagrees with disk, disk wins — and say so in your report, because a stale map is
+itself a finding.
 
 ## Scope
 
@@ -18,8 +24,8 @@ Classify each one and run the matching check:
 
 | Type | What to verify |
 |---|---|
-| Numerical value | The number appears in a result file under `D:\Projects\predictFTS` or in a source table. Name the file and the line or cell. |
-| Figure reference | The `\label` is defined **and** the graphics file exists on disk at the path `\includegraphics` gives. Both halves, separately. |
+| Numerical value | Resolve against `RUNLOG.md` first — it names the result file each quantity comes from, and its Table of not-established items says which quantities no file settles. Where `RUNLOG.md` does not cover the claim, go to the result files under `D:\Projects\predictFTS` directly. Name the file and the line or cell either way. `ASSETS.md` Table C already carries a verdict for every number currently in the two `.tex` files; treat it as a prior to confirm, not as the answer. |
+| Figure reference | Three halves, each reported separately. (1) The `\label` is defined. (2) The graphics file exists on disk at the path `\includegraphics` gives. (3) `ASSETS.md` Table A carries a row for that path, and its verdict is MATCH or RENAMED. |
 | Table reference | The `\label` is defined **and** the table body is present in the file under review or in `best_predictor_aout24.tex`. |
 | Equation reference | The `\label` is defined in `best_predictor_aout24.tex` or locally in the file under review. A label defined only in `main-2025-05-v2.tex` is **not** defined. |
 | Method description | The described behaviour matches the code in `D:\Projects\adaptiveFTS` (what is implemented) or `D:\Projects\predictFTS` (what was run). Argument names in adaptiveFTS 0.3.0 differ from earlier releases — check the installed version, not your memory. |
@@ -41,6 +47,23 @@ Exactly one per claim:
 
 Never guess to avoid UNVERIFIABLE. A claim you could not check is more useful reported as unchecked
 than reported as OK.
+
+Three rulings that the two maps make possible, and that were previously guesswork:
+
+- A value `RUNLOG.md` records as coming from the **superseded estimated-`H_t` run** is a
+  **MISMATCH**, not UNVERIFIABLE. The run that produced it has been replaced; the number is wrong,
+  not merely unchecked.
+- A figure whose `ASSETS.md` Table A verdict is **SUPERSEDED** is a **MISMATCH**. The file is
+  present and will typeset, so the reference itself is sound — but the figure no longer shows what
+  it showed. Check the claim against Table A's "what it now shows" line and report the prose that
+  the change invalidates.
+- A figure path with **no row in Table A** is **UNVERIFIABLE**, and say plainly that the map needs
+  regenerating: either the `.tex` gained a reference after `ASSETS.md` was built, or the path is
+  wrong.
+
+A `[TBC: …]` note asserting that a result, directory or file does **not** exist is a checkable
+claim like any other. Several such notes in the two `.tex` files were true when written and are
+false now. Check them; do not skip them as commentary.
 
 ## Output
 
