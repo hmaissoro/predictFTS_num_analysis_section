@@ -1,7 +1,7 @@
 \section{Numerical study}\label{sec:blup:numerical_study}
 
 \color{magenta}
-In this section, we present a finite-sample Monte Carlo simulation study and a real data application. The simulation study is based on national electricity consumption curves for France, available from the ODR\'E platform \citep{odre_data}. These curves are used to estimate the parameters of a first-order autoregressive process (FAR(1)), which are then used to generate synthetic curves for the Monte Carlo simulations. \color{black}For the real data application, we analyse \color{magenta}[TBC: two applications replace the Facebook study, NOTPERP intraday log-return curves in the random design and French electricity curves in the common design; provenance from 41--43\_notperp\_*.R and 40\_app\_energy.R]\color{black}. \color{magenta}All results were obtained using the \texttt{R} package \texttt{adaptiveFTS} and supplementary code, both of which are publicly available at \url{https://github.com/hmaissoro}. An Epanechnikov kernel ($K(u) = (3/4)(1 - u^2)$ for $|u| \leq 1$, and $0$ otherwise) is used in all experiments.
+In this section, we present a finite-sample Monte Carlo simulation study and two real data applications. The simulation study is based on national electricity consumption curves for France, available from the ODR\'E platform \citep{odre_data}. These curves are used to estimate the parameters of a first-order autoregressive process (FAR(1)), which are then used to generate synthetic curves for the Monte Carlo simulations. For the real data applications, we analyse daily curves of intraday traded volume on a cryptocurrency perpetual futures contract, publicly available from the ByBit exchange, and daily national electricity consumption and production curves from the same ODR\'E platform. All results were obtained using the \texttt{R} package \texttt{adaptiveFTS} and supplementary code, both of which are publicly available at \url{https://github.com/hmaissoro}. An Epanechnikov kernel ($K(u) = (3/4)(1 - u^2)$ for $|u| \leq 1$, and $0$ otherwise) is used in all experiments.
 \color{black}
 
 \subsection{\color{magenta}Simulation design\color{black}}\label{blup:sec:simu_exp}
@@ -245,7 +245,7 @@ Both procedures are fitted on the curves preceding the target and predict the sa
 [TBC: shared opening paragraph stating that the two applications are chosen to exercise the two designs the method covers]
 \color{black}
 
-\subsubsection{\color{magenta}NOTPERP intraday log-return curves\color{black}}
+\subsubsection{\color{magenta}NOTPERP intraday volume curves\color{black}}
 
 \color{magenta}
 [TBC: random-design application. Descriptive material is reusable from paper\_for\_reference/NOTPERP\_descriptive\_analysis/report/NOTPERP\_data.tex --- the ByBit provenance, the observation-time map $T_{n,i} = (\tau_{n,i} - a_n)/86400$, the cumulative intraday log-return, the cleaned sample size and the local regularity range --- but its numbers come from 01\_NOTPERP\_analysis.R and must be re-verified against 41\_notperp\_download\_clean.R. Prediction results are unavailable: data-NOTPERP/estimates/ is empty and 42\_app\_notperp.R does not run to completion, see adaptiveFTS-issues.md]
