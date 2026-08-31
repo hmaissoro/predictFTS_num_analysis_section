@@ -4,14 +4,14 @@
 
 \begin{figure}[t!]
 	\centering
-	\includegraphics[width=\textwidth]{./figures/generated_conso_4last_curves.pdf}
-	\caption{\small Last four simulated curves generated using the simulation setting with a sample size of $(N, \lambda) = (150, 25)$. The solid lines represent the sample paths, while the dots indicate the randomly observed noisy points on each curve, with an average of $\lambda = 25$ points per curve. \color{magenta}[TBC: regenerate under the current design]\color{black}}
+	\includegraphics[width=\textwidth]{./figures/generated_conso_3last_curves.pdf}
+	\caption{\small Last \color{magenta}three\color{black} simulated curves generated using the simulation setting with a sample size of $(N, \lambda) = (150, 25)$. The solid lines represent the sample paths, while the dots indicate the randomly observed noisy points on each curve, with an average of $\lambda = 25$ points per curve. \color{magenta}[TBC: the figure has been regenerated under the current design --- 10\_simulation\_design.R:464--465 draws curves $148$ to $150$ with \texttt{hurst\_linear(h\_left = 0.4, h\_right = 0.8)}, \texttt{intercept\_var = 0.05} and \texttt{sig\_obs = 0.007} --- but from the literal seed \texttt{12345} and with \texttt{L2 = 0.0107}, the mean of the estimates from the consumption curves (10\_simulation\_design.R:305), where the Monte Carlo of 11\_simulation\_generate.R:19 uses \texttt{L2 = 0.01}. Settle whether the illustration should instead be drawn from the Monte Carlo stream itself]\color{black}}
 	\label{fig:generated_last_curves}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.4\textwidth]{./figures/variance_FTS_new_design_conso_lag=0.pdf}
+	\includegraphics[width=0.4\textwidth]{./figures/variance_FTS_conso_lag=0.pdf}
 	\caption{\small Variance of the constructed FTS process from \eqref{blup:FTS_mod1} and the consumption curves.}
 	\label{fig:var_FTSConso}
 \end{figure}
@@ -87,14 +87,14 @@ To this end, we consider four pairs $(s, t)$ and compute the average of the lag-
 	\begin{tabular}{cc}
 		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
 		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
 		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} \\
 		& \\
 		& \\
 		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
 		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.1_t=0.4.png} &
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_new_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.1_t=0.4.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
 		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black}
 	\end{tabular}
 	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_1}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_1^*(s|t), h_1^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
@@ -116,14 +116,14 @@ Furthermore, for the bivariate risk function \color{magenta}[TBC: \texttt{eq:ris
 	\begin{tabular}{cc}
 		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
 		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
 		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} \\
 		& \\
 		& \\
 		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
 		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.1_t=0.4.png} &
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_new_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.1_t=0.4.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
 		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black}
 	\end{tabular}
 	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_0}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_0^*(s|t), h_0^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
@@ -133,7 +133,7 @@ Furthermore, for the bivariate risk function \color{magenta}[TBC: \texttt{eq:ris
 \begin{figure}[th]
 	\vspace{.1cm}
 	\centering
-	\includegraphics[width=0.9\linewidth]{./figures/cov/plt_diag_cov_risk_conso_new_design_N=150_all_lambda_all_s.pdf}
+	\includegraphics[width=0.9\linewidth]{./figures/cov/plt_diag_cov_risk_conso_N=150_all_lambda_all_4locations.pdf}
 	\caption{\small Empirical average of the risk function $\widehat{R}_\mu(s, h_s)$ at $s \in \{0.2, 0.4, 0.5, 0.8\}$, computed over $400$ independent replications of the FTS for sample sizes $(N, \lambda) \in \{(150, 25), (150, 50), (150, 100), (150, 200)\}$.}
 	\label{fig:diagonal_risk}
 \end{figure}
