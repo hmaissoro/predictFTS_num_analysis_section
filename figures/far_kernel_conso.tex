@@ -1,4 +1,4 @@
-% Created by tikzDevice version 0.12.6 on 2025-05-13 23:01:26
+% Created by tikzDevice version 0.12.6 on 2026-08-30 20:20:54
 % !TEX encoding = UTF-8 Unicode
 \documentclass[10pt]{article}
 \usepackage{tikz}
@@ -14,6 +14,12 @@
 \begin{tikzpicture}[x=1pt,y=1pt]
 \definecolor{fillColor}{RGB}{255,255,255}
 \path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (505.89,361.35);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (505.89,361.35);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] (  0.00,  0.00) rectangle (505.89,361.35);
+\end{scope}
 \begin{scope}
 \path[clip] ( 86.96,136.26) rectangle (500.39,355.85);
 \definecolor{drawColor}{gray}{0.92}
