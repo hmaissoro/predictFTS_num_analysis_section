@@ -12,7 +12,7 @@
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.4\textwidth]{./figures/variance_FTS_conso_lag=0.pdf}
-	\caption{\small Variance of the constructed FTS process from \eqref{blup:FTS_mod1} and the consumption curves.}
+	\caption{\small Variance of the constructed FTS process from \eqref{blup:FTS_mod1} and the consumption curves. \color{magenta}[TBC: the figure draws one line, not two. 30\_figures\_autocov.R:24--25 plots a single \texttt{geom\_line} of \texttt{autocovtilde} against $t$ from \texttt{dt\_true\_variance\_conso\_lag=0.RDS}, which 12\_simulation\_true\_autocov.R:83 forms on the simulated series alone; nothing of the consumption curves is drawn. Either drop ``and the consumption curves'' or add the second line]\color{black}}
 	\label{fig:var_FTSConso}
 \end{figure}
 
@@ -150,7 +150,7 @@ We use the same generated sample of FTS as in the study of the autocovariance fu
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{./figures/blup/hist_lag-1_facf_conso.pdf}
-	\caption{\small Histograms of estimated lag-$1$ FACF values for different $(N, \lambda)$ configurations.}
+	\caption{\small Histograms of estimated lag-$1$ FACF values for different $(N, \lambda)$ configurations. \color{magenta}[TBC: the figure is a $3\times3$ grid, not the twelve setups of the study. 36\_figures\_facf.R:25 sets \texttt{lambdavec <- c(25, 50, 100)}, so $\lambda = 200$ is absent; :44--46 also pool every panel onto one set of Sturges breaks taken from the pooled values. Either restore $\lambda = 200$ in the script or say here which configurations are shown]\color{black}}
 	\label{fig:conso_lag1_facf}
 \end{figure}
 
