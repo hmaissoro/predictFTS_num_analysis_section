@@ -171,14 +171,85 @@ We use the same generated sample of FTS as in the study of the autocovariance fu
 
 \subsection{\color{magenta}Additional details on the real data applications\color{black}}
 
-\subsubsection{\color{magenta}NOTPERP\color{black}}
+\subsubsection{\color{magenta}NOTPERP intraday volume\color{black}}
 
 \color{magenta}
-[TBC: raw sample size and $M_n$ summary, functional-boxplot outlier removal over three rounds, cleaned $M_n$ summary, $M_n$ and volatility diagnostics, functional principal component analysis, and the functional autocorrelation table over lags $1$ to $10$. All reusable from paper\_for\_reference/NOTPERP\_descriptive\_analysis/report/NOTPERP\_data.tex, whose figures are present in its figures\_tikz/NOTPERP/ directory, subject to re-verification against 41\_notperp\_download\_clean.R and to replacing its \texttt{Maissoro2024} key and its $\Gamma$ notation]
+In this section we give more details on the NOTPERP volume application of the main manuscript, and in particular on the three preprocessing steps it names without describing. The trade archive of the ByBit exchange holds one compressed file per UTC calendar day; the $712$ files on disk cover 18 September 2024 to 30 August 2026 without a gap, and carry $1\,107\,894$ trades in all, from $132$ to $49\,768$ on a single day.
+
+The mean function is constant in $n$ under our model, and the daily level of this series is not: the token was listed in September 2024 and its liquidity has declined since, a decline over which a linear trend accounts for $0.093$ of the variation of the daily total notional in logarithms. Rather than fix a period by hand, we retain the longest run of days ending at the last one over which a KPSS test does not reject a level null at the $5$ per cent level. That run is the $430$ days beginning 27 June 2025, over which the same linear trend accounts for $0.027$ of the variation. An augmented Dickey--Fuller test rejects a unit root on every window tried, so what the restriction removes is a drift and not an integrated level. The window is re-selected whenever the application is run, and therefore moves as the archive grows.
+
+Outlying curves are then removed by an iterative functional boxplot based on the modified band depth. Functional depth requires a common grid, so for this step alone the curves are aggregated onto an equidistant grid of $\operatorname{median}_n M_n = 828$ points, each bin taking the last value observed within it; the value of a cumulative curve on a bin is the one it has reached by the end of it, and an average would report a value the curve never takes. At each round the curves lying beyond $1.5$ times the $50$ per cent central region are removed and the procedure is repeated. Round $1$ removed six curves, rounds $2$ and $3$ detected none, and the procedure terminated, leaving $N = 424$. Figure~\ref{fig:notperp_volume_fbplot} shows the boxplot at each round.
+
+Two further steps make the sample the predictor is fitted on. About $14.4$ per cent of the rows share a timestamp with another, one market order filling against several resting ones, and the design times within a curve have to be distinct. The last row of each tied group is kept, which for a cumulative response is not an arbitrary choice: any earlier row of the group holds a partial sum, a value the curve takes at no instant at all. The number of observations per curve is then capped at $200$ by a uniform draw among the instants that remain, and $408$ of the $424$ curves sit on that cap. The cap is what makes the application tractable, the (auto)covariance estimators summing over the within-curve pairs of design points so that their cost grows about as $M_n^4$. It costs nothing here: the draw leaves the retained times an independent sample from the same design density, and each retained instant still carries the cumulative value realised at it, the cumulative sum being formed over every trade before anything is dropped.
+
+The design density of \eqref{PR_weights} needs a bandwidth, and it is selected by cross-validation over $50$ curves drawn at random from the sample. The least-squares criterion for a density is unbounded as $h \to 0$, so it returns the lower edge of whatever grid it is given, and widening the grid only moves the answer. The grid is therefore floored at $1/\operatorname{median}_n M_n$, the mean spacing of the design, below which no bandwidth is admissible; the selection is the median of the per-curve optima and equals $0.005$, which is that floor, and nine tenths of the fifty curves attain their own optimum there. As a consequence this bandwidth is a property of the design rather than of the grid, and it is the one tuning parameter of the application that the data do not choose in the interior. Figure~\ref{fig:notperp_volume_cv} shows that criterion beside the Tikhonov criterion, whose minimum is interior.
+
+Figure~\ref{fig:notperp_volume_locreg} presents the estimated local Hölder exponent and constant, evaluated at $99$ equally spaced points and smoothed by a cubic spline for display. The exponent runs from $0.254$ to $1$ with a median of $0.806$ and attains the upper end of the interval to which the estimator is clamped at $29$ of the $99$ points; the constant runs from $0.195$ to $28.8$. What these estimates support is the level of the exponent and not its variation across the domain, the estimator being known to shrink a varying exponent towards a narrow band. Figure~\ref{fig:notperp_volume_mean} presents the estimated mean function, which rises across the day as a cumulative response must.
+[TBC: the functional boxplots of Figure~\ref{fig:notperp_volume_fbplot} are current, but Figures~\ref{fig:notperp_volume_cv}, \ref{fig:notperp_volume_locreg} and \ref{fig:notperp_volume_mean} were produced on 2026-08-31 between 00:56 and 01:24, before data-NOTPERP/raw/dt\_NOTPERP\_volume\_fts\_cleaned.csv was rewritten at 13:44 the same day. They inherit the flag raised in the main manuscript and must be regenerated by 46\_app\_notperp\_volume.R from the same run as the estimates]
+
+[TBC: the modified band depth and the functional boxplot are due to a reference the bibliography does not carry. Add \texttt{roahd2019} --- Ieva, Paganoni, Romo and Tarabelloni, \emph{The R Journal} 11(2), 291--307, 2019 --- to references\_clean.bib, where it is present in paper\_for\_reference/NOTPERP\_descriptive\_analysis/report/references.bib:53, and cite it at the functional boxplot above]
 \color{black}
 
-\subsubsection{\color{magenta}French electricity\color{black}}
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{ccc}
+		\color{magenta}\includegraphics[width=0.31\textwidth]{./figures/notperp/Fboxplot_volume_round_1.png}\color{black} &
+		\color{magenta}\includegraphics[width=0.31\textwidth]{./figures/notperp/Fboxplot_volume_round_2.png}\color{black} &
+		\color{magenta}\includegraphics[width=0.31\textwidth]{./figures/notperp/Fboxplot_volume_round_3.png}\color{black}
+	\end{tabular}
+	\caption{\small \color{magenta}Iterative functional boxplot of the NOTPERP volume curves, based on the modified band depth and computed on the equidistant grid of $828$ points onto which the curves are aggregated for this step. \textbf{Left:} round $1$, on all $430$ curves of the stationary window, six outliers detected. \textbf{Middle:} round $2$, after their removal, none detected. \textbf{Right:} round $3$, none detected, and the procedure terminates. The shaded band is the $50$ per cent central region and the outlying curves are drawn apart from the rest.\color{black}}
+	\label{fig:notperp_volume_fbplot}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		\color{magenta}\includegraphics[width=0.45\textwidth]{./figures/notperp/NOTPERP_volume_density_cv.pdf}\color{black} &
+		\color{magenta}\includegraphics[width=0.45\textwidth]{./figures/notperp/NOTPERP_volume_tikhonov_cv.pdf}\color{black}
+	\end{tabular}
+	\caption{\small \color{magenta}Cross-validation criteria of the two tuning parameters of the NOTPERP volume application, both on a logarithmic horizontal axis. \textbf{Left:} the design-density criterion, the pointwise median over the $50$ curves on which it is computed, against the bandwidth $h$; the dashed line marks the selected bandwidth $0.005$, which is the lower edge of the grid. \textbf{Right:} the Tikhonov criterion against $\alpha$ over the grid of $60$ points; the dashed line marks the selected $\alpha = 0.016$, which is interior.\color{black}}
+	\label{fig:notperp_volume_cv}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/notperp/NOTPERP_volume_local_regularity.pdf}
+	\caption{\small \color{magenta}Estimated local regularity of the NOTPERP volume curves, at the $99$ equally spaced points $t = 0.01, \ldots, 0.99$. \textbf{Left:} the local Hölder exponent $\widehat{H}_t$, drawn on the whole of the interval $[0,1]$ so that an estimate sitting on the clamp is visible. \textbf{Right:} the local Hölder constant $\widehat{L}^2_t$. In each panel the dots are the pointwise estimates and the solid line a cubic spline smoothing of them.\color{black}}
+	\label{fig:notperp_volume_locreg}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./figures/notperp/NOTPERP_volume_mean_function.pdf}
+	\caption{\small \color{magenta}Estimated mean function $\widehat{\mu}$ of the NOTPERP volume curves, at the $99$ equally spaced points $t = 0.01, \ldots, 0.99$. The response is the logarithm of the notional traded in USDT since midnight UTC, and the horizontal axis is the fraction of the UTC day elapsed.\color{black}}
+	\label{fig:notperp_volume_mean}
+\end{figure}
+
+\subsubsection{\color{magenta}French electricity production\color{black}}
 
 \color{magenta}
-[TBC: per-series detail for consumption, photovoltaic and hydroelectric, including the target-curve offsets of 40\_app\_energy.R:26--28 and the lag-1 FACF reference values recorded at 40\_app\_energy.R:24]
+In this section we give more details on the photovoltaic and hydroelectric production curves, which the main manuscript defers. Both are obtained from the ODR\'E platform \citep{odre_data}, both are normalised by dividing every value by the maximum production observed over their period, and both are predicted under the protocol described there for the consumption curves: the last curve of the series is held out entirely, predicted from the one preceding it, and every estimate entering the predictor is computed on the curves before the target. That protocol is not restated here.
+
+Photovoltaic production covers the same period as the consumption curves, 1 June to 30 September 2024, and comprises $122$ daily curves. Output is zero outside daylight, so the curves are restricted to the $61$ quarter-hourly points between 04:00 and 19:00 and their observation times renormalised over the points retained; the design remains common, with $M_n = \lambda = 61$ for every day. The lag-$1$ FACF \eqref{eq:blup:facf} is $0.431$. Figure~\ref{fig:energy_supp_pred} shows the prediction of the last curve of the period, whose values lie in $[0, 0.551]$. The squared error of the prediction, averaged over the $61$ observation points, is $2.411$ times smaller than that of the estimated mean curve, the largest of the three ratios, and the prediction is the closer of the two at every one of the $61$ points. This is likely due to the shape of a solar day being fixed by the sun while only its amplitude varies, so that the lagged curve carries most of what distinguishes one day from the next.
+
+Hydroelectric production comprises $152$ daily curves recorded at $96$ quarter-hourly points between 1 November 2023 and 31 March 2024, taking values in $[0.267, 1]$ over the whole period. The lag-$1$ FACF is $0.365$, the weakest of the three series. The squared error of the prediction is $1.125$ times smaller than that of the estimated mean curve, and the prediction is the closer of the two at $57.3$ per cent of the $96$ points only. Although the gain is slight, it follows the autoregressive effect, which is weakest for this series; this is likely due to hydroelectric output being dispatched against demand and reservoir constraints rather than driven by a physical daily cycle, so that the curve preceding the target constrains it less than in the other two series.
+
+The regularisation parameter is selected by cross-validation for each series over its own grid of $40$ points, each a window of seven to nine natural logarithm units. The default grid of the package selects its own lower boundary on all three series, whose operators are well conditioned and ask for almost no ridge, and above roughly $e^{-5}$ the criterion is flat to four significant figures, so that on a grid wide enough for all three the minimum is compressed into one edge of the picture and cannot be read. Each window is therefore centred on its own minimum. The selection is interior in all three: $2.5\cdot 10^{-5}$ for consumption, $5.7\cdot 10^{-5}$ for photovoltaic and $9.1\cdot 10^{-5}$ for hydroelectric. Figure~\ref{fig:energy_supp_tikhonov} shows the three criteria.
 \color{black}
+
+\begin{figure}[h!]
+	\centering
+	\begin{tabular}{cc}
+		\color{magenta}\includegraphics[width=0.45\textwidth]{./figures/blup/plot_adaptive_blup_solaire.pdf}\color{black} &
+		\color{magenta}\includegraphics[width=0.45\textwidth]{./figures/blup/plot_adaptive_blup_hydrau.pdf}\color{black}
+	\end{tabular}
+	\caption{\small \color{magenta}Prediction of the last daily production curve of each series from the curve preceding it. \textbf{Left:} photovoltaic production, at the $61$ quarter-hourly points retained between 04:00 and 19:00. \textbf{Right:} hydroelectric production, at $96$ quarter-hourly points. In each panel the solid line is the observed curve and the dashed line the adaptive prediction, and values are normalised to $[0,1]$ by the maximum production observed over the period.\color{black}}
+	\label{fig:energy_supp_pred}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/blup/plot_tikhonov_cv_energy.pdf}
+	\caption{\small \color{magenta}Cross-validation criterion of the Tikhonov parameter for the three electricity series, each over its own grid of $40$ points and on a logarithmic horizontal axis. \textbf{Left:} consumption. \textbf{Middle:} photovoltaic production. \textbf{Right:} hydroelectric production. In each panel the dashed line marks the selected $\alpha$, which is interior to the grid in all three.\color{black}}
+	\label{fig:energy_supp_tikhonov}
+\end{figure}
