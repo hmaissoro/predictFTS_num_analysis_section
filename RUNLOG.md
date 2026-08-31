@@ -427,9 +427,22 @@ easily goes wrong, because the names do not say.
 The arrangement is `ggarrange(g1, g3, g4, g2)` for the first and `ggarrange(g5, g6, g7, g8)` for the
 second, so the *first* panel set is not in the order the `g` objects were created.
 
-**The supplement's risk figures use the second set**, not the first: `num_analysis_supp.tex:90-97`
-and `:119-126` show (0.2, 0.3), (0.5, 0.2), (0.1, 0.4), (0.8, 0.5). Neither `_4locations` boxplot is
-referenced by any `.tex` file — see [ASSETS.md](ASSETS.md) Table B.
+**Both now use the first set.** Until 2026-08-31 the supplement's risk figures showed the second set
+and neither `_4locations` boxplot was referenced anywhere. Since the rewrite,
+`num_analysis_supp.tex:93-103` and `:126-136` show (0.2, 0.4), (0.4, 0.7), (0.7, 0.8), (0.8, 0.2),
+and `boxplot_conso_autocov_ratio_lag=1_first_4locations` and
+`boxplot_conso_cov_ratio_lag=0_first_4locations` are main-text figures at `num_analysis_main.tex:85`
+and `:102` — see [ASSETS.md](ASSETS.md) Table A. The reason for the choice is that the first set is
+the only quadruple whose four `|H_s − H_t|` are distinct: 0.04, 0.08, 0.12 and 0.24, against
+0.04, 0.12, 0.12, 0.12 for the second, which cannot exhibit a gradient. The second set's four
+panels remain on disk, unreferenced on both sides.
+
+**A truncation the boxplots do not declare.** `30_figures_autocov.R:228` and `31_figures_cov.R:162`
+filter `ratio < 1.5` before plotting and `ylim(0, 1.5)` clips again, so every unfavourable ratio
+above 1.5 is dropped. Over the four reported locations and the twelve setups that is 5456 of the
+18668 finite ratios at lag 1 and 6027 of 18729 at lag 0; a further 532 and 471 of the 19200
+combinations are non-finite, the estimator returning `NaN` for one or both bandwidth choices. The
+text declares both. Replotting `log(ratio)` unclipped would remove the need for the declaration.
 
 Also present, from `scripts/35_figures_locreg.R`: `figures/locreg/boxplot_conso_locreg_Ht_t=*.pdf`
 and `..._Lt2_t=*.pdf` at t ∈ {0.2, 0.4, 0.6, 0.8}, plus a `_4locations` arrangement of each.

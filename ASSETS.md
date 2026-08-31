@@ -8,7 +8,11 @@ tree against tree, no file on either side only. So "which copy" never arises bel
 in both or in neither.
 
 The tree holds **132 plot assets** — 96 `.pdf` and 36 `.png` — plus 96 `.tex` tikz sidecars, one per
-pdf. Of the 132, **16 are referenced** (Table A) and **116 are not** (Table B).
+pdf. Of the 132, **18 are referenced** (Table A) and **114 are not** (Table B).
+
+Updated 2026-08-31 after the (auto)covariance rewrite: the supplement's risk panels moved from the
+second set of four locations to the first, and the two `_first_4locations` accuracy boxplots became
+main-text figures. Line numbers below are those of the rewritten files.
 
 This is a generated map. It goes stale the moment predictFTS is re-run. Where it disagrees with
 disk, disk wins.
@@ -35,14 +39,16 @@ established by the producing script in every case below, not by name similarity:
 | `boxplot_conso_autocov_ratio_new_design_lag=1_all_bis` | `boxplot_conso_autocov_ratio_lag=1_second_4locations` | `30_figures_autocov.R:307-308`, where the figure object is `gall_bis` |
 | `boxplot_conso_cov_ratio_new_desing_lag=0_all_bis` | `boxplot_conso_cov_ratio_lag=0_second_4locations` | `31_figures_cov.R:241-242`, likewise `gall_bis` |
 
-The `_bis` → `_second_4locations` chain matters: it is the reason the supplement's risk panels and
-the unreferenced boxplots show the **same** four locations, and it is not guessable from the names.
+The `_bis` → `_second_4locations` chain matters, and it is not guessable from the names. It was the
+reason the supplement's risk panels and the unreferenced boxplots showed the **same** four locations.
+Since 2026-08-31 both the risk panels and the two referenced boxplots use the **first** set instead,
+so the `_second_4locations` pair is now unreferenced on both sides.
 
 ---
 
 ## Table A — every `\includegraphics` in the two live `.tex` files
 
-All 16 paths resolve. `Exists` is therefore `yes` throughout and the column is dropped; the work is
+All 18 paths resolve. `Exists` is therefore `yes` throughout and the column is dropped; the work is
 in the last two columns.
 
 | # | tex | line | referenced path | producing script | what the script actually plots | verdict |
@@ -53,16 +59,18 @@ in the last two columns.
 | 4 | main | 36 | `figures/far_kernel_conso.pdf` | `02_energy_conso.R:380-382` | The fitted FAR kernel `get_far_kenel_conso` at `operator_norm = 0.5`, which the simulator uses | **MATCH** |
 | 5 | supp | 7 | `figures/generated_conso_3last_curves.pdf` | `10_simulation_design.R:463-507` | Simulated curves 148–150 from `simulate_conso`, seed `12345`, `L2 = 0.01066979`, `intercept_var = 0.05`, `sig_obs = 0.007`, `t_common = seq(0,1,length.out=100)`; solid line the path, red dots the noisy random-design points | **SUPERSEDED** |
 | 6 | supp | 14 | `figures/variance_FTS_conso_lag=0.pdf` | `30_figures_autocov.R:14-45` | **One** `geom_line` of `autocovtilde` against t from `dt_true_variance_conso_lag=0.RDS`, y clipped to [0, 0.015) | **SUPERSEDED** |
-| 7 | supp | 90 | `figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png` | `30_figures_autocov.R:82-150` | 3-D plotly surface of the mean over 400 replications of the lag-1 risk on the (h_s, h_t) grid, windowed to h ≤ 0.09 | **RENAMED** + **SUPERSEDED** |
-| 8 | supp | 90 | `…_s=0.5_t=0.2.png` | same | same, at (0.5, 0.2) | **RENAMED** + **SUPERSEDED** |
-| 9 | supp | 96 | `…_s=0.1_t=0.4.png` | same | same, at (0.1, 0.4) | **RENAMED** + **SUPERSEDED** |
-| 10 | supp | 97 | `…_s=0.8_t=0.5.png` | same | same, at (0.8, 0.5) | **RENAMED** + **SUPERSEDED** |
-| 11 | supp | 119 | `figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png` | `31_figures_cov.R:18-80` | Same construction at lag 0 | **RENAMED** + **SUPERSEDED** |
-| 12 | supp | 119 | `…_s=0.5_t=0.2.png` | same | same, at (0.5, 0.2) | **RENAMED** + **SUPERSEDED** |
-| 13 | supp | 125 | `…_s=0.1_t=0.4.png` | same | same, at (0.1, 0.4) | **RENAMED** + **SUPERSEDED** |
-| 14 | supp | 126 | `…_s=0.8_t=0.5.png` | same | same, at (0.8, 0.5) | **RENAMED** + **SUPERSEDED** |
-| 15 | supp | 136 | `figures/cov/plt_diag_cov_risk_conso_N=150_all_lambda_all_4locations.pdf` | `31_figures_cov.R:335-374` | 2×2 of the diagonal-line risk against h_s at s ∈ {0.2, 0.4, 0.5, 0.8}, four lines each for (N, λ) ∈ {(150,25), (150,50), (150,100), (150,200)} | **RENAMED** + **SUPERSEDED** |
-| 16 | supp | 152 | `figures/blup/hist_lag-1_facf_conso.pdf` | `36_figures_facf.R:22-71` | **3×3** grid of lag-1 FACF histograms, N ∈ {150,300,600} × λ ∈ {25,50,100}; one shared set of Sturges breaks from the pooled values | **SUPERSEDED** |
+| 7 | supp | 94 | `figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.4.png` | `30_figures_autocov.R:82-150` | 3-D plotly surface of the mean over 400 replications of the lag-1 risk on the (h_s, h_t) grid, windowed to h ≤ 0.09 | **RENAMED**, **RELOCATED** |
+| 8 | supp | 94 | `…_s=0.4_t=0.7.png` | same | same, at (0.4, 0.7) | **RENAMED**, **RELOCATED** |
+| 9 | supp | 100 | `…_s=0.7_t=0.8.png` | same | same, at (0.7, 0.8) | **RENAMED**, **RELOCATED** |
+| 10 | supp | 101 | `…_s=0.8_t=0.2.png` | same | same, at (0.8, 0.2) | **RENAMED**, **RELOCATED** |
+| 11 | supp | 127 | `figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.4.png` | `31_figures_cov.R:18-80` | Same construction at lag 0 | **RENAMED**, **RELOCATED** |
+| 12 | supp | 127 | `…_s=0.4_t=0.7.png` | same | same, at (0.4, 0.7) | **RENAMED**, **RELOCATED** |
+| 13 | supp | 133 | `…_s=0.7_t=0.8.png` | same | same, at (0.7, 0.8) | **RENAMED**, **RELOCATED** |
+| 14 | supp | 134 | `…_s=0.8_t=0.2.png` | same | same, at (0.8, 0.2) | **RENAMED**, **RELOCATED** |
+| 15 | supp | 145 | `figures/cov/plt_diag_cov_risk_conso_N=150_all_lambda_all_4locations.pdf` | `31_figures_cov.R:335-374` | 2×2 of the diagonal-line risk against h_s at s ∈ {0.2, 0.4, 0.5, 0.8}, four lines each for (N, λ) ∈ {(150,25), (150,50), (150,100), (150,200)} | **RENAMED** + **SUPERSEDED** |
+| 16 | supp | 161 | `figures/blup/hist_lag-1_facf_conso.pdf` | `36_figures_facf.R:22-71` | **3×3** grid of lag-1 FACF histograms, N ∈ {150,300,600} × λ ∈ {25,50,100}; one shared set of Sturges breaks from the pooled values | **SUPERSEDED** |
+| 17 | main | 85 | `figures/autocov/boxplot_conso_autocov_ratio_lag=1_first_4locations.pdf` | `30_figures_autocov.R:271-304` | 2×2 of the lag-1 error-ratio boxplots at (0.2,0.4), (0.4,0.7), (0.7,0.8), (0.8,0.2), grouped by λ and shaded by N, dashed line at 1, ratios ≥ 1.5 dropped | **NEW** |
+| 18 | main | 102 | `figures/cov/boxplot_conso_cov_ratio_lag=0_first_4locations.pdf` | `31_figures_cov.R:206-238` | Same at lag 0 | **NEW** |
 
 ### What each SUPERSEDED figure now shows that it did not before
 
@@ -77,10 +85,14 @@ One line each, so the surrounding prose can be judged.
 - **#6 `variance_FTS_conso_lag=0`** — one line, drawn from the simulated series alone. The caption
   at `supp:15` promises "the constructed FTS process … **and the consumption curves**"; nothing of
   the consumption curves is in the figure.
-- **#7–#14 risk surfaces** — the bowls sit at different (h_s, h_t) because the exponents changed.
-  The four `[TBC: (H_s, H_t)]` and four `[TBC: (h*(s|t), h*(t|s))]` slots around each figure are
-  now fillable from [RUNLOG.md](RUNLOG.md) §2.2. The old quoted pairs — H(0.2) = 0.199,
-  H(0.3) = 0.844, H(0.5) = 0.784, H(0.8) = 0.445 — are dead.
+- **#7–#14 risk surfaces** — **RELOCATED, 2026-08-31.** The panels now show the *first* set of four
+  locations, (0.2, 0.4), (0.4, 0.7), (0.7, 0.8) and (0.8, 0.2), whose |H_s − H_t| takes the four
+  distinct values 0.08, 0.12, 0.04 and 0.24; the second set had three of its four at 0.12 and could
+  not exhibit a gradient. All sixteen slots are filled from the third table of
+  [RUNLOG.md](RUNLOG.md) §2.2, the minima of the surfaces actually drawn, and the (H_s, H_t) line
+  moved from above the surface to just above the bandwidth line. The old quoted pairs —
+  H(0.2) = 0.199, H(0.3) = 0.844, H(0.5) = 0.784, H(0.8) = 0.445 — are dead. The four panels of the
+  second set remain on disk, unreferenced.
 - **#15 diagonal risk** — same four s values and same four (N, λ) as before, but recomputed under
   the linear exponent. The caption at `supp:137` still describes the figure correctly.
 - **#16 FACF histograms** — a 3×3 grid. λ = 200 was never run (`36_figures_facf.R:25`), so the
@@ -95,14 +107,14 @@ identified from the script's own `filename =` argument, not from name similarity
 
 ## Table B — assets present but referenced by no `.tex` file
 
-116 plot assets. Grouped by producing script. "Candidate section" names the place in the current
+114 plot assets. Grouped by producing script. "Candidate section" names the place in the current
 `.tex` where a TBC is standing in for exactly this material.
 
 | Group | Assets | Producing script | What it shows | Candidate section |
 |---|---|---|---|---|
-| Accuracy boxplots, lag-1 | `autocov/boxplot_conso_autocov_ratio_lag=1_s=*_t=*.pdf` (8) + `_first_4locations` + `_second_4locations` | `30_figures_autocov.R:249, 299, 307` | Error ratio of the two-bandwidth estimator against the single-bandwidth one, boxplots by (N, λ) | **`main:72`** — the lag-1 error-ratio TBC. `_second_4locations` matches the four locations the risk figures use |
-| Accuracy boxplots, lag-0 | `cov/boxplot_conso_cov_ratio_lag=0_s=*_t=*.pdf` (8) + the two `_4locations` | `31_figures_cov.R:184, 233, 241` | Same at lag 0, against the estimator's own single-bandwidth version | **`main:76`** — the lag-0 error-ratio TBC |
-| Risk surfaces, unused four | `autocov/plt_autocov_risk_…_s=∈{(0.2,0.4),(0.4,0.7),(0.7,0.8),(0.8,0.2)}.png` (4), same in `cov/` (4) | `30_figures_autocov.R:143`, `31_figures_cov.R:76` | The other four of the eight locations | none — the supplement shows the second set |
+| Accuracy boxplots, lag-1 | `autocov/boxplot_conso_autocov_ratio_lag=1_s=*_t=*.pdf` (8) + `_second_4locations` | `30_figures_autocov.R:249, 307` | Error ratio of the two-bandwidth estimator against the single-bandwidth one, boxplots by (N, λ) | none — `_first_4locations` is now Table A #17; the eight singles and the second quadruple stay in reserve |
+| Accuracy boxplots, lag-0 | `cov/boxplot_conso_cov_ratio_lag=0_s=*_t=*.pdf` (8) + `_second_4locations` | `31_figures_cov.R:184, 241` | Same at lag 0, against the `MPV25` estimator at ℓ = 0 — the same object as the single-bandwidth version, per `adaptiveFTS/R/05_estimate_autocovariance.R:10-13` | none — `_first_4locations` is now Table A #18 |
+| Risk surfaces, unused four | `autocov/plt_autocov_risk_…_s=∈{(0.2,0.3),(0.5,0.2),(0.1,0.4),(0.8,0.5)}.png` (4), same in `cov/` (4) | `30_figures_autocov.R:143`, `31_figures_cov.R:76` | The other four of the eight locations | none — since 2026-08-31 the supplement shows the first set |
 | Local regularity | `locreg/boxplot_conso_locreg_{Ht,Lt2}_t=*.pdf` (8) + two `_4locations` | `35_figures_locreg.R:90, 110` | Estimated H_t and L_t² at t ∈ {0.2, 0.4, 0.6, 0.8} against the design's own values, by (N, λ) | **`supp:75`** — the local-regularity TBC, which says the figures do not exist. They do |
 | ISE distributions | `blup/plot_log_ise_blup.pdf`, `plot_log_ise_blup_common.pdf` | `32_figures_blup.R:441` | log ISE boxplots grouped by λ, shaded by N, one per design | **`main:128`** — the weighted-ISE results TBC |
 | ISE against the mean baseline | `blup/plot_log_wise_ratio_mean_over_blup.pdf` | `32_figures_blup.R:380` | log ratio of the mean curve's wISE to the BLUP's; below zero favours the BLUP | **`main:128`** |
@@ -176,28 +188,29 @@ equivalents). Neither script has been run against the current tree.
 | 44 | `L_t = 0.1` consistent with `L2 = 0.01` (in TBC) | as above | **OK** |
 | 47 | 400 replications, twelve configurations, seed `N·10⁶ + λ·10³ + id_mc`, 100 burn-in (in TBC) | file census, `11_simulation_generate.R:43-46` | **OK** |
 | 53 | `R = 400` | 400 distinct `id_mc` in every cell of `estimates/autocov/` | **OK** |
-| 68 | `N' = 5000`, common design, noiseless, `seq(0.01, 0.99, len = 99)` (in TBC) | `11_simulation_generate.R:214-227`; `dt_mc_FAR_conso_N=5000.RDS` holds 5000 curves on 99 points, all `tcommon` | **OK** |
-| 72 | `(H_{0.2}, H_{0.3}) = (0.199, 0.844)`, `(H_{0.5}, H_{0.2}) = (0.784, 0.199)`, `(H_{0.1}, H_{0.4}) = (0.529, 0.527)`, `(H_{0.8}, H_{0.5}) = (0.445, 0.784)` (in TBC, quoted as superseded) | superseded estimated exponent | **INVALIDATED by the linear exponent.** Correct values in [RUNLOG.md](RUNLOG.md) §2.2 |
-| 72 | "`estimates/` has no `autocov/` directory" (in TBC) | `data-simulation/estimates/autocov/` — 12 cells × 400 | **MISMATCH — stale.** It exists and is complete |
-| 76 | "no `cov/` directory" (in TBC) | `estimates/cov/` — 12 cells × 400 | **MISMATCH — stale** |
-| 89 | `R = 400`, `(N, λ) ∈ {150,300,600} × {25,50,100,200}` | file census, all twelve cells complete | **OK** |
-| 91 | `H_t = 0.4 + 0.4t`, rising 0.4 → 0.8 | `hurst_linear(0.4, 0.8)`; `Ht_true` column of `estimates/locreg/` gives 0.48, 0.56, 0.64, 0.72 at t = 0.2, 0.4, 0.6, 0.8 | **OK** |
-| 91 | Hölder constant `0.1` | `L2 = 0.01`; `Lt2_true` column = 0.01 | **OK** |
-| 91 | intercept sd `0.0224` | `sqrt(0.01 × 0.05) = 0.0223607` | **OK**, though `11_simulation_generate.R:25` rounds the same number to `0.022` |
-| 91 | operator norm `0.5` | `get_far_kenel_conso(operator_norm = 0.5)` default, `11_simulation_generate.R:87` | **OK** |
-| 91 | burn-in `100` | `n_burnin = 100L` | **OK** |
-| 93 | `0.8λ`–`1.2λ`, shared grid of λ points, noise sd `0.007` | `11_simulation_generate.R:48-54, 136, 22` | **OK** |
-| 123 | `R = 400`; "replications on which the score is not finite are dropped, and their number is reported" | `latex_blup_wise_benchmark_conso{,_common}.tex`: "400 of 400 replications retained in every configuration" | **OK** — and the dropped count is zero |
-| 124 | `22_simulation_blup.R:143-144` renormalises the weights (in TBC) | `22_simulation_blup.R:144`, `rho <- rho / sum(rho)` | **OK as a fact, wrong as a verdict.** The renormalisation is real, and so is the `1e-6` density floor the TBC omits. But the TBC reads them as "the paper and the implementation disagree", and the ruling of 2026-08-31 is that they do not: `eq:weighted_ise` is the theory, these are the implementation's guard against numerical degeneration. Both stand. See [RUNLOG.md](RUNLOG.md) §1.7 |
-| 128 | "`estimates/` has no `blup/` directory and `figures/blup/` is empty" (in TBC) | both populated; 24 `plot_blup_mc_*` files and three tables | **MISMATCH — stale** |
-| 141 | `RP20` returns on a regular grid of `241` points, with a B-spline projection (in TBC, flagged unattested) | nothing on disk | **UNVERIFIABLE** — correctly left out of the prose |
-| 143 | "`estimates/RP20/` does not exist" (in TBC) | `estimates/RP20/export/` — 12 cells × 400 | **MISMATCH — stale.** The export exists; the *comparison* does not |
-| 162 | "No implementation exists" for `Z26` | grep for `zhao|z26|zh26` over `scripts/`: two hits, both labels in `32_figures_blup.R:49-50` | **OK** |
-| 171 | section heading "NOTPERP intraday **log-return** curves" | volume is the analysed quantity, `46_app_notperp_volume.R:1`; decided 2026-08-31 that the paper reports volume only | **MISMATCH** — the heading names the wrong quantity |
-| 174 | "`data-NOTPERP/estimates/` is empty" and "`42_app_notperp.R` does not run to completion" (in TBC) | ten `.RDS` files, five of them `*_volume_*`; and `42` is the reference-only log-return script, not the one the paper uses | **MISMATCH — doubly stale.** The directory is populated and the named script is no longer the relevant one |
-| 180 | 122 consumption at 96 pts, 122 photovoltaic restricted to 61 over 04:00–19:00, 152 hydroelectric at 96 (in TBC) | `data-energy/raw/`; `40_app_energy.R:38-46` | **OK** |
-| 180 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
-| 180 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
+| 68 | `N' = 5000`, common design, noiseless, `seq(0.01, 0.99, len = 99)` | `11_simulation_generate.R:214-227`; `dt_mc_FAR_conso_N=5000.RDS` holds 5000 curves on 99 points, all `tcommon` | **OK** — and no longer inside a TBC; the protocol is stated in prose since 2026-08-31 |
+| 72-83 | Four pairs `(s,t)` with `(H_s, H_t)` = (0.48, 0.56), (0.56, 0.68), (0.68, 0.72), (0.72, 0.48), gaps 0.04 to 0.24 | `hurst_linear(0.4, 0.8)`; `Ht_true` column of `estimates/locreg/` | **OK** — replaces the superseded quoted pairs H(0.2) = 0.199, H(0.3) = 0.844, H(0.5) = 0.784, H(0.8) = 0.445, which are dead |
+| 74-79 | Lag-1 error ratios: median below one in 40 of the 48 pairs of location and setup, exactly one in 6, above one in 2; median at (0.8, 0.2) from 0.433 to 0.911, lowest of the four in eleven of twelve setups; 532 of 19200 combinations non-finite; 5456 of the remaining 18668 at or above 1.5 | `estimates/autocov/`, twelve cells × 400, against `dt_true_autocov_conso_lag=1.RDS`, read 2026-08-31 | **OK** — replaces the stale claim that `estimates/` has no `autocov/` directory |
+| 91-98 | Lag-0 error ratios: median below one in 35 of 48, exactly one in 11, above one in 2; smallest median 0.628 against 0.433 at lag 1; per-location median ranges 0.737-1, 0.628-1, 0.756-1.052, 0.681-1.063; 471 of 19200 non-finite; 6027 of the remaining 18729 at or above 1.5 | `estimates/cov/`, twelve cells × 400, against `dt_true_autocov_conso_lag=0.RDS`, read 2026-08-31 | **OK** — replaces the stale claim that `estimates/` has no `cov/` directory |
+| 91 | The single-bandwidth covariance estimator is the `MPV25` estimator at ℓ = 0 | `adaptiveFTS/R/05_estimate_autocovariance.R:10-13`; `21_simulation_cov.R:80-98` calls `estimate_autocov(common_bw = TRUE)` | **OK** — corrects the old TBC, which called it something other than `MPV25` |
+| 117 | `R = 400`, `(N, λ) ∈ {150,300,600} × {25,50,100,200}` | file census, all twelve cells complete | **OK** |
+| 119 | `H_t = 0.4 + 0.4t`, rising 0.4 → 0.8 | `hurst_linear(0.4, 0.8)`; `Ht_true` column of `estimates/locreg/` gives 0.48, 0.56, 0.64, 0.72 at t = 0.2, 0.4, 0.6, 0.8 | **OK** |
+| 119 | Hölder constant `0.1` | `L2 = 0.01`; `Lt2_true` column = 0.01 | **OK** |
+| 119 | intercept sd `0.0224` | `sqrt(0.01 × 0.05) = 0.0223607` | **OK**, though `11_simulation_generate.R:25` rounds the same number to `0.022` |
+| 119 | operator norm `0.5` | `get_far_kenel_conso(operator_norm = 0.5)` default, `11_simulation_generate.R:87` | **OK** |
+| 119 | burn-in `100` | `n_burnin = 100L` | **OK** |
+| 121 | `0.8λ`–`1.2λ`, shared grid of λ points, noise sd `0.007` | `11_simulation_generate.R:48-54, 136, 22` | **OK** |
+| 151 | `R = 400`; "replications on which the score is not finite are dropped, and their number is reported" | `latex_blup_wise_benchmark_conso{,_common}.tex`: "400 of 400 replications retained in every configuration" | **OK** — and the dropped count is zero |
+| 152 | `22_simulation_blup.R:143-144` renormalises the weights (in TBC) | `22_simulation_blup.R:144`, `rho <- rho / sum(rho)` | **OK as a fact, wrong as a verdict.** The renormalisation is real, and so is the `1e-6` density floor the TBC omits. But the TBC reads them as "the paper and the implementation disagree", and the ruling of 2026-08-31 is that they do not: `eq:weighted_ise` is the theory, these are the implementation's guard against numerical degeneration. Both stand. See [RUNLOG.md](RUNLOG.md) §1.7 |
+| 156 | "`estimates/` has no `blup/` directory and `figures/blup/` is empty" (in TBC) | both populated; 24 `plot_blup_mc_*` files and three tables | **MISMATCH — stale** |
+| 169 | `RP20` returns on a regular grid of `241` points, with a B-spline projection (in TBC, flagged unattested) | nothing on disk | **UNVERIFIABLE** — correctly left out of the prose |
+| 171 | "`estimates/RP20/` does not exist" (in TBC) | `estimates/RP20/export/` — 12 cells × 400 | **MISMATCH — stale.** The export exists; the *comparison* does not |
+| 190 | "No implementation exists" for `Z26` | grep for `zhao|z26|zh26` over `scripts/`: two hits, both labels in `32_figures_blup.R:49-50` | **OK** |
+| 199 | section heading "NOTPERP intraday **log-return** curves" | volume is the analysed quantity, `46_app_notperp_volume.R:1`; decided 2026-08-31 that the paper reports volume only | **MISMATCH** — the heading names the wrong quantity |
+| 202 | "`data-NOTPERP/estimates/` is empty" and "`42_app_notperp.R` does not run to completion" (in TBC) | ten `.RDS` files, five of them `*_volume_*`; and `42` is the reference-only log-return script, not the one the paper uses | **MISMATCH — doubly stale.** The directory is populated and the named script is no longer the relevant one |
+| 208 | 122 consumption at 96 pts, 122 photovoltaic restricted to 61 over 04:00–19:00, 152 hydroelectric at 96 (in TBC) | `data-energy/raw/`; `40_app_energy.R:38-46` | **OK** |
+| 208 | target curve stepped back by 10 for photovoltaic, 12 for hydroelectric, per `40_app_energy.R:26-28` (in TBC) | `40_app_energy.R:54-56` predicts each series' own final curve; lines 26-28 are the Tikhonov grids | **MISMATCH — stale.** No offset exists |
+| 208 | "`data-energy/estimates/` predates the current script" (in TBC) | 7 files from 2026-08-28 00:55; the rest from 2024–2025 | **PARTLY OK** — the three `dt_blup_*.RDS` and three CV curves are current; everything else is stale |
 
 ### `num_analysis_supp.tex`
 
@@ -210,51 +223,65 @@ equivalents). Neither script has been run against the current tree.
 | 63 | Tikhonov grid `exp(seq(-16, 3, length.out = 40))` (in TBC) | `22_simulation_blup.R:70` | **OK** |
 | 69 | design-density grid log-spaced `1/λ` to `1` over 20 points (in TBC) | `22_simulation_blup.R:61-64` | **OK** |
 | 75 | "no `locreg/` directory and `figures/locreg/` is empty" (in TBC) | `estimates/locreg/` 12 × 400; `figures/locreg/` 10 pdfs | **MISMATCH — stale** |
-| 81, 100, 129 | `R = 400`, `(N, λ) = (150, 100)`, four locations | `estimates/autocov/`, `estimates/cov/` | **OK** |
-| 82 | "20 and 21 have not been run" (in TBC) | both families complete | **MISMATCH — stale** |
-| 89, 95, 118, 124 | eight `[TBC: (H_s, H_t)]` slots | fillable from [RUNLOG.md](RUNLOG.md) §2.2 | **now available** |
-| 91, 98, 120, 127 | eight `[TBC: (h*(s\|t), h*(t\|s))]` slots | fillable from [RUNLOG.md](RUNLOG.md) §2.2 | **now available** |
-| 112 | "the optimal pairs are typically such that `h₀*(s\|t) ≠ h₀*(t\|s)` when `H_s ≠ H_t`, the difference more pronounced for large `\|H_s − H_t\|`" | [RUNLOG.md](RUNLOG.md) §2.2, lag-0 table | **NEEDS REWORDING, not correction.** The claim holds; its strength does not carry from lag 1. Say the difference is **lower at lag 0, and at (0.7, 0.8) does not exist** — both bandwidths are 0.00971, which is the claim working, the regularities being closest there. Drop the monotonicity: (0.8, 0.2) has the largest `\|H_s − H_t\|` and a ratio of 1.31, against 5.2 at (0.1, 0.4) |
-| 137 | `s ∈ {0.2, 0.4, 0.5, 0.8}`, `(N, λ) ∈ {(150,25),(150,50),(150,100),(150,200)}`, 400 replications | `31_figures_cov.R:363-368` and the `scale_linetype_manual` levels | **OK** |
-| 146 | `R = 400`; "most of the lag-1 FACF values are concentrated between 0.2 and 0.4" | `estimates/facf/`, 9 cells × 400. Pooled, **98.4%** fall in [0.2, 0.4]; worst cell (300, 25) 95.0%; medians 0.251 to 0.328 | **OK** — the claim survives the change of design |
-| 147 | "`23_simulation_facf.R` has not been run, no `facf/` directory" (in TBC) | `estimates/facf/` — 9 cells × 400 | **MISMATCH — stale** |
-| 153 | 3×3 grid, `lambdavec <- c(25, 50, 100)`, λ = 200 absent, pooled Sturges breaks (in TBC) | `36_figures_facf.R:25, 44-46`; only 9 result cells exist | **OK** |
-| 160 | "`figures/blup/` is empty" (in TBC) | 24 `plot_blup_mc_*` files present | **MISMATCH — stale** |
-| 174 | lag-1 FACF reference values "recorded at `40_app_energy.R:24`" (in TBC) | line 24 is a comment on the Tikhonov grids; the values are the `lag1_facf` column of `data-energy/estimates/dt_blup_{conso,solaire,hydrau}.RDS`, read as **0.4328799**, **0.4306196**, **0.3649574** | **MISMATCH — stale pointer.** The values themselves are now established, [RUNLOG.md](RUNLOG.md) §3.1 |
+| 83, 105, 114, 138 | `R = 400`, `(N, λ) = (150, 100)`, four locations | `estimates/autocov/`, `estimates/cov/` | **OK** |
+| 80-81 | The subsection's opening, stating its job and the claim the panels have to show | new prose, 2026-08-31 | **OK** — replaces the dangling "To this end" that opened the subsection |
+| 83-87, 118-122 | The two bandwidth-separation paragraphs, rewritten under the linear exponent | third table of [RUNLOG.md](RUNLOG.md) §2.2 | **OK** — replaces the superseded-notation TBC, whose claim that `20_simulation_autocov.R` and `21_simulation_cov.R` "have not been run" was stale: both families are complete |
+| 95, 102, 128, 135 | eight `(H_s, H_t)` values: (0.48, 0.56), (0.56, 0.68), (0.68, 0.72), (0.72, 0.48) at each lag | `hurst_linear(0.4, 0.8)`; `Ht_true` column of `estimates/locreg/` | **FILLED** — the slots were TBC |
+| 96, 103, 129, 136 | eight `(h*(s\|t), h*(t\|s))` pairs, the minima of the plotted surfaces | third table of [RUNLOG.md](RUNLOG.md) §2.2, read from the two risk RDS files | **FILLED** — the slots were TBC. Not the medians of the per-replication selections, which are the first two tables of §2.2 and a different quantity |
+| 118-122 | Lag-0 separation: ratios 1.00, 1.31, 2.27, 2.99 over gaps 0.04, 0.08, 0.12, 0.24, both bandwidths `0.01276` at (0.7, 0.8) | as above | **OK** — the claim of §2.2's ruling, now stated with no monotonicity asserted for the lag-0 *accuracy* |
+| 146 | `s ∈ {0.2, 0.4, 0.5, 0.8}`, `(N, λ) ∈ {(150,25),(150,50),(150,100),(150,200)}`, 400 replications | `31_figures_cov.R:363-368` and the `scale_linetype_manual` levels | **OK** |
+| 155 | `R = 400`; "most of the lag-1 FACF values are concentrated between 0.2 and 0.4" | `estimates/facf/`, 9 cells × 400. Pooled, **98.4%** fall in [0.2, 0.4]; worst cell (300, 25) 95.0%; medians 0.251 to 0.328 | **OK** — the claim survives the change of design |
+| 156 | "`23_simulation_facf.R` has not been run, no `facf/` directory" (in TBC) | `estimates/facf/` — 9 cells × 400 | **MISMATCH — stale** |
+| 162 | 3×3 grid, `lambdavec <- c(25, 50, 100)`, λ = 200 absent, pooled Sturges breaks (in TBC) | `36_figures_facf.R:25, 44-46`; only 9 result cells exist | **OK** |
+| 169 | "`figures/blup/` is empty" (in TBC) | 24 `plot_blup_mc_*` files present | **MISMATCH — stale** |
+| 183 | lag-1 FACF reference values "recorded at `40_app_energy.R:24`" (in TBC) | line 24 is a comment on the Tikhonov grids; the values are the `lag1_facf` column of `data-energy/estimates/dt_blup_{conso,solaire,hydrau}.RDS`, read as **0.4328799**, **0.4306196**, **0.3649574** | **MISMATCH — stale pointer.** The values themselves are now established, [RUNLOG.md](RUNLOG.md) §3.1 |
 
 ### Summary
 
-- **11 values are stale P5 verdicts** asserting that results do not exist. They all do. These are
-  the most misleading entries in the two files, because they read as settled.
+Rewritten on 2026-08-31 after the (auto)covariance sections were redone; what stands is below.
+
+- **6 values remain stale P5 verdicts** asserting that results do not exist. They all do. These are
+  the most misleading entries in the two files, because they read as settled: `main:156`,
+  `main:171`, `main:202`, `supp:75`, `supp:156`, `supp:169`. The three that concerned `autocov/`,
+  `cov/` and the two simulation scripts behind the risk surfaces are gone.
 - **4 are genuine MISMATCHes against the run**: the σ provenance (`main:43`), the `L_t` provenance
-  (`main:43`), the photovoltaic/hydroelectric offsets (`main:180`), and the log-return section
-  heading (`main:171`).
-- **1 needs rewording rather than correction**: the lag-0 bandwidth-separation claim (`supp:112`).
-  The claim holds; only its strength does not carry over from lag 1.
-- **1 set is invalidated by the linear exponent**: the four `(H_s, H_t)` pairs at `main:72`, and
-  every bandwidth quoted alongside them.
-- **1 verdict is itself wrong**, not the value under it: the TBC at `main:124` frames the weight
+  (`main:43`), the photovoltaic/hydroelectric offsets (`main:208`), and the log-return section
+  heading (`main:199`).
+- **Settled**: the lag-0 bandwidth-separation claim, formerly `supp:112` and now `supp:118-122`. It
+  is stated with the separation growing at every step over the four reported pairs and vanishing at
+  (0.7, 0.8), and with no monotonicity claimed for the lag-0 accuracy.
+- **Settled**: the four `(H_s, H_t)` pairs invalidated by the linear exponent, formerly `main:72`.
+  Replaced, together with every bandwidth quoted alongside them, from the third table of
+  [RUNLOG.md](RUNLOG.md) §2.2.
+- **1 verdict is itself wrong**, not the value under it: the TBC at `main:152` frames the weight
   renormalisation as a paper-versus-code disagreement. It is not one — see the ruling in
   [RUNLOG.md](RUNLOG.md) §1.7.
-- **2 claims were checked and survive**: the FACF range at `supp:146`, 98.4% pooled; and the three
-  energy lag-1 FACF values behind the stale pointer at `supp:174`.
+- **2 claims were checked and survive**: the FACF range at `supp:155`, 98.4% pooled; and the three
+  energy lag-1 FACF values behind the stale pointer at `supp:183`.
 - **2 are UNVERIFIABLE and correctly flagged as such** in the text already: the RP20 241-point grid
   and `ℓ_max = 3`.
-- **2 result slots are TBC by decision, not by oversight**: `main:143` (RP20) and `:162` (Z26). The
+- **2 result slots are TBC by decision, not by oversight**: `main:171` (RP20) and `:190` (Z26). The
   author will run and implement both. Do not fill, soften or write around them. The one factual
-  correction they still need is that `:143` calls `estimates/RP20/` absent when the export is in
+  correction they still need is that `:171` calls `estimates/RP20/` absent when the export is in
   fact complete — it is the fit and the scoring that are outstanding.
+- **1 display truncation is now declared in the text and not elsewhere**: the accuracy boxplots of
+  Table A #17 and #18 drop every ratio at or above 1.5 (`30_figures_autocov.R:228`,
+  `31_figures_cov.R:162`, and `ylim(0, 1.5)`), which is 5456 of 18668 finite ratios at lag 1 and
+  6027 of 18729 at lag 0, all of them unfavourable. Replotting `log(ratio)` unclipped would remove
+  the need for the declaration; that is a predictFTS decision, not a paper one.
 
 ---
 
-## MPV24 → MPV25: occurrences, listed only
+## MPV24 → MPV25: done 2026-08-31
 
-Nothing renamed. `MPV24` is a **display label** in `\texttt{}`, not a citation key. The key it
-stands for is `Maissoro2025`.
+**Renamed.** `MPV24` was a **display label** in `\texttt{}`, not a citation key. The key it stands
+for is `Maissoro2025`, and no `\cite` changed.
 
-**Five occurrences, all in `num_analysis_main.tex`.**
+**Five occurrences, all in `num_analysis_main.tex`, all now `MPV25`.** Line numbers are those of the
+file before the rewrite; three of them were on line 53 and one was inside the lag-0 TBC that the
+rewrite replaced.
 
-| File | Line | Occurrence | Kind |
+| File | Line before | Occurrence | Kind |
 |---|---|---|---|
 | `num_analysis_main.tex` | 53 | `against the \texttt{MPV24} estimator, which uses a single bandwidth` | label, running prose |
 | `num_analysis_main.tex` | 53 | `\widehat{c}_{\texttt{MPV24}, \ell}^{(i)}` | label, inline maths |
@@ -266,20 +293,21 @@ stands for is `Maissoro2025`.
 | `notations.tex` | — | none | — |
 | `references_clean.bib` | — | none | — |
 
+The label now appears three times on `main:53`, once in `eq:error_ratio_autocov` at `main:65`, and
+once more in the new lag-0 paragraph at `main:91`, where the prose records that the single-bandwidth
+covariance estimator *is* the `MPV25` estimator at ℓ = 0
+(`adaptiveFTS/R/05_estimate_autocovariance.R:10-13`).
+
 Related, and not the same thing:
 
 | File | Line | Occurrence | Note |
 |---|---|---|---|
-| `references_clean.bib` | 669–675 | `@article{Maissoro2025, …}` | **Already published**: *Journal of Time Series Analysis*, doi `10.1111/jtsa.70006`, year 2025. The entry needs no change |
+| `references_clean.bib` | 669–675 | `@article{Maissoro2025, …}` | **Already published**: *Journal of Time Series Analysis*, doi `10.1111/jtsa.70006`, year 2025. Decided 2026-08-31: left unchanged. Volume, number and pages are absent and cannot be established from disk |
 | `num_analysis_main.tex` | 17 | `\citet{Maissoro2025}` | correct key |
 | `num_analysis_main.tex` | 43 | `\citet{Maissoro2025}` | correct key |
-| `num_analysis_supp.tex` | 168 | `\texttt{Maissoro2024}` | **stale key**, named inside a TBC as something to replace when the NOTPERP descriptive material is imported |
+| `num_analysis_supp.tex` | 177 | `\texttt{Maissoro2024}` | **stale key, left as it is.** It names the key used by the external NOTPERP descriptive document, and the TBC's instruction is to replace it when that material is imported. Rewriting it here would destroy the instruction |
 
 Superseded files, for completeness — not to be edited:
 `Numerical_analysis-2025-07-v1.tex` has `\texttt{MPV24}` on lines 91, 114, 123, 125, 167, with the
 key `Maissoro2025`; `Numerical_analysis-2025-06-v1.tex` has it on lines 77, 99, 108, 110, 162, with
 the older key `Maissoro2024` on lines 10, 33, 77.
-
-**So the change is confined to five `\texttt{MPV24}` occurrences in `num_analysis_main.tex` (three
-of them on line 53) and one `\texttt{Maissoro2024}` in `num_analysis_supp.tex`.** The `.bib` needs
-nothing: `Maissoro2025` already carries the published JTSA reference.
