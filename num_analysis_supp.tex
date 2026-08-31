@@ -78,26 +78,31 @@ where $N \gg \ell_{\max} = 3$ to avoid $\Oo(N^4)$ or $\Oo(N^3)$ complexity, and
 \subsection{\color{magenta}Risk surfaces and bandwidth selection\color{black}}
 
 \color{magenta}
-To this end, we consider four pairs $(s, t)$ and compute the average of the lag-$1$ autocovariance risk function $\widehat{R}_{c_1}(s, t; h_s, h_t)$, as defined in [TBC: \texttt{eq:risk-Gamma} --- label not defined in best\_predictor\_aout24.tex], over a bandwidth grid $\Hh_N \times \Hh_N$ based on the $R = 400$ FTS replications. Figure~\ref{fig:autocov_risk_2bw} shows the mean of the $400$ replications of the estimates of the lag-$1$ autocovariance risk function for $(N, \lambda) = (150, 100)$ at four locations $(s,t)$. The estimates of the risk function are a convex function of $(h_s, h_t)$ for all pairs $(s,t)$. Furthermore, since the regularity varies along the domain (see Figure~\ref{fig:simu_param}-(a)), as expected, the minima bandwidth pairs $(h_1^*(s|t), h_1^*(t|s))$ are reached such that $h_1^*(s|t) \neq h_1^*(t|s)$, when $H_s \neq H_t$. Moreover, the difference between the selected bandwidths is greater for pairs $(s,t)$ such that $|H_s-H_t|$ is large.
-[TBC: notation superseded, needs review. Every quoted $(H_s, H_t)$ pair and every quoted optimal bandwidth in this subsection and its figures comes from the superseded estimated Hurst function; under \texttt{hurst\_linear(h\_left = 0.4, h\_right = 0.8)} they do not hold. The surfaces themselves require 20\_simulation\_autocov.R and 21\_simulation\_cov.R, which have not been run]
+In this section we give more details on the bandwidth selection of the adaptive (auto)covariance estimators introduced in the main manuscript. The estimator selects one bandwidth per argument, so what has to be shown is that the two are genuinely different, and that they differ by more the further apart the local regularities at the two arguments are.
+
+To this end, we consider four pairs $(s, t)$ and compute the average of the lag-$1$ autocovariance risk function $\widehat{R}_{c_1}(s, t; h_s, h_t)$, as defined in [TBC: \texttt{eq:risk-Gamma} --- label not defined in best\_predictor\_aout24.tex], over a bandwidth grid $\Hh_N \times \Hh_N$ based on the $R = 400$ FTS replications. Figure~\ref{fig:autocov_risk_2bw} shows the mean of the $400$ replications of the estimates of the lag-$1$ autocovariance risk function for $(N, \lambda) = (150, 100)$ at four locations $(s,t)$. The estimates of the risk function are a convex function of $(h_s, h_t)$ for all pairs $(s,t)$, so each surface has one minimum to report.
+
+The minima are the point of the figure. Since the regularity varies along the domain (see Figure~\ref{fig:simu_param}-(a)), as expected, the minimising pairs $(h_1^*(s|t), h_1^*(t|s))$ are reached such that $h_1^*(s|t) \neq h_1^*(t|s)$ when $H_s \neq H_t$. Read in order of $|H_s - H_t|$, the four minima are $(0.00971, 0.00971)$ at $(0.7, 0.8)$, $(0.00427, 0.00738)$ at $(0.2, 0.4)$, $(0.00561, 0.00971)$ at $(0.4, 0.7)$ and $(0.01276, 0.00427)$ at $(0.8, 0.2)$; the ratio of the larger bandwidth to the smaller runs $1.00$, $1.73$, $1.73$ and $2.99$. The difference between the selected bandwidths is therefore greater for pairs $(s,t)$ such that $|H_s - H_t|$ is large.
+
+At $(0.7, 0.8)$ the two bandwidths coincide. That is the rule working rather than failing: with the two regularities as close as the four pairs allow, there is nothing for two bandwidths to separate over, and the minimum of the surface falls on the diagonal $h_s = h_t$. As a consequence the figure carries both halves of the claim, the separation and its absence, on the same four panels.
 \color{black}
 
 \begin{figure}[h!]
 	\centering
 	\begin{tabular}{cc}
-		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
-		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
-		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} \\
+		\color{magenta}$(s, t)= (0.2, 0.4)$\color{black} & \color{magenta}$(s, t)= (0.4, 0.7)$\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.4.png} & \includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.4_t=0.7.png}\\
+		\color{magenta}$(H_s, H_t) = (0.48, 0.56)$\color{black} & \color{magenta}$(H_s, H_t) = (0.56, 0.68)$\color{black}\\
+		\color{magenta}$(h_1^*(s|t), h_1^*(t|s)) = (0.00427, 0.00738)$\color{black} & \color{magenta}$(h_1^*(s|t), h_1^*(t|s)) = (0.00561, 0.00971)$\color{black} \\
 		& \\
 		& \\
-		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
-		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.1_t=0.4.png} &
-		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
-		\color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_1^*(s|t), h_1^*(t|s))$]\color{black}
+		\color{magenta}$(s, t)= (0.7, 0.8)$\color{black} & \color{magenta}$(s, t)= (0.8, 0.2)$\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.7_t=0.8.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/autocov/plt_autocov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.2.png}\\
+		\color{magenta}$(H_s, H_t) = (0.68, 0.72)$\color{black} & \color{magenta}$(H_s, H_t) = (0.72, 0.48)$\color{black}\\
+		\color{magenta}$(h_1^*(s|t), h_1^*(t|s)) = (0.00971, 0.00971)$\color{black} & \color{magenta}$(h_1^*(s|t), h_1^*(t|s)) = (0.01276, 0.00427)$\color{black}
 	\end{tabular}
-	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_1}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_1^*(s|t), h_1^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
+	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_1}(s,t;h_s, h_t)$\color{black} at \color{magenta}$(s,t) \in \{ (0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$\color{black} computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. \color{magenta}Each panel is headed by its pair $(s,t)$. Beneath the surface are the two local Hölder exponents at that pair and, on the last line, the bandwidth pair $(h_1^*(s|t), h_1^*(t|s))$ at which the plotted surface attains its minimum. The two horizontal axes of a surface are $h_s$ and $h_t$ and the vertical axis is the risk; the surfaces are windowed to bandwidths no greater than $0.09$.\color{black}}
 	\label{fig:autocov_risk_2bw}
 \end{figure}
 
@@ -106,27 +111,31 @@ Our new adaptive covariance estimator involves selecting optimal bandwidths by m
 \color{black}
 
 \color{magenta}
-First, regarding the risk function estimation, Figure~\ref{fig:cov_risk_2bw} shows the average over the $400$ replications of the estimates of the covariance risk function [TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex] for $(N, \lambda) = (150, 100)$ at four locations. These plots provide evidence that the risk function is convex and can thus be effectively minimised to obtain optimal bandwidth pairs. Similarly, Figure~\ref{fig:diagonal_risk} illustrates that the risk function for the diagonal line is also convex, allowing straightforward selection of the optimal bandwidth for its estimation.
+First, regarding the risk function estimation, Figure~\ref{fig:cov_risk_2bw} shows the average over the $400$ replications of the estimates of the covariance risk function [TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex] for $(N, \lambda) = (150, 100)$ at the same four locations. These plots provide evidence that the risk function is convex and can thus be effectively minimised to obtain optimal bandwidth pairs. Similarly, Figure~\ref{fig:diagonal_risk} illustrates that the risk function for the diagonal line is also convex, allowing straightforward selection of the optimal bandwidth for its estimation.
 \color{black}
 
-Furthermore, for the bivariate risk function \color{magenta}[TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex]\color{black}, since the regularity varies across the domain (see Figure~\ref{fig:simu_param}-(a)), the optimal bandwidth pairs $(h_0^*(s|t), h_0^*(t|s))$ are typically such that $h_0^*(s|t) \neq h_0^*(t|s)$ when $H_s \neq H_t$. The difference between the selected bandwidths becomes more pronounced for pairs $(s, t)$ with large differences in local regularity, that is, when $|H_s - H_t|$ is large.
+\color{magenta}
+Furthermore, for the bivariate risk function [TBC: \texttt{eq:risk-Gamma\_0:diagonal\_outside} --- label not defined in best\_predictor\_aout24.tex], since the regularity varies across the domain (see Figure~\ref{fig:simu_param}-(a)), the optimal bandwidth pairs $(h_0^*(s|t), h_0^*(t|s))$ are again such that $h_0^*(s|t) \neq h_0^*(t|s)$ when $H_s \neq H_t$. Read in order of $|H_s - H_t|$, the four minima are $(0.01276, 0.01276)$ at $(0.7, 0.8)$, $(0.00561, 0.00738)$ at $(0.2, 0.4)$, $(0.00561, 0.01276)$ at $(0.4, 0.7)$ and $(0.01276, 0.00427)$ at $(0.8, 0.2)$; the ratio of the larger bandwidth to the smaller runs $1.00$, $1.31$, $2.27$ and $2.99$. The difference between the selected bandwidths therefore grows at every step with the difference in local regularity, and at $(0.7, 0.8)$, where that difference is smallest, it does not exist at all: both bandwidths are $0.01276$.
+
+The bandwidths selected at lag $0$ are wider than their lag-$1$ counterparts at three of the four pairs. This ordering of the selected bandwidths is not inherited by the accuracy of the estimator: the error ratios reported in the main manuscript separate the four pairs much less clearly at lag $0$ than at lag $1$.
+\color{black}
 
 \begin{figure}[h!]
 		\centering
 	\begin{tabular}{cc}
-		$(s, t)= (0.2, 0.3)$ & $(s, t)= (0.5, 0.2)$\\
-		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.3.png} & \includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.5_t=0.2.png}\\
-		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} \\
+		\color{magenta}$(s, t)= (0.2, 0.4)$\color{black} & \color{magenta}$(s, t)= (0.4, 0.7)$\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.2_t=0.4.png} & \includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.4_t=0.7.png}\\
+		\color{magenta}$(H_s, H_t) = (0.48, 0.56)$\color{black} & \color{magenta}$(H_s, H_t) = (0.56, 0.68)$\color{black}\\
+		\color{magenta}$(h_0^*(s|t), h_0^*(t|s)) = (0.00561, 0.00738)$\color{black} & \color{magenta}$(h_0^*(s|t), h_0^*(t|s)) = (0.00561, 0.01276)$\color{black} \\
 		& \\
 		& \\
-		$(s, t)= (0.1, 0.4)$ & $(s, t)= (0.8, 0.5)$\\
-		\color{magenta}[TBC: $(H_s, H_t)$]\color{black} & \color{magenta}[TBC: $(H_s, H_t)$]\color{black}\\
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.1_t=0.4.png} &
-		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.5.png}\\
-		\color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black} & \color{magenta}[TBC: $(h_0^*(s|t), h_0^*(t|s))$]\color{black}
+		\color{magenta}$(s, t)= (0.7, 0.8)$\color{black} & \color{magenta}$(s, t)= (0.8, 0.2)$\color{black}\\
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.7_t=0.8.png} &
+		\includegraphics[width=0.35\textwidth]{./figures/cov/plt_cov_risk_conso_design_N=150_lambda=100_s=0.8_t=0.2.png}\\
+		\color{magenta}$(H_s, H_t) = (0.68, 0.72)$\color{black} & \color{magenta}$(H_s, H_t) = (0.72, 0.48)$\color{black}\\
+		\color{magenta}$(h_0^*(s|t), h_0^*(t|s)) = (0.01276, 0.01276)$\color{black} & \color{magenta}$(h_0^*(s|t), h_0^*(t|s)) = (0.01276, 0.00427)$\color{black}
 	\end{tabular}
-	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_0}(s,t;h_s, h_t)$\color{black} at $(s,t) \in \{ (0.2, 0.3)$, $(0.5, 0.2)$, $(0.1, 0.4)$, $(0.8, 0.5)\}$ computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. For each $(s,t)$, the optimal bandwidths $(h_0^*(s|t), h_0^*(t|s))$ corresponding to the plotted risk function are indicated at the bottom of the respective panel.}
+	\caption{\small Empirical average of the risk function \color{magenta}$\widehat{R}_{c_0}(s,t;h_s, h_t)$\color{black} at \color{magenta}$(s,t) \in \{ (0.2, 0.4)$, $(0.4, 0.7)$, $(0.7, 0.8)$, $(0.8, 0.2)\}$\color{black} computed over $400$ independent replications of the FTS for the sample size $(N, \lambda) = (150, 100)$. \color{magenta}The panels, the two annotation lines beneath each surface and the windowing of the bandwidths are those of Figure~\ref{fig:autocov_risk_2bw}, with $(h_0^*(s|t), h_0^*(t|s))$ in place of the lag-$1$ pair.\color{black}}
 	\label{fig:cov_risk_2bw}
 \end{figure}
 
