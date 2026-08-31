@@ -65,16 +65,44 @@ Then, for each $i = 1, \ldots, R$, we compute the pointwise error ratio:
 	E_\ell^{(i)}(s, t) = \frac{\left| \widehat{c}_{N,\ell}^{(i)}(s, t; h_\ell^*(s|t), h_\ell^*(t|s)) - \widehat{c}_{N',\ell}(s, t) \right|}{\left| \widehat{c}_{\texttt{MPV25}, \ell}^{(i)}(s, t; h^*) - \widehat{c}_{N',\ell}(s, t) \right|}.\color{black}
 \end{equation}
 \color{magenta}
-[TBC: the infeasible benchmark protocol must be restated from 11\_simulation\_generate.R:214--227 --- $N' = 5000$, common design, noiseless, on the grid \texttt{seq(0.01, 0.99, len = 99)}]
+The benchmark is computed once, outside the Monte Carlo. A single series of $N' = 5000$ curves is generated from \eqref{blup:FTS_mod1} with the same parameters, on the equidistant grid of $99$ points between $0.01$ and $0.99$ common to every curve, and is retained without measurement error. It stands in for the unknown $c_\ell$, so that the two estimators are compared through their distance to it rather than to each other.
 \color{black}
 
 \color{magenta}
-[TBC: lag-1 error-ratio results. The source paragraph quotes $(H_{0.2}, H_{0.3}) = (0.199, 0.844)$, $(H_{0.5}, H_{0.2}) = (0.784, 0.199)$, $(H_{0.1}, H_{0.4}) = (0.529, 0.527)$ and $(H_{0.8}, H_{0.5}) = (0.445, 0.784)$; these come from the superseded estimated Hurst function and do not hold under \texttt{hurst\_linear(h\_left = 0.4, h\_right = 0.8)}. Results require 20\_simulation\_autocov.R then 30\_figures\_autocov.R, neither of which has been run: data-simulation/estimates/ has no autocov/ directory]
+We report the comparison at four pairs $(s,t)$, chosen so that the distance between the two local exponents takes a different value at each of them. At $(0.7, 0.8)$ we have $(H_s, H_t) = (0.68, 0.72)$, at $(0.2, 0.4)$ we have $(0.48, 0.56)$, at $(0.4, 0.7)$ we have $(0.56, 0.68)$, and at $(0.8, 0.2)$ we have $(0.72, 0.48)$. The four values of $|H_s - H_t|$ are $0.04$, $0.08$, $0.12$ and $0.24$, one to each pair, and they are the distinct values the local exponent of Figure~\ref{fig:simu_param}-(a) produces over the pairs at which the estimators were computed. The theory leads us to expect the least gain from two bandwidths at the first pair and the most at the last.
+
+Figure~\ref{fig:autocov_ratio_lag1} shows the boxplots of the error ratio \eqref{eq:error_ratio_autocov} at these four pairs, for each of the twelve setups $(N, \lambda)$. As expected the ratio lies below one at every pair in almost every setup: over the $48$ pairs of location and setup, its median is below one in $40$ of them, exactly one in $6$ and above one in $2$. The gain is largest at $(0.8, 0.2)$, where the two exponents are furthest apart; the median there runs from $0.433$ to $0.911$ and is the lowest of the four in eleven of the twelve setups.
+
+The ordering does not carry through the middle of the range. At $(0.4, 0.7)$, whose gap is the larger of the two intermediate ones, the median ratio exceeds the median at $(0.2, 0.4)$ in eleven of the twelve setups. This is likely due to where the pair sits rather than to the size of its gap: both arguments of $(0.4, 0.7)$ lie on the smooth half of the domain and both call for a wide bandwidth, so one bandwidth serves them almost as well as two; $(0.8, 0.2)$ joins the smoothest of the four points to the roughest, and no single bandwidth serves both.
+
+The medians equal to one have the same origin. The ratio is exactly one whenever the adaptive rule selects the same bandwidth for the two arguments, which it does in none of the $4800$ replications at $(0.8, 0.2)$, against between $5$ and $41$ of the $400$ replications of a setup at $(0.7, 0.8)$ --- the most of the four pairs in eleven of the twelve setups. As a consequence the four pairs differ not only in the size of the gain but in how often there is any gain to be had.
+
+Two features of the display are declared rather than left to be inferred. The estimator returns no value in $532$ of the $19200$ combinations of replication, location and setup, and those replications are absent from the boxes. The vertical axis stops at $1.5$, and $5456$ of the remaining $18668$ ratios lie at or above it, so the boxes describe the lower part of the distribution and not the whole of it.
 \color{black}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/autocov/boxplot_conso_autocov_ratio_lag=1_first_4locations.pdf}
+	\caption{\small \color{magenta}Boxplots of the error ratio \eqref{eq:error_ratio_autocov} of the adaptive lag-$1$ autocovariance estimator against the \texttt{MPV25} estimator, over $400$ independent functional time series generated according to \eqref{blup:FTS_mod1}. \textbf{Top left:} $(s,t) = (0.2, 0.4)$. \textbf{Top right:} $(0.4, 0.7)$. \textbf{Bottom left:} $(0.7, 0.8)$. \textbf{Bottom right:} $(0.8, 0.2)$. Within each panel the boxes are grouped along the horizontal axis by $\lambda$ and shaded by $N$, the darker the shade the larger $N$; the dashed line marks the value $1$, at which the two estimators are equally far from the benchmark. The vertical axis stops at $1.5$ and the ratios above it are not drawn.\color{black}}
+	\label{fig:autocov_ratio_lag1}
+\end{figure}
+
 \color{magenta}
-[TBC: lag-0 error-ratio results and the accompanying boxplot figure. The source compares the covariance estimator against its own single-bandwidth version rather than against \texttt{MPV25}. Requires 21\_simulation\_cov.R then 31\_figures\_cov.R; data-simulation/estimates/ has no cov/ directory]
+At lag $0$ the comparison is the same one. The single-bandwidth covariance estimator is the \texttt{MPV25} estimator at $\ell = 0$, so \eqref{eq:error_ratio_autocov} applies unchanged, with the benchmark ${\widehat{c}}_{N', 0}$ formed on the same infeasible sample. The four pairs $(s,t)$ are those of Figure~\ref{fig:autocov_ratio_lag1}, so that the two lags are read at the same points of the domain.
+
+Figure~\ref{fig:cov_ratio_lag0} shows the boxplots of that ratio. The adaptive estimator is again the closer of the two to the benchmark, its median lying below one in $35$ of the $48$ pairs of location and setup, exactly one in $11$ and above one in $2$. The margin is nonetheless narrower than at lag $1$: the smallest median over the twelve setups is $0.628$, against $0.433$ at lag $1$.
+
+The margin also stops tracking the distance between the exponents. The four ranges of the median overlap: $0.737$ to $1$ at $(0.7, 0.8)$, $0.628$ to $1$ at $(0.2, 0.4)$, $0.756$ to $1.052$ at $(0.4, 0.7)$ and $0.681$ to $1.063$ at $(0.8, 0.2)$, so no pair is the best throughout. This is likely due to the wider bandwidths the lag-$0$ risk selects: at three of the four pairs at least one of the two optima is larger than its lag-$1$ counterpart, so both estimators average over more of the domain and the difference between them has less room in which to show. The bandwidths themselves do order with $|H_s - H_t|$ at lag $0$, as the risk surfaces presented in the Supporting Information show; that ordering is not inherited by the accuracy.
+
+The unit medians are more frequent here, and their origin is the one given at lag $1$: the adaptive rule selects a common bandwidth in between $6$ and $51$ of the $400$ replications of a setup at $(0.7, 0.8)$, the most of the four pairs in every setup. The truncation of the display is also the same: the estimator returns no value in $471$ of the $19200$ combinations, and $6027$ of the remaining $18729$ ratios lie at or above the axis limit of $1.5$.
 \color{black}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./figures/cov/boxplot_conso_cov_ratio_lag=0_first_4locations.pdf}
+	\caption{\small \color{magenta}Boxplots of the error ratio \eqref{eq:error_ratio_autocov} at $\ell = 0$, of the adaptive covariance estimator against the \texttt{MPV25} estimator, over $400$ independent functional time series generated according to \eqref{blup:FTS_mod1}. \textbf{Top left:} $(s,t) = (0.2, 0.4)$. \textbf{Top right:} $(0.4, 0.7)$. \textbf{Bottom left:} $(0.7, 0.8)$. \textbf{Bottom right:} $(0.8, 0.2)$. The panels, the grouping by $\lambda$, the shading by $N$, the dashed line at $1$ and the truncation of the vertical axis are those of Figure~\ref{fig:autocov_ratio_lag1}.\color{black}}
+	\label{fig:cov_ratio_lag0}
+\end{figure}
 
 \subsection{Adaptive curve prediction}\label{sec:num:prediction}
 
